@@ -1,0 +1,34 @@
+{
+  "name": "Admin-Snest",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "test:e2e": "nightwatch"
+  },
+  "dependencies": {
+    "bootstrap": "4.3.1",
+    "chart.js": "^2.7.1",
+    "core-js": "^3.9.1",
+    "d3": "^6.7.0",
+    "element-ui": "^2.15.1",
+    "es6-promise": "^4.2.8",
+    "fuse.js": "^6.4.6",
+    "google-maps": "^4.3.3",
+    "nuxt": "^2.15.3",
+    "nuxt-i18n": "^6.27.0",
+    "perfect-scrollbar": "^1.5.1",
+    "socket.io-client": "^4.1.1",
+    "vue-chartjs": "^3.4.0",
+    "vue2-transitions": "^0.3.0"
+  },
+  "devDependencies": {
+    "chromedriver": "^89.0.0",
+    "nightwatch": "^1.5.1",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.0"
+  }
+}
