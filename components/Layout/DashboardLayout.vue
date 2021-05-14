@@ -178,7 +178,8 @@
       </template>
     </side-bar>
     <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
-    <sidebar-share :background-color.sync="sidebarBackground"> </sidebar-share>
+    <layout-sidebar-share :background-color.sync="sidebarBackground">
+    </layout-sidebar-share>
     <div class="main-panel" :data="sidebarBackground">
       <dashboard-navbar></dashboard-navbar>
       <router-view name="header"></router-view>
@@ -200,7 +201,6 @@
 /* eslint-disable no-new */
 import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
-import SidebarShare from './SidebarSharePlugin'
 function hasElement(className) {
   return document.getElementsByClassName(className).length > 0
 }
@@ -217,7 +217,7 @@ function initScrollbar(className) {
 }
 
 import DashboardNavbar from './DashboardNavbar.vue'
-import ContentFooter from './ContentFooter.vue'
+import ContentFooter from './LayoutFooter.vue'
 import DashboardContent from './Content.vue'
 import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions'
 
@@ -227,8 +227,7 @@ export default {
     ContentFooter,
     DashboardContent,
     SlideYDownTransition,
-    ZoomCenterTransition,
-    SidebarShare
+    ZoomCenterTransition
   },
   data() {
     return {

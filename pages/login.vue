@@ -1,163 +1,115 @@
 <template>
-  <div class="login-body">
-    <div class="login-card" :loading="loading">
-      <v-container>
-        <v-alert
-          :value="registerSuccess"
-          transition="scale-transition"
-          type="success"
-          height="50"
-        >
-          Register Successfully! Please login
-        </v-alert>
-        <v-alert
-          v-if="error"
-          :value="loginError"
-          transition="scale-transition"
-          type="error"
-          height="50"
-        >
-          {{ error.data.message }}
-        </v-alert>
-        <v-form ref="form" v-model="valid" lazy-validation>
-          <v-text-field
-            class="login-input"
-            v-model="email"
-            :rules="emailRules"
-            autocomplete="off"
-            :label="$t('Email')"
-            required
-            color="rgba(255,255,255,0.5)"
-            @keyup.enter="onLogin"
-          ></v-text-field>
-          <v-text-field
-            v-model="password"
-            autocomplete="off"
-            type="password"
-            :rules="passwordRules"
-            :label="$t('Password')"
-            required
-            @keyup.enter="onLogin"
-          ></v-text-field>
-        </v-form>
-      </v-container>
-      <v-row class="mx-auto">
-        <v-col cols="6">
-          <v-btn
-            color="primary"
-            class="text-h6 text-capitalize"
-            block
-            large
-            @click="onLogin"
-          >
-            {{ $t('common.login') }}
-          </v-btn>
-        </v-col>
-        <v-col cols="6">
-          <auth-register @success="registerSuccess = true" class="mx-auto" />
-        </v-col>
-        <v-col no-gutters>
-          {{ $t('common.forgotPassword') }}
-        </v-col>
-      </v-row>
+  <div>
+    <div class="container">
+      <div class="col-lg-4 col-md-6 mt-3 ml-auto mr-auto">
+        <form @submit.prevent="handleSubmit()">
+          <card class="card-login card-white">
+            <template slot="header">
+              <img src="/img/card-primary.png" alt="" />
+              <h1 class="card-title">
+                {{ $t('common.Login') }}
+              </h1>
+            </template>
+
+            <div>
+              <base-input
+                required
+                :label="$t('EmailOrUsername')"
+                v-model="user.email"
+                type="email"
+                :placeholder="$t('common.EmailOrUsername')"
+                addon-left-icon="tim-icons icon-email-85"
+              >
+              </base-input>
+              <validation-error :errors="123" />
+
+              <base-input
+                required
+                :label="$t('Password')"
+                v-model="user.password"
+                :placeholder="$t('common.Password')"
+                addon-left-icon="tim-icons icon-lock-circle"
+                type="password"
+              >
+              </base-input>
+              <validation-error :errors="123" />
+            </div>
+
+            <div slot="footer">
+              <base-button
+                native-type="submit"
+                type="primary"
+                class="mb-3"
+                size="lg"
+                block
+              >
+                {{ $t('Login') }}
+              </base-button>
+              <div class="pull-left">
+                <h6>
+                  <nuxt-link
+                    class="link footer-link"
+                    :to="localePath({ name: 'register' })"
+                  >
+                    {{ $t('common.register') }}
+                  </nuxt-link>
+                </h6>
+              </div>
+
+              <div class="pull-right">
+                <h6>
+                  <nuxt-link
+                    :to="localePath({ name: 'password-reset' })"
+                    class="link footer-link"
+                  >
+                    {{ $t('common.ForgotPassword') }} ?
+                  </nuxt-link>
+                </h6>
+              </div>
+            </div>
+          </card>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
-  middleware: 'guest',
   layout: 'guest',
   data() {
-    const _this = this
     return {
-      valid: true,
-      email: null,
-      password: null,
-      emailRules: [
-        v => !!v || _this.$t('Rule.EmailRequired'),
-        v => /.+@.+/.test(v) || _this.$t('Rule.EmailNotValid')
-      ],
-      passwordRules: [v => !!v || _this.$t('Rule.PasswordRequired')],
-      registerSuccess: false,
-      loading: false,
-      error: null,
-      loginError: false
+      user: {
+        email: window.localStorage.getItem('email') || '',
+        password: window.localStorage.getItem('password') || ''
+      },
+      email: 'admin@jsonapi.com',
+      password: 'secret',
+      subscribe: true
     }
   },
-  computed: {
-    ...mapGetters('user', ['isLoggedIn'])
-  },
-
   methods: {
-    async onLogin() {
-      if (!this.password || !this.email) {
-        this.$refs.form.validate()
-        return
-      }
-      if (!this.valid) return
-      this.loading = true
-      this.error = null
+    ...mapActions('user', ['login']),
+    async handleSubmit() {
+      this.$nuxt.$loading.start()
       try {
-        await this.$store.dispatch(
-          'user/login',
-          {
-            email: this.email,
-            password: this.password
-          },
-          { root: true }
-        )
-        this.$router.push('/')
-      } catch (err) {
-        this.error = err.response
-        this.loginError = true
+        await this.login(this.user)
+        this.$router.push(this.localePath({ name: 'index' }))
+      } catch (e) {
+        await this.$notify({
+          message: 'Invalid credentials!',
+          icon: 'tim-icons icon-bell-55',
+          type: 'danger'
+        })
       }
-      this.loading = false
-    }
-  },
-  watch: {
-    registerSuccess: function() {
-      if (this.registerSuccess === true) {
-        const vm = this
-        setTimeout(function() {
-          vm.registerSuccess = false
-        }, 2000)
-      }
-    },
-    loginError: function() {
-      if (this.loginError === true) {
-        const vm = this
-        setTimeout(function() {
-          vm.registerSuccess = false
-        }, 2000)
-      }
+      this.$nuxt.$loading.finish()
     }
   }
 }
 </script>
-
-<style lang="scss">
-.login-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #1f1f1f;
-
-  .login-card {
-    position: relative;
-    width: 400px;
-    height: 300px;
-    border-radius: 15px;
-    box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
-    background: rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
-    // backdrop-filter: blur(5px);
-  }
+<style>
+.navbar-nav .nav-item p {
+  line-height: inherit;
+  margin-left: 5px;
 }
 </style>

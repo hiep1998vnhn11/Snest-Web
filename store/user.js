@@ -67,20 +67,19 @@ const actions = {
     const response = await axios.post('/auth/me')
     commit('SET_CURRENT_USER', response.data.data)
   },
-  async logout(context) {
-    if (context.getters.isLoggedIn) {
-      FB.getLoginStatus(async response => {
-        if (response.status === 'connected') {
-          await FB.logout()
-        }
-      })
-      await axios.post('/auth/logout')
-      Cookies.remove('access_token')
-    }
+  async logout({ commit }) {
+    // if (FB && typeof (FB !== undefined))
+    //   FB.getLoginStatus(async response => {
+    //     if (response.status === 'connected') {
+    //       await FB.logout()
+    //     }
+    //   })
+    await axios.post('/auth/logout')
+    Cookies.remove('access_token')
+    commit('DESTROY_TOKEN')
   },
-  async register(context, user) {
-    const response = await axios.post('/auth/register', user)
-    console.log(response)
+  async register({}, user) {
+    await axios.post('/auth/register', user)
   },
   async changeInfo(context, payload) {
     const url = '/v1/user/update_profile'

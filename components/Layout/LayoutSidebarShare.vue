@@ -63,7 +63,7 @@
 </template>
 <script>
 export default {
-  name: 'sidebar-share',
+  name: 'layout-sidebar-share',
   props: {
     backgroundColor: String
   },

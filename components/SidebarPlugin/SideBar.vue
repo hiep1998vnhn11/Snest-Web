@@ -1,13 +1,19 @@
 <template>
-  <div class="sidebar" :data="backgroundColor">
+  <div class="sidebar" :data="backgroundColor" :home="home">
     <div class="sidebar-wrapper" ref="sidebarScrollArea">
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-mini">
+        <nuxt-link
+          :to="localePath({ path: '/' })"
+          class="simple-text logo-mini"
+        >
           <img :src="logo" alt="app-logo" />
-        </a>
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+        </nuxt-link>
+        <nuxt-link
+          :to="localePath({ path: '/' })"
+          class="simple-text logo-normal"
+        >
           {{ title }}
-        </a>
+        </nuxt-link>
       </div>
       <slot></slot>
       <ul class="nav">
@@ -27,6 +33,11 @@
 export default {
   name: 'sidebar',
   props: {
+    home: {
+      type: Boolean,
+      default: false,
+      description: 'Side bar widtd size'
+    },
     title: {
       type: String,
       default: 'Hiệp Trần',
@@ -39,8 +50,7 @@ export default {
     },
     logo: {
       type: String,
-      default:
-        'http://demos.creative-tim.com/nuxt-black-dashboard-pro/img/icon-nuxt.svg',
+      default: '/logo.png',
       description: 'Sidebar app logo'
     },
     backgroundColor: {

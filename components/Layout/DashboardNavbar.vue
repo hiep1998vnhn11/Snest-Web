@@ -16,7 +16,11 @@
           <span class="navbar-toggler-bar bar3"></span>
         </button>
       </div>
-      <a class="navbar-brand ml-xl-3 ml-5" href="#pablo">{{ routeName }}</a>
+      <div slot="brand" class="navbar-wrapper">
+        <nuxt-link :to="localePath({ name: 'index' })" class="navbar-brand">
+          <img src="/logo.png" />
+        </nuxt-link>
+      </div>
     </div>
 
     <ul class="navbar-nav ml-auto">
@@ -100,7 +104,12 @@
         </li>
         <div class="dropdown-divider"></div>
         <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Log out</a>
+          <nuxt-link
+            :to="localePath({ name: 'logout' })"
+            class="nav-item dropdown-item"
+          >
+            {{ $t('common.Logout') }}
+          </nuxt-link>
         </li>
       </base-dropdown>
     </ul>

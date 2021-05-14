@@ -74,8 +74,12 @@ export default {
         file: 'en.js'
       },
       {
-        code: 'ar',
-        file: 'ar.js'
+        code: 'vi',
+        file: 'vi.js'
+      },
+      {
+        code: 'ja',
+        file: 'ja.js'
       }
     ],
     lazy: true,
