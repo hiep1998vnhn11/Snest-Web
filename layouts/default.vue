@@ -6,13 +6,13 @@
     </layout-sidebar-share>
     <div class="main-panel" :data="sidebarBackground">
       <dashboard-navbar></dashboard-navbar>
-      <div :class="{ content: !isFullScreenRoute }" @click="toggleSidebar">
+      <div class="content-home" @click="toggleSidebar">
         <zoom-center-transition :duration="200" mode="out-in">
           <!-- your content here -->
           <Nuxt></Nuxt>
         </zoom-center-transition>
       </div>
-      <layout-footer v-if="!isFullScreenRoute"></layout-footer>
+      <layout-footer></layout-footer>
     </div>
   </div>
 </template>

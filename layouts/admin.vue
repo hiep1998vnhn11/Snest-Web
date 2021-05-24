@@ -97,7 +97,7 @@ function initScrollbar(className) {
     // try to init it later in case this component is loaded async
     setTimeout(() => {
       initScrollbar(className)
-    }, 100)
+    }, 300)
   }
 }
 

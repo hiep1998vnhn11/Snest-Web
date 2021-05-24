@@ -68,92 +68,85 @@
         ></sidebar-item>
       </template>
     </side-bar>
-    <!-- sidebar right -->
-    <v-navigation-drawer
-      v-model="drawer"
-      v-if="currentUser"
-      clipped
-      width="22rem"
-      fixed
-      flat
-      right
-      app
-      style="z-index: 3; overflow: hidden;"
-    >
-      <!-- Default temblade -->
-      <div>
-        <div class="trending-card">
-          <div class="box">
-            <h2>
-              {{ $t('Trending') }}
-              <div class="description">
-                {{ $t('TrendingDescription') }}
-              </div>
-            </h2>
+    <div class="home-container">
+      <!-- sidebar right -->
+      <div width="22rem" style="z-index: 3; overflow: hidden;">
+        <!-- Default temblade -->
+        <div>
+          <div class="trending-card">
+            <div class="box">
+              <h2>
+                {{ $t('Trending') }}
+                <div class="description">
+                  {{ $t('TrendingDescription') }}
+                </div>
+              </h2>
 
-            <div class="content">
-              <transition name="slide-fade">
-                <table>
-                  <tr>
-                    <th>Tops</th>
-                    <th>Tag</th>
-                    <th>Counts</th>
-                  </tr>
-                  <tr v-for="(value, index) in sortedTrending" :key="value[0]">
-                    <th>{{ index + 1 }}</th>
-                    <th>
-                      #
-                      <nuxt-link
-                        custom
-                        :to="
-                          localePath({
-                            name: 'index-search-top',
-                            query: { search_key: value[0] }
-                          })
-                        "
-                        v-slot="{ href, navigate }"
-                      >
-                        <a
-                          :href="href"
-                          @click="navigate"
-                          class="text-decoration-none"
+              <div class="content">
+                <transition name="slide-fade">
+                  <table>
+                    <tr>
+                      <th>Tops</th>
+                      <th>Tag</th>
+                      <th>Counts</th>
+                    </tr>
+                    <tr
+                      v-for="(value, index) in sortedTrending"
+                      :key="value[0]"
+                    >
+                      <th>{{ index + 1 }}</th>
+                      <th>
+                        #
+                        <nuxt-link
+                          custom
+                          :to="
+                            localePath({
+                              name: 'index-search-top',
+                              query: { search_key: value[0] }
+                            })
+                          "
+                          v-slot="{ href, navigate }"
                         >
-                          {{ value[0] }}
-                        </a>
-                      </nuxt-link>
-                    </th>
-                    <th>{{ value[1] }}</th>
-                  </tr>
-                </table>
-              </transition>
+                          <a
+                            :href="href"
+                            @click="navigate"
+                            class="text-decoration-none"
+                          >
+                            {{ value[0] }}
+                          </a>
+                        </nuxt-link>
+                      </th>
+                      <th>{{ value[1] }}</th>
+                    </tr>
+                  </table>
+                </transition>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </v-navigation-drawer>
-    <post-create :loading="loading_user"></post-create>
-    <div class="mt-3" v-if="posts.length">
-      <post-component
-        class="mt-3"
-        v-for="(post, index) in posts"
-        :key="`post-component-feed-${index}`"
-        :post="post"
-        :index="index"
-        @onLike="onLike"
-        @onSubComment="onComment(index, post)"
-        @onComment="onComment(index, post)"
-      ></post-component>
-    </div>
-    <div v-else>Not have</div>
-    <observer @intersect="intersected"></observer>
-    <v-skeleton-loader
-      v-if="loading"
-      class="mx-auto mt-3"
-      type="card"
-    ></v-skeleton-loader>
-  </div>
 
-  <auth-login v-else></auth-login>
+      <post-create :loading="loading_user"></post-create>
+      <div class="mt-3" v-if="posts.length">
+        <post-component
+          class="mt-3"
+          v-for="(post, index) in posts"
+          :key="`post-component-feed-${index}`"
+          :post="post"
+          :index="index"
+          @onLike="onLike"
+          @onSubComment="onComment(index, post)"
+          @onComment="onComment(index, post)"
+        ></post-component>
+      </div>
+      <observer @intersect="intersected"></observer>
+      <v-skeleton-loader
+        v-if="loading"
+        class="mx-auto mt-3"
+        type="card"
+      ></v-skeleton-loader>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -166,6 +159,7 @@ export default {
       title: this.isLoggedIn ? 'Home' : 'Login'
     }
   },
+  middleware: 'auth',
   computed: {
     ...mapGetters('post', ['posts']),
     ...mapGetters('user', ['currentUser', 'friends', 'isLoggedIn']),
@@ -249,9 +243,6 @@ export default {
 </script>
 
 <style lang="scss">
-.home-container {
-}
-
 .sidebar-container-scroll {
   overflow-y: hidden;
   height: 100%;
