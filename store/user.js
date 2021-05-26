@@ -18,14 +18,16 @@ const state = () => ({
     axios.defaults.headers.common['Authorization'] =
       'Bearer' + Cookies.get('access_token')
   },
-  friends: []
+  friends: [],
+  user: {}
 })
 
 const getters = {
   currentUser: state => state.currentUser,
   socket: state => state.socket,
   friends: state => state.friends,
-  isLoggedIn: state => !!state.token
+  isLoggedIn: state => !!state.token,
+  user: state => state.user
 }
 
 const actions = {
@@ -37,6 +39,16 @@ const actions = {
     const token = response.data.access_token
     Cookies.set('access_token', token, { expires: 1 })
     commit('SET_ACCESS_TOKEN', token)
+  },
+
+  async fetchUserParam({ commit, state }, userUrl) {
+    const url = state.token ? '/v1/user/get_user' : '/v1/guest/user/get'
+    const { data } = await axios.get(url, {
+      params: {
+        user_url: userUrl
+      }
+    })
+    commit('SET_PARAM_USER', data.data)
   },
 
   async loginFacebook({ commit, state }, access_token) {
@@ -55,7 +67,9 @@ const actions = {
       id_token
     })
     const token = response.data.access_token
-    Cookies.set('access_token', token, { expires: 1 })
+    Cookies.set('access_token', token, {
+      expires: response.data.expires_in / (60 * 60 * 24)
+    })
     commit('SET_ACCESS_TOKEN', token)
     state.setHeader()
     const responseUser = await axios.post('/auth/me')
@@ -64,8 +78,13 @@ const actions = {
 
   async getUser({ commit, state }) {
     state.setHeader()
-    const response = await axios.post('/auth/me')
-    commit('SET_CURRENT_USER', response.data.data)
+    try {
+      const response = await axios.post('/auth/me')
+      commit('SET_CURRENT_USER', response.data.data)
+    } catch (err) {
+      Cookies.remove('access_token')
+      commit('DESTROY_TOKEN')
+    }
   },
   async logout({ commit }) {
     // if (FB && typeof (FB !== undefined))
@@ -129,6 +148,12 @@ const mutations = {
         friend.user_friend.online_status.status = false
       }
     })
+  },
+  SET_STORY: function(state, story) {
+    state.currentUser.info.story = story
+  },
+  SET_PARAM_USER: function(state, user) {
+    state.user = user
   },
   RESET: function(state) {
     const s = initialState()

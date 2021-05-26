@@ -49,7 +49,6 @@
           <Nuxt></Nuxt>
         </zoom-center-transition>
       </div>
-      <layout-footer></layout-footer>
     </div>
   </div>
 </template>
@@ -157,6 +156,7 @@ $scaleSize: 0.8;
 
 .guest {
   background-image: url('/img/guest-background.jpeg');
-  background-size: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 </style>

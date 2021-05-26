@@ -62,7 +62,7 @@ export default {
       type: Number,
       default: 0,
       validator: value => {
-        return value >= 0 && value <= 100;
+        return value >= 0 && value <= 100
       }
     }
   },
@@ -71,9 +71,9 @@ export default {
       return [
         { 'progress-bar-striped': this.striped },
         { 'progress-bar-animated': this.animated }
-      ];
+      ]
     }
   }
-};
+}
 </script>
 <style></style>

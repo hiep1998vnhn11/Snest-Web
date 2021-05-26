@@ -1,6 +1,8 @@
 <template>
-  <card>
-    <h5 slot="header" class="title">Edit Profile</h5>
+  <card style="position: relative">
+    <h5 slot="header" class="title">
+      {{ $t('EditProfile') }}
+    </h5>
     <form @submit.prevent="updateProfile">
       <div class="row">
         <div class="col-md-5">
@@ -25,8 +27,9 @@
         <div class="col-md-4">
           <base-input
             type="email"
-            label="Email address"
-            placeholder="mike@email.com"
+            :label="$t('Email address')"
+            placeholder="youremail@example.com"
+            disabled
             v-model="user.email"
           >
           </base-input>
@@ -115,28 +118,51 @@
   </card>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       user: {
-        company: 'Creative Code Inc.',
-        username: 'michael23',
+        name: '',
         email: '',
-        firstName: 'Mike',
-        lastName: 'Andrew',
-        address: 'Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09',
-        city: 'New York',
-        country: 'USA',
-        postalCode: '',
-        aboutMe: `Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.`
+        phone_number: '',
+        url: '',
+        locale: '',
+        profile_photo_path: '',
+        created_at: ''
+      },
+      info: {
+        gender: '',
+        profile_background_path: '',
+        birthday: '',
+        live_at: '',
+        from: '',
+        story: '',
+        story_privacy: '',
+        locale: '',
+        show_live_at: '',
+        show_from: '',
+        jobs: [],
+        educates: []
       }
-    };
+    }
   },
   methods: {
     updateProfile() {
-      alert('Your data: ' + JSON.stringify(this.user));
+      alert('Your data: ' + JSON.stringify(this.user))
     }
+  },
+  computed: {
+    ...mapGetters('user', ['currentUser'])
+  },
+  mounted() {
+    Object.keys(this.user).forEach(key => {
+      this.user[key] = this.currentUser[key]
+    })
+    Object.keys(this.info).forEach(key => {
+      this.info[key] = this.currentUser.info
+    })
   }
-};
+}
 </script>
 <style></style>

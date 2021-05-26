@@ -1,5 +1,7 @@
 <template>
   <div v-if="isLoggedIn">
+    <messages-card />
+
     <!-- sidebar left -->
     <side-bar
       :background-color="sidebarBackground"

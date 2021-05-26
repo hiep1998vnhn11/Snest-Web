@@ -57,6 +57,6 @@ export default {
       description: 'Card footer css classes'
     }
   }
-};
+}
 </script>
 <style></style>

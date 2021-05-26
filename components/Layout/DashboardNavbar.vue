@@ -92,12 +92,28 @@
         menu-classes="dropdown-navbar"
       >
         <template slot="title">
-          <div class="photo"><img src="img/mike.jpg" /></div>
+          <div class="photo">
+            <img :src="currentUser.info.profile_photo_path" />
+          </div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
-          <p class="d-lg-none">Log out</p>
+          <p class="">
+            <nuxt-link :to="localePath({ name: 'logout' })" class="d-lg-none">
+              {{ $t('common.Logout') }}
+            </nuxt-link>
+          </p>
         </template>
         <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Profile</a>
+          <nuxt-link
+            :to="
+              localePath({
+                name: 'index-user-url',
+                params: { url: currentUser.url }
+              })
+            "
+            class="nav-item dropdown-item"
+          >
+            {{ $t('Profile') }}
+          </nuxt-link>
         </li>
         <li class="nav-link">
           <a href="#" class="nav-item dropdown-item">Settings</a>
@@ -117,7 +133,7 @@
 </template>
 <script>
 import { CollapseTransition } from 'vue2-transitions'
-
+import { mapGetters } from 'vuex'
 export default {
   components: {
     CollapseTransition
@@ -130,7 +146,8 @@ export default {
         return 'Dashboard'
       }
       return parts.map(p => this.capitalizeFirstLetter(p)).join(' ')
-    }
+    },
+    ...mapGetters('user', ['currentUser'])
   },
   data() {
     return {

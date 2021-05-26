@@ -1,13 +1,16 @@
 .<template>
-  <div>
-    <profile-header
-      :user="paramUser"
-      :loading="loading"
-      class="index-3"
-      @changed-avatar="fetchData(true)"
-      @changed-background="fetchData(true)"
-      @changed-status-friend="changeStatusFriend"
-    ></profile-header>
+  <div class="">
+    <div class="container">
+      <div class="row">
+        {{ user }}
+        {{ $route.name }}
+        <div class="col-md-8"><user-edit :user="user"> </user-edit></div>
+        <div class="col-md-4">
+          <user-card :user="user"> </user-card>
+          <user-intro :user="user" />
+        </div>
+      </div>
+    </div>
     <nuxt-child :user="paramUser" :loadingUser="loading"></nuxt-child>
   </div>
 </template>
@@ -16,6 +19,13 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 export default {
+  async fetch({ params, store, error }) {
+    try {
+      await store.dispatch('user/fetchUserParam', params.url)
+    } catch (err) {
+      error(err)
+    }
+  },
   head() {
     return {
       title: this.loading
@@ -31,13 +41,7 @@ export default {
       loading: false
     }
   },
-  async created() {
-    if (!this.paramUser) this.fetchData()
-  },
-  watch: {
-    '$route.params': 'fetchData'
-  },
-  computed: mapGetters('user', ['isLoggedIn']),
+  computed: mapGetters('user', ['isLoggedIn', 'user', 'currentUser']),
   methods: {
     async fetchData(reload) {
       const userUrl = this.$route.params.url

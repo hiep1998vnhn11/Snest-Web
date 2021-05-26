@@ -30,7 +30,7 @@
   "devDependencies": {
     "chromedriver": "^89.0.0",
     "nightwatch": "^1.5.1",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.0",
     "sass-loader": "^10.1.0"
   }
 }

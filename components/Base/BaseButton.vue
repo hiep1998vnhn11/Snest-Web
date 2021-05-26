@@ -64,10 +64,10 @@ export default {
   },
   methods: {
     handleClick(evt) {
-      this.$emit('click', evt);
+      this.$emit('click', evt)
     }
   }
-};
+}
 </script>
 <style scoped lang="scss">
 .btn {

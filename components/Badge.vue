@@ -23,12 +23,12 @@ export default {
           'warning',
           'danger',
           'default'
-        ];
-        return acceptedValues.indexOf(value) !== -1;
+        ]
+        return acceptedValues.indexOf(value) !== -1
       },
       description: 'Badge type (primary|info|success|warning|danger|default)'
     }
   }
-};
+}
 </script>
 <style></style>
