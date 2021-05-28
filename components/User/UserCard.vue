@@ -7,81 +7,67 @@
         <img :src="user.profile_background_path" class="user-cover-photo" />
       </div>
       <a href="javascript:void(0)">
+        <img :src="user.profile_photo_path" />
         <img class="avatar" :src="user.profile_photo_path" alt="Avatar" />
         <h5 class="title">{{ user.first_name }} {{ user.last_name }}</h5>
       </a>
-      <p class="description" v-if="user.info.story">
-        {{ user.info.story }}
-      </p>
-      <div v-if="currentUser.id === user.id">
-        <a href="javascript:void(0)" @click="onSelectStory" v-if="!editStory">
-          {{ user.info.story ? $t('EditStory') : $t('AddStory') }}
-        </a>
-        <div v-if="editStory">
-          <div class="form-floating">
-            <textarea
-              class="form-control"
-              v-model="story"
-              :placeholder="$t('TellPeopleYourStory')"
-              style="height: 100px"
-            ></textarea>
-            <label>{{ storyMessage }}</label>
-
-            <div>
-              <base-button> Save</base-button>
-              <base-button> Cancel</base-button>
+      <slide-y-down-transition>
+        <p class="description" v-if="user.info.story" v-show="!editStory">
+          {{ user.info.story }}
+        </p>
+      </slide-y-down-transition>
+      <slide-y-down-transition>
+        <div v-if="currentUser.id === user.id">
+          <a href="javascript:void(0)" @click="onSelectStory" v-if="!editStory">
+            {{ user.info.story ? $t('EditStory') : $t('AddStory') }}
+          </a>
+          <div v-if="editStory">
+            <div class="form-floating">
+              <textarea
+                class="form-control"
+                v-model="story"
+                :placeholder="$t('TellPeopleYourStory')"
+                style="height: 100px"
+              ></textarea>
+              <label>{{ storyMessage }}</label>
+              <div>
+                <base-button
+                  size="sm"
+                  type="primary"
+                  @click="handleChangeStory"
+                >
+                  {{ $t('Save') }}
+                </base-button>
+                <base-button size="sm" type="info" @click="onCancelStory">
+                  {{ $t('Cancel') }}
+                </base-button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </slide-y-down-transition>
     </div>
     <div slot="footer" class="button-container">
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <nuxt-link
-          :to="localePath({ name: 'index-user-url' })"
-          class="nav-link active"
-          data-toggle="tab"
-          role="tab"
-          aria-controls="nav-home"
-          aria-selected="true"
-        >
-          {{ $t('Posts') }}
-        </nuxt-link>
-        <nuxt-link
-          class="nav-link"
-          :to="
-            localePath({ name: 'index-user-url-about', params: $route.params })
-          "
-          data-toggle="tab"
-          role="tab"
-          aria-controls="nav-profile"
-          aria-selected="false"
-        >
-          {{ $t('About') }}
-        </nuxt-link>
-        <nuxt-link
-          class="nav-link"
-          data-toggle="tab"
-          :to="
-            localePath({
-              name: 'index-user-url-friends',
-              params: $route.params
-            })
-          "
-          role="tab"
-          aria-controls="nav-contact"
-          aria-selected="false"
-        >
-          {{ $t('Friends') }}
-        </nuxt-link>
-      </div>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane :label="$t('Profile.Posts')" name="Posts"></el-tab-pane>
+        <el-tab-pane :label="$t('Profile.About')" name="About"></el-tab-pane>
+        <el-tab-pane
+          :label="$t('Profile.Friends')"
+          name="Friends"
+        ></el-tab-pane>
+        <el-tab-pane :label="$t('Profile.More')" name="More"></el-tab-pane>
+      </el-tabs>
     </div>
   </card>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios'
+import { SlideYDownTransition } from 'vue2-transitions'
 export default {
+  components: {
+    SlideYDownTransition
+  },
   props: {
     user: {
       type: Object,
@@ -92,10 +78,13 @@ export default {
     return {
       tabIndex: 1,
       editStory: false,
+      displayStory: '',
       story: '',
-      loading: false
+      loading: false,
+      activeName: 'Posts'
     }
   },
+  mounted() {},
   computed: {
     ...mapGetters('user', ['currentUser']),
     storyMessage() {

@@ -130,16 +130,13 @@
         123
       </div>
       <div class="mt-3" v-if="posts.length">
-        <post-component
+        <post
           class="mt-3"
           v-for="(post, index) in posts"
           :key="`post-component-feed-${index}`"
           :post="post"
           :index="index"
-          @onLike="onLike"
-          @onSubComment="onComment(index, post)"
-          @onComment="onComment(index, post)"
-        ></post-component>
+        ></post>
       </div>
       <!-- <observer @intersect="intersected"></observer> -->
     </div>

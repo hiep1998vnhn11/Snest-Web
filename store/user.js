@@ -150,7 +150,7 @@ const mutations = {
     })
   },
   SET_STORY: function(state, story) {
-    state.currentUser.info.story = story
+    state.user.info.story = story
   },
   SET_PARAM_USER: function(state, user) {
     state.user = user
