@@ -1,10 +1,7 @@
 <template>
   <div v-if="isLoggedIn">
-    <messages-card />
-
     <!-- sidebar left -->
     <side-bar
-      :background-color="sidebarBackground"
       :short-title="$t('sidebar.shortTitle')"
       :title="$t('sidebar.title')"
       home
@@ -127,8 +124,11 @@
           </div>
         </div>
       </div>
+      <div class="container">
+        <post-create :loading="loading_user"></post-create>
 
-      <post-create :loading="loading_user"></post-create>
+        123
+      </div>
       <div class="mt-3" v-if="posts.length">
         <post-component
           class="mt-3"
@@ -141,12 +141,7 @@
           @onComment="onComment(index, post)"
         ></post-component>
       </div>
-      <observer @intersect="intersected"></observer>
-      <v-skeleton-loader
-        v-if="loading"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
+      <!-- <observer @intersect="intersected"></observer> -->
     </div>
   </div>
 </template>

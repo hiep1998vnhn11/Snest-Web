@@ -96,6 +96,13 @@
 
 @import './emoji.scss';
 
+.flex {
+  display: flex;
+}
+
+.spacer {
+  flex: 1;
+}
 .flex-sb {
   display: flex;
   justify-content: space-between;

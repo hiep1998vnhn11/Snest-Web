@@ -12,9 +12,7 @@
 .sidebar-wrapper ul li div.collapse ul li div.collapse ul li a,
 .sidebar-wrapper ul li div.collapse ul li div.collapsing ul li a,
 .sidebar-wrapper ul li div.collapsing ul li div.collapse ul li a {
-
   margin-left: 25px;
-
 }
 
 .sidebar,
@@ -51,13 +49,12 @@
       border: none;
     }
 
-    >.nav,
+    > .nav,
     .user .info {
-      [data-toggle="collapse"]~div>ul>li>a {
+      [data-toggle='collapse'] ~ div > ul > li > a {
         span {
           display: inline-block;
           @extend .animation-transition-general;
-
         }
 
         .sidebar-normal {
@@ -79,8 +76,6 @@
         }
       }
     }
-
-
   }
 
   .logo-tim {
@@ -109,16 +104,16 @@
     }
 
     li {
-      >a+div .nav {
+      > a + div .nav {
         margin-top: 5px;
 
-        li>a {
+        li > a {
           margin-top: 0px;
           padding: 8px 8px;
         }
       }
 
-      >a {
+      > a {
         margin: 10px 15px 0;
         border-radius: $btn-round-radius;
         font-weight: $font-weight-normal;
@@ -133,26 +128,24 @@
         line-height: $line-height-lg;
       }
 
-      &:first-child>a {
+      &:first-child > a {
         margin: 0 15px;
-
       }
 
-      &:hover:not(.active)>a,
-      &:focus:not(.active)>a {
-
+      &:hover:not(.active) > a,
+      &:focus:not(.active) > a {
         p,
         i {
           color: $white;
         }
       }
 
-      &:hover:not(.active)>a i,
-      &:focus:not(.active)>a i {
+      &:hover:not(.active) > a i,
+      &:focus:not(.active) > a i {
         color: $white;
       }
 
-      &.active>a:not([data-toggle="collapse"]) {
+      &.active > a:not([data-toggle='collapse']) {
         background: transparent;
 
         i,
@@ -161,7 +154,7 @@
         }
 
         &:before {
-          content: " ";
+          content: ' ';
           position: absolute;
           height: 6px;
           width: 6px;
@@ -172,7 +165,7 @@
         }
       }
 
-      &.active>a[data-toggle="collapse"] {
+      &.active > a[data-toggle='collapse'] {
         background: transparent;
         box-shadow: none;
         color: $white;
@@ -181,12 +174,11 @@
           color: $white;
         }
 
-        &+div .nav .active a {
-
+        & + div .nav .active a {
           box-shadow: none;
 
           &:before {
-            content: " ";
+            content: ' ';
             position: absolute;
             height: 6px;
             width: 6px;
@@ -198,7 +190,7 @@
         }
 
         &:before {
-          content: " ";
+          content: ' ';
           position: absolute;
           height: 6px;
           width: 6px;
@@ -248,9 +240,9 @@
       z-index: 3;
       width: $full-width;
       height: 100%;
-      content: "";
+      content: '';
       display: block;
-      background: #FFFFFF;
+      background: #ffffff;
       opacity: 1;
     }
   }
@@ -299,7 +291,6 @@
       height: 1px;
       width: calc(100% - 30px);
       background: $opacity-5;
-
     }
 
     p {
@@ -308,7 +299,7 @@
       margin: 10px 10px;
       color: $white;
       line-height: 20px;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     .simple-text {
@@ -340,7 +331,7 @@
     }
   }
 
-  &[data="blue"] {
+  &[data='blue'] {
     @include linear-gradient($info-states, $info);
 
     &:before {
@@ -348,7 +339,7 @@
     }
   }
 
-  &[data="green"] {
+  &[data='green'] {
     @include linear-gradient($success-states, $success);
 
     &:before {
@@ -356,7 +347,7 @@
     }
   }
 
-  &[data="vue"] {
+  &[data='vue'] {
     @include linear-gradient($vue-states, $vue);
 
     &:before {
@@ -367,7 +358,6 @@
   &[home] {
     width: 350px;
   }
-
 
   .user {
     padding-bottom: 20px;
@@ -410,11 +400,11 @@
     }
 
     .info {
-      >a {
+      > a {
         display: block;
         line-height: 18px;
 
-        >span {
+        > span {
           @extend .animation-transition-general;
           display: block;
           position: relative;
@@ -431,25 +421,22 @@
   }
 }
 
-
 .visible-on-sidebar-regular {
   display: inline-block !important;
 }
 
 .off-canvas-sidebar {
   .nav {
-
-    >li>a,
-    >li>a:hover {
+    > li > a,
+    > li > a:hover {
       color: $white;
     }
 
-    >li>a:focus {
+    > li > a:focus {
       background: rgba(200, 200, 200, 0.2);
     }
   }
 }
-
 
 .main-panel {
   position: relative;
@@ -459,43 +446,42 @@
   border-top: 2px solid $primary;
   background: linear-gradient($background-black, $background-states-black);
 
-  @include transitions (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+  @include transitions(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
 
-  &[data="blue"] {
+  &[data='blue'] {
     border-top: 2px solid $info;
   }
 
-  &[data="green"] {
+  &[data='green'] {
     border-top: 2px solid $success;
   }
 
-  &[data="primary"] {
+  &[data='primary'] {
     border-top: 2px solid $primary;
   }
 
-  &[data="vue"] {
+  &[data='vue'] {
     border-top: 2px solid $vue;
   }
 
-  >.content {
+  > .content {
     padding: 70px 30px 30px 280px;
     min-height: calc(100vh - 90px);
   }
 
-  >.content-home {
+  > .content-home {
     padding: 70px 30px 30px 30px;
     min-height: calc(100vh - 90px);
   }
 
-  >.nonav-content {
+  > .nonav-content {
     padding: 80px 30px 30px 80px;
     min-height: 100vh;
   }
 
-  >.navbar {
+  > .navbar {
     margin-bottom: 0;
   }
-
 
   .header {
     margin-bottom: 50px;
@@ -504,12 +490,9 @@
 
 .home-container {
   padding-left: 350px;
-  background: red;
 }
 
-
 .perfect-scrollbar-on {
-
   .sidebar,
   .main-panel {
     height: 100%;
@@ -517,14 +500,20 @@
   }
 }
 
-
 .panel-header {
   height: $sidebar-width;
   padding-top: 80px;
   padding-bottom: 45px;
-  background: #141E30;
+  background: #141e30;
   /* fallback for old browsers */
-  background: -webkit-gradient(linear, left top, right top, from(#0c2646), color-stop(60%, #204065), to(#2a5788));
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#0c2646),
+    color-stop(60%, #204065),
+    to(#2a5788)
+  );
   background: linear-gradient(to right, #0c2646 0%, #204065 60%, #2a5788 100%);
   position: relative;
   overflow: hidden;
@@ -552,7 +541,7 @@
 }
 
 .panel-header-lg {
-  height: 380px
+  height: 380px;
 }
 
 @include media-breakpoint-down(md) {
@@ -585,7 +574,6 @@
     }
 
     .sidebar {
-
       @include transition($sidebar-transition);
       @include transform-translate-x(0px);
 
@@ -601,7 +589,6 @@
   }
 
   .menu-on-right .nav-open {
-
     .main-panel {
       @include transform-translate-x(-$sidebar-width);
     }
@@ -633,15 +620,15 @@
     top: 0;
     right: 0;
     left: $sidebar-width;
-    content: "";
+    content: '';
     z-index: 9999;
     overflow-x: hidden;
     background-color: transparent;
-    @include transitions (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+    @include transitions(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
   }
 
   .wrapper {
-    @include transitions (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+    @include transitions(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
   }
 
   .main-panel {
@@ -659,20 +646,19 @@
 }
 
 @include media-breakpoint-up(lg) {
-
   .sidebar,
   .main-panel,
   .sidebar-wrapper {
     -webkit-transition-property: top, bottom, width;
     transition-property: top, bottom, width;
-    -webkit-transition-duration: .2s, .2s, .35s;
-    transition-duration: .2s, .2s, .35s;
+    -webkit-transition-duration: 0.2s, 0.2s, 0.35s;
+    transition-duration: 0.2s, 0.2s, 0.35s;
     -webkit-transition-timing-function: linear, linear, ease;
     transition-timing-function: linear, linear, ease;
     -webkit-overflow-scrolling: touch;
   }
 
-  .sidebar .nav>li.active-pro {
+  .sidebar .nav > li.active-pro {
     position: absolute;
     width: 100%;
     bottom: 10px;
@@ -681,7 +667,6 @@
 
 @include media-breakpoint-down(sm) {
   .main-panel {
-
     .content,
     .nonav-content {
       padding-left: 15px;
@@ -691,13 +676,13 @@
 
   .home-container {
     padding-left: 0px;
-    padding-right: 0px
+    padding-right: 0px;
   }
 }
 
-@include media-breakpoint-between (md, lg) {
+@include media-breakpoint-between(md, lg) {
   .wrapper {
-    @include transitions (0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+    @include transitions(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
   }
 
   .sidebar {
@@ -733,7 +718,6 @@
     }
 
     .sidebar {
-
       @include transition($sidebar-transition);
       @include transform-translate-x(0px);
 
@@ -748,7 +732,6 @@
     }
 
     .menu-on-right {
-
       .main-panel {
         @include transform-translate-x(-$sidebar-width);
       }
@@ -781,11 +764,11 @@
     top: 0;
     right: 0;
     left: $sidebar-width;
-    content: "";
+    content: '';
     z-index: 9999;
     overflow-x: hidden;
     background-color: transparent;
-    @include transitions(0.50s, cubic-bezier(0.685, 0.0473, 0.346, 1));
+    @include transitions(0.5s, cubic-bezier(0.685, 0.0473, 0.346, 1));
   }
 
   .main-panel .content {

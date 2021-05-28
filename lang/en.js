@@ -2,6 +2,7 @@ export default {
   'Group chat': 'Group chat',
   Chat: 'Chat',
   'Create a new group': 'Create a new group',
+  Dashboard: 'Dashboard',
   common: {
     select_lang: 'Language',
     login: 'Login',
@@ -22,12 +23,18 @@ export default {
     friend: 'Friend',
     more: 'More',
     option: 'Option',
-    setting: 'Setting'
+    setting: 'Setting',
+    Logout: 'Logout'
   },
   action: {
     like: 'Like',
     comment: 'Comment',
     share: 'Share'
+  },
+  Post: {
+    Create: 'Write a new post',
+    AddImage: 'Upload an image to your post',
+    DisableInput: "What's on your mind? Tell other people now..."
   },
   create_post: {
     private: 'Private',
@@ -408,5 +415,124 @@ export default {
   TurnOnMicro: 'Turn on micro',
   RefuseCall: 'Refuse call',
   TrendingDescription:
-    'Snest trending chart. A general development or change in a situation or in the way that other user are behaving in Snest'
+    'Snest trending chart. A general development or change in a situation or in the way that other user are behaving in Snest',
+  dashboard: {
+    completedTasks: 'Completed Tasks',
+    dailySales: 'Daily Sales',
+    performance: 'Performance',
+    simpleTable: 'Simple Table',
+    totalShipments: 'Total Shipments',
+    chartCategories: ['Accounts', 'Purchases', 'Sessions'],
+    tasks: 'Tasks({count})',
+    today: 'Today',
+    dropdown: {
+      action: 'Action',
+      anotherAction: 'Another Action',
+      somethingElse: 'Something else'
+    },
+    usersTable: {
+      title: 'Simple Table',
+      columns: ['Name', 'Country', 'City', 'Salary'],
+      data: [
+        {
+          id: 1,
+          name: 'Dakota Rice',
+          salary: '$36.738',
+          country: 'Niger',
+          city: 'Oud-Turnhout'
+        },
+        {
+          id: 2,
+          name: 'Minerva Hooper',
+          salary: '$23,789',
+          country: 'Curaçao',
+          city: 'Sinaai-Waas'
+        },
+        {
+          id: 3,
+          name: 'Sage Rodriguez',
+          salary: '$56,142',
+          country: 'Netherlands',
+          city: 'Baileux'
+        },
+        {
+          id: 4,
+          name: 'Philip Chaney',
+          salary: '$38,735',
+          country: 'Korea, South',
+          city: 'Overland Park'
+        },
+        {
+          id: 5,
+          name: 'Doris Greene',
+          salary: '$63,542',
+          country: 'Malawi',
+          city: 'Feldkirchen in Kärnten'
+        },
+        {
+          id: 6,
+          name: 'Mason Porter',
+          salary: '$98,615',
+          country: 'Chile',
+          city: 'Gloucester'
+        },
+        {
+          id: 7,
+          name: 'Jon Porter',
+          salary: '$78,615',
+          country: 'Portugal',
+          city: 'Gloucester'
+        }
+      ]
+    },
+    taskList: [
+      {
+        title: 'Update the Documentation',
+        description: 'Dwuamish Head, Seattle, WA 8:47 AM',
+        done: false
+      },
+      {
+        title: 'GDPR Compliance',
+        description:
+          'The GDPR is a regulation that requires businesses to protect the personal data and privacy of Europe citizens for transactions that occur within EU member states.',
+        done: true
+      },
+      {
+        title: 'Solve the issues',
+        description:
+          'Fifty percent of all respondents said they would be more likely to shop at a company',
+        done: false
+      },
+      {
+        title: 'Release v2.0.0',
+        description: 'Ra Ave SW, Seattle, WA 98116, SUA 11:19 AM',
+        done: false
+      },
+      {
+        title: 'Export the processed files',
+        description:
+          'The report also shows that consumers will not easily forgive a company once a breach exposing their personal data occurs.',
+        done: false
+      },
+      {
+        title: 'Arival at export process',
+        description: 'Capitol Hill, Seattle, WA 12:34 AM',
+        done: false
+      }
+    ]
+  },
+  sidebar: {
+    title: 'Creative Tim',
+    shortTitle: 'CT',
+    dashboard: 'dashboard',
+    icons: 'Icons',
+    maps: 'Maps',
+    notifications: 'Notifications',
+    userProfile: 'User Profile',
+    userManagement: 'User Management',
+    examples: 'Examples (API)',
+    tableList: 'Table List',
+    typography: 'Typography',
+    rtlSupport: 'RTL Support'
+  }
 }

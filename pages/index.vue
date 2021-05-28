@@ -1,8 +1,6 @@
 <template>
   <div>
-    <transition name="fade">
-      <message-card v-if="thresh" />
-    </transition>
+    <messages-card />
     <nuxt-child />
   </div>
 </template>

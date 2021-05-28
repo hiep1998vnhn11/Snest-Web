@@ -230,9 +230,8 @@ $emoji-text-color: #000;
     width: 6px;
     border-radius: 50%;
     background: transparent;
-    box-shadow: -6px 0 0 0 $emoji-black-color,
-      -36px 0 0 0px $emoji-black-color, 6px 0 0 0 $emoji-black-color,
-      36px 0 0 0px $emoji-black-color;
+    box-shadow: -6px 0 0 0 $emoji-black-color, -36px 0 0 0px $emoji-black-color,
+      6px 0 0 0 $emoji-black-color, 36px 0 0 0px $emoji-black-color;
 
     &:before,
     &:after {
@@ -283,8 +282,8 @@ $emoji-text-color: #000;
       border-radius: 50%;
       bottom: 5px;
       left: calc(50% - 3px);
-      box-shadow: -25px 0 0 0 $emoji-black-color,
-        25px 0 0 0 $emoji-black-color, -35px -2px 30px 10px $emoji-angry-color,
+      box-shadow: -25px 0 0 0 $emoji-black-color, 25px 0 0 0 $emoji-black-color,
+        -35px -2px 30px 10px $emoji-angry-color,
         35px -2px 30px 10px $emoji-angry-color;
     }
   }
@@ -369,9 +368,8 @@ $emoji-text-color: #000;
     width: 6px;
     border-radius: 50%;
     background: transparent;
-    box-shadow: -40px 9px 0 0 $emoji-black-color,
-      -25px 0 0 0 $emoji-black-color, 25px 0 0 0 $emoji-black-color,
-      40px 9px 0 0 $emoji-black-color;
+    box-shadow: -40px 9px 0 0 $emoji-black-color, -25px 0 0 0 $emoji-black-color,
+      25px 0 0 0 $emoji-black-color, 40px 9px 0 0 $emoji-black-color;
 
     &:before,
     &:after {
@@ -439,8 +437,7 @@ $emoji-text-color: #000;
       border-radius: 50%;
       top: 4px;
       left: calc(50% - 3px);
-      box-shadow: -18px 0 0 0 $emoji-black-color,
-        18px 0 0 0 $emoji-black-color;
+      box-shadow: -18px 0 0 0 $emoji-black-color, 18px 0 0 0 $emoji-black-color;
     }
   }
 }
@@ -526,7 +523,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes haha-face {
-
   10%,
   30%,
   50% {
@@ -550,7 +546,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes haha-mouth {
-
   10%,
   30%,
   50% {
@@ -592,7 +587,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes wow-face {
-
   15%,
   25% {
     transform: rotate(20deg) translateX(-25px);
@@ -610,7 +604,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes wow-brow {
-
   15%,
   65% {
     top: 25px;
@@ -624,7 +617,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes wow-mouth {
-
   10%,
   30% {
     width: 20px;
@@ -646,7 +638,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes sad-face {
-
   25%,
   35% {
     top: -15px;
@@ -664,7 +655,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes sad-mouth {
-
   25%,
   35% {
     transform: scale(0.85);
@@ -680,7 +670,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes tear-drop {
-
   0%,
   100% {
     display: block;
@@ -750,7 +739,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes angry-color {
-
   45%,
   60% {
     background-size: 250%;
@@ -764,7 +752,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes angry-face {
-
   35%,
   60% {
     transform: translateX(0) translateY(10px) scale(0.9);
@@ -782,7 +769,6 @@ $emoji-text-color: #000;
 }
 
 @keyframes angry-mouth {
-
   25%,
   50% {
     height: 6px;

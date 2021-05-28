@@ -13,9 +13,13 @@ import SideBar from '@/components/SidebarPlugin'
 // RTL (right to left plugin to support rtl layout). If you don't need support for rtl, remove this plugin
 
 // element ui language configuration
-import lang from 'element-ui/lib/locale/lang/en'
-import locale from 'element-ui/lib/locale'
-locale.use(lang)
+// import lang from 'element-ui/lib/locale/lang/en'
+// import locale from 'element-ui/lib/locale'
+// import { BootstrapVue } from 'bootstrap-vue'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+// locale.use(lang)
 
 Vue.use(SideBar)
 Vue.use(Notifications)
+// Vue.use(BootstrapVue)

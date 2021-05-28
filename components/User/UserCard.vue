@@ -4,13 +4,10 @@
     <p class="card-text"></p>
     <div class="author">
       <div>
-        <img
-          :src="user.info.profile_background_path"
-          class="user-cover-photo"
-        />
+        <img :src="user.profile_background_path" class="user-cover-photo" />
       </div>
       <a href="javascript:void(0)">
-        <img class="avatar" :src="user.info.profile_photo_path" alt="Avatar" />
+        <img class="avatar" :src="user.profile_photo_path" alt="Avatar" />
         <h5 class="title">{{ user.first_name }} {{ user.last_name }}</h5>
       </a>
       <p class="description" v-if="user.info.story">

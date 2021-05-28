@@ -1,67 +1,63 @@
-.footer{
-    padding: 24px 30px 24px 280px;
+.footer {
+  padding: 24px 30px 24px 280px;
 
-    [class*="container-"] {
-      padding: 0;
+  [class*='container-'] {
+    padding: 0;
+  }
+
+  .nav {
+    display: inline-block;
+    float: left;
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-item {
+    display: inline-block;
+
+    &:first-child a {
+      padding-left: 0;
     }
+  }
 
-    .nav{
-        display: inline-block;
-        float: left;
-        margin-bottom: 0;
-        padding: 0;
-        list-style: none;
-    }
+  .nav-link {
+    color: $white;
+    padding: $padding-base-vertical;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    text-decoration: none;
 
-    .nav-item{
-      display: inline-block;
-
-      &:first-child a {
-        padding-left: 0;
-      }
-    }
-
-    .nav-link {
-      color: $white;
-      padding: $padding-base-vertical;
-      font-size: $font-size-sm;
-      text-transform: uppercase;
+    &:hover {
       text-decoration: none;
-
-      &:hover{
-          text-decoration: none;
-      }
     }
+  }
 
+  .copyright {
+    font-size: $font-size-sm;
+    line-height: 1.8;
+    color: $white;
+  }
 
-
-    .copyright{
-        font-size: $font-size-sm;
-        line-height: 1.8;
-        color: $white;
-    }
-
-    &:after{
-        display: table;
-        clear: both;
-        content: " ";
-    }
+  &:after {
+    display: table;
+    clear: both;
+    content: ' ';
+  }
 }
 
-@include media-breakpoint-down(md){
-
+@include media-breakpoint-down(md) {
   .footer {
     padding-left: 30px;
     text-align: center;
 
     .copyright {
-        text-align: right;
+      text-align: right;
     }
   }
-
 }
 
-@include media-breakpoint-up(xl){
+@include media-breakpoint-up(xl) {
   .footer {
     .copyright {
       float: right;
@@ -70,22 +66,22 @@
   }
 }
 
-@include media-breakpoint-down(sm){
+@include media-breakpoint-down(sm) {
   .footer {
     text-align: center;
-      nav {
-        display: block;
-        margin-bottom: 5px;
-        float: none;
-      }
+    nav {
+      display: block;
+      margin-bottom: 5px;
+      float: none;
+    }
 
-      .copyright {
-        text-align: center;
-      }
+    .copyright {
+      text-align: center;
+    }
   }
 }
 
-@include media-breakpoint-down(sm){
+@include media-breakpoint-down(sm) {
   .footer {
     .copyright {
       text-align: center;
@@ -96,7 +92,7 @@
   }
 }
 
-@include media-breakpoint-between (md, lg){
+@include media-breakpoint-between(md, lg) {
   .footer {
     padding-left: 30px !important;
     text-align: center;

@@ -60,13 +60,45 @@
       >
         <template slot="title">
           <div class="notification d-none d-lg-block d-xl-block"></div>
-          <i class="tim-icons icon-sound-wave"></i>
-          <p class="d-lg-none">New Notifications</p>
+          <i class="tim-icons icon-bell-55"></i>
+          <p class="d-lg-none">Notifications</p>
         </template>
         <li class="nav-link">
+          <a href="#" class="nav-item dropdown-item">
+            Mike John responded to your email
+          </a>
+        </li>
+        <li class="nav-link">
+          <a href="#" class="nav-item dropdown-item">You have 5 more tasks</a>
+        </li>
+        <li class="nav-link">
           <a href="#" class="nav-item dropdown-item"
-            >Mike John responded to your email</a
+            >Your friend Michael is in town</a
           >
+        </li>
+        <li class="nav-link">
+          <a href="#" class="nav-item dropdown-item">Another notification</a>
+        </li>
+        <li class="nav-link">
+          <a href="#" class="nav-item dropdown-item">Another one</a>
+        </li>
+      </base-dropdown>
+      <base-dropdown
+        tag="li"
+        menu-on-right
+        title-tag="a"
+        title-classes="nav-link"
+        class="nav-item"
+      >
+        <template slot="title">
+          <div class="notification d-none d-lg-block d-xl-block"></div>
+          <i class="tim-icons icon-chat-33"></i>
+          <p class="d-lg-none">Messages</p>
+        </template>
+        <li class="nav-link">
+          <a href="#" class="nav-item dropdown-item">
+            Mike John responded to your email
+          </a>
         </li>
         <li class="nav-link">
           <a href="#" class="nav-item dropdown-item">You have 5 more tasks</a>
@@ -93,13 +125,11 @@
       >
         <template slot="title">
           <div class="photo">
-            <img :src="currentUser.info.profile_photo_path" />
+            <img :src="currentUser.profile_photo_path" />
           </div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
-          <p class="">
-            <nuxt-link :to="localePath({ name: 'logout' })" class="d-lg-none">
-              {{ $t('common.Logout') }}
-            </nuxt-link>
+          <p class="d-lg-none">
+            {{ currentUser.firstName }}
           </p>
         </template>
         <li class="nav-link">
