@@ -1,5 +1,7 @@
 <template>
-  <post :post="post" :page="true" class="mt-1"></post>
+  <div class="container">
+    <post :post="post" :comments="comments" :page="true" class="mt-1"></post>
+  </div>
 </template>
 
 <script>
@@ -13,7 +15,13 @@ export default {
       : `/v1/guest/post/${postId}/get`
     try {
       const response = await axios.get(url)
-      return { post: response.data.data }
+      const commentsResponse = await axios.get(
+        `/v1/user/post/${postId}/get_comment`
+      )
+      return {
+        post: response.data.data,
+        comments: commentsResponse.data.data
+      }
     } catch (err) {
       error(err)
     }

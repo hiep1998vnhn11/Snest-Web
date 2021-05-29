@@ -1,0 +1,23 @@
+.comment-emoji-container-cover {
+  position: relative;
+  .emoji--container {
+    display: none;
+  }
+  .comment-emoji-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.3);
+  }
+
+  &:hover {
+    .emoji--container {
+      display: flex;
+      background: whitesmoke;
+      z-index: 1090;
+    }
+  }
+}
