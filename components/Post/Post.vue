@@ -85,16 +85,14 @@ export default {
     post: {
       type: Object,
       default() {
-        return {
-          user: {
-            profile_photo_path: '/img/default-avatar.png'
-          }
-        }
+        return {}
       }
     },
     comments: {
       type: Array,
-      default: []
+      default() {
+        return []
+      }
     }
   },
   data() {

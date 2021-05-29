@@ -1,169 +1,65 @@
 <template>
-  <v-row>
-    <v-col cols="12" md="4">
-      <v-skeleton-loader
-        v-if="loadingUser"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
-      <div v-else>
-        <base-user-info v-if="!!user && !!currentUser" :user="user" />
-        <base-user-friend v-if="user != null" :user="user"></base-user-friend>
+  <div>
+    <post-create
+      v-if="user && currentUser && user.id === currentUser.id"
+      class="mt-3"
+    ></post-create>
+    <card class="card-post-filter">
+      <div class="card-post-filter-title">
+        {{ $t('Posts') }}
+        <base-button @click="filterDialog = true" type="neutral" icon round>
+          {{ $t('profile.Filters') }}
+        </base-button>
+        <v-btn class="text-capitalize danger--text rounded-lg" outlined text>
+          {{ $t('profile.ManagePosts') }}
+        </v-btn>
       </div>
-    </v-col>
-
-    <v-col cols="12" md="8">
-      <v-skeleton-loader
-        v-if="loadingUser"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
-      <post-create
-        v-else-if="!!user && !!currentUser && user.id === currentUser.id"
-        class="mt-3"
-      ></post-create>
-
-      <v-skeleton-loader
-        v-if="loadingUser"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
-      <v-card
-        v-else
-        :class="`mt-3 rounded-lg hover-up-half elevation-${elevationFilter}`"
-        tile
-        @mouseleave="hoverFilter = false"
-        @mouseenter="hoverFilter = true"
-        outlined
-      >
-        <v-card-title class="font-weight-bold">
-          {{ $t('Posts') }}
-          <v-spacer />
+      <div class="row no-gutters pa-1">
+        <div class="col-6">
           <v-btn
-            class="text-capitalize mr-2 primary--text rounded-lg"
-            outlined
+            class="text-capitalize"
+            block
             text
-            @click="filterDialog = true"
+            :to="localePath({ name: 'index-user-url' })"
+            active-class="primary--text"
           >
-            <v-icon class="ml-n3 mr-2">mdi-filter</v-icon>
-            {{ $t('profile.Filters') }}
+            <v-icon class="mr-3">mdi-view-list</v-icon>
+            {{ $t('profile.ListView') }}
           </v-btn>
-          <v-btn class="text-capitalize danger--text rounded-lg" outlined text>
-            <v-icon class="ml-n3 mr-2">mdi-cog</v-icon>
-            {{ $t('profile.ManagePosts') }}
+        </div>
+        <div class="col-6">
+          <v-btn class="text-capitalize" block text>
+            <v-icon class="mr-3">mdi-view-grid</v-icon>
+            {{ $t('profile.GridView') }}
           </v-btn>
-        </v-card-title>
-        <v-divider />
-        <v-row no-gutters class="pa-1">
-          <v-col cols="6">
-            <v-btn
-              class="text-capitalize"
-              block
-              text
-              :to="localePath({ name: 'index-user-url' })"
-              active-class="primary--text"
-            >
-              <v-icon class="mr-3">mdi-view-list</v-icon>
-              {{ $t('profile.ListView') }}
-            </v-btn>
-          </v-col>
-          <v-col cols="6">
-            <v-btn class="text-capitalize" block text>
-              <v-icon class="mr-3">mdi-view-grid</v-icon>
-              {{ $t('profile.GridView') }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card>
-      <div v-if="userPost.length">
-        <post-component
-          class="mt-3"
-          v-for="(post, index) in userPost"
-          :key="`user-post-${post.id}`"
-          :post="post"
-          :index="index"
-          @onLike="onLike"
-          @onSubComment="onComment(index, post)"
-          @onComment="onComment(index, post)"
-        ></post-component>
+        </div>
       </div>
-      <observer @intersect="intersected"></observer>
-      <v-skeleton-loader
-        v-if="loading"
-        class="mx-auto mt-3"
-        type="card"
-      ></v-skeleton-loader>
-    </v-col>
+    </card>
+    <div class="test-loading">
+      <loading-chasing :loading="true"></loading-chasing>
+    </div>
 
-    <v-dialog width="600" v-model="filterDialog">
-      <v-card>
-        <v-card-title class="font-weight-bold">
-          <v-spacer />
-          {{ $t('profile.PostFilters') }}
-          <v-spacer />
-          <v-btn icon class="pink lighten-5" @click="filterDialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-divider />
-        <v-container class="text-body-1">
-          <div class="font-weight-bold">
-            {{ $t('profile.UseFilters') }}
-          </div>
-          <div class="text-caption">
-            {{ $t('profile.UseFiltersCaption') }}
-          </div>
-          <v-row>
-            <v-col cols="3" class="my-auto">
-              {{ $t('profile.GoTo') }}
-            </v-col>
-            <v-col cols="3">
-              <v-select v-model="year" :items="years" dense></v-select>
-            </v-col>
-            <v-col cols="3" v-show="year">
-              <v-select v-model="month" :items="months" dense></v-select>
-            </v-col>
-            <v-col cols="3" v-show="year && month">
-              <v-select v-model="day" :items="days" dense></v-select>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="3" class="my-auto">
-              {{ $t('profile.Privacy') }}
-            </v-col>
-            <v-col cols="3">
-              <v-select v-model="privacy" :items="privacys" dense></v-select>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn class="text-capitalize pink lighten-5" text @click="onClear">
-            {{ $t('Clear') }}
-          </v-btn>
-          <v-btn
-            class="text-capitalize primary"
-            text
-            @click="filterDialog = false"
-          >
-            {{ $t('Done') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-row>
+    <loading-chasing :loading="loading"></loading-chasing>
+    <div v-if="posts.length">
+      <post
+        :post="post"
+        v-for="post in posts"
+        :key="`user-param-post-${post.id}`"
+      ></post>
+    </div>
+    <observer @intersect="intersected"></observer>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import axios from 'axios'
 export default {
-  props: ['user', 'loadingUser'],
   data() {
     return {
       loading: false,
       error: null,
-      posts: null,
+      posts: [],
       observer: null,
       page: 1,
       filterDialog: false,
@@ -265,8 +161,21 @@ export default {
       }
       this.loading = false
     },
+    async fetchPost(page = 1, url = '') {
+      this.loading = true
+      try {
+        const { data } = await axios.get(
+          `/v1/user/${url}/get_post?page=${page}&limit=5`
+        )
+        this.posts = [...this.posts, ...data.data.data]
+        this.page = page + 1
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
+    },
     intersected() {
-      this.fetchData()
+      // this.fetchData()
     },
     onClear() {
       this.year = this.postedBy = this.privacy = null
@@ -286,9 +195,12 @@ export default {
       this.$store.commit('post/COMMENTED_USER_POST', index)
     }
   },
+  created() {
+    this.fetchPost(1, this.$route.params.url)
+  },
   computed: {
     ...mapGetters('post', ['userPost']),
-    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('user', ['currentUser', 'user']),
     days() {
       switch (this.month) {
         case 2:
@@ -314,13 +226,12 @@ export default {
     elevationFriend() {
       return this.hoverFriend ? 12 : 3
     }
-  },
-  watch: {
-    '$route.params': function() {
-      this.setPage()
-    }
   }
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.test-loading {
+  position: relative;
+}
+</style>

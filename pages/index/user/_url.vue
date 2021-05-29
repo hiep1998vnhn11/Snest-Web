@@ -2,14 +2,16 @@
   <div class="">
     <div class="container">
       <div class="row">
-        <div class="col-md-8"><user-edit :user="user"> </user-edit></div>
+        <div class="col-md-8">
+          <user-edit :user="user"> </user-edit>
+          <nuxt-child></nuxt-child>
+        </div>
         <div class="col-md-4">
           <user-card :user="user"> </user-card>
           <user-intro :user="user" />
         </div>
       </div>
     </div>
-    <nuxt-child :user="paramUser" :loadingUser="loading"></nuxt-child>
   </div>
 </template>
 
@@ -26,17 +28,14 @@ export default {
   },
   head() {
     return {
-      title: this.loading
-        ? 'Loading |'
-        : this.paramUser
-        ? `${this.paramUser.name} |`
-        : 'Loading User |'
+      title: this.user?.full_name || 'Loading'
     }
   },
   data() {
     return {
-      paramUser: null,
-      loading: false
+      loading: false,
+      page: 1,
+      posts: []
     }
   },
   computed: mapGetters('user', ['isLoggedIn', 'user', 'currentUser']),
@@ -61,7 +60,7 @@ export default {
       }
       this.loading = false
     },
-    async fetchPost() {},
+
     changeStatusFriend(e) {
       console.log(e)
       this.paramUser.myRElation = e

@@ -100,6 +100,9 @@ export default {
       this.story = ''
       this.editStory = false
     },
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
     async handleChangeStory() {
       this.loading = true
       try {
