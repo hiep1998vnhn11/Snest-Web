@@ -40,7 +40,7 @@ export default {
     disabled: Boolean,
     type: {
       type: String,
-      default: 'default',
+      default: 'neutral',
       description: 'Button type (primary|secondary|danger etc)'
     },
     nativeType: {

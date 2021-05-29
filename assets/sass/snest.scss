@@ -21,3 +21,28 @@
     }
   }
 }
+
+.user-name-popover {
+  position: relative;
+  img {
+    width: 100%;
+    border-radius: 9999px;
+    border: solid 1px rgba(1, 1, 1, 0.2);
+  }
+
+  .user-name-popover-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #000;
+  }
+
+  .user-name-popover-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.user-name {
+  color: #000;
+  font-weight: bold;
+}

@@ -12,7 +12,11 @@
       <div class="post-comment-container">
         <div class="post-comment-right">
           <div class="post-comment-name">
-            {{ comment.user.full_name }}
+            <user-name
+              :key="comment.user.url"
+              :user_url="comment.user.url"
+              :user_name="comment.user.full_name"
+            ></user-name>
           </div>
           <div class="post-comment-content">
             <div class="post-comment-button">
@@ -127,6 +131,7 @@ export default {
     border-radius: 15px;
     border: solid 1px rgba(1, 1, 1, 0.1);
     .post-comment-name {
+      font-weight: bold;
     }
 
     .post-comment-content {

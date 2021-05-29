@@ -2,8 +2,6 @@
   <div class="">
     <div class="container">
       <div class="row">
-        {{ user }}
-        {{ $route.name }}
         <div class="col-md-8"><user-edit :user="user"> </user-edit></div>
         <div class="col-md-4">
           <user-card :user="user"> </user-card>
@@ -63,6 +61,7 @@ export default {
       }
       this.loading = false
     },
+    async fetchPost() {},
     changeStatusFriend(e) {
       console.log(e)
       this.paramUser.myRElation = e

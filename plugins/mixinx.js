@@ -9,7 +9,7 @@ Vue.mixin({
         icon: icon,
         horizontalAlign: 'right',
         verticalAlign: 'top',
-        type: 'error'
+        type: 'danger'
       })
     },
 

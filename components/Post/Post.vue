@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ post.user }}
     <card class="post-card">
       <div class="post-card-header">
         <base-avatar
@@ -14,7 +13,10 @@
         <div class="post-card-header-right">
           <div>
             <div class="post-card-header-name">
-              {{ post.user.full_name }}
+              <user-name
+                :user_url="post.user.url"
+                :user_name="post.user.full_name"
+              ></user-name>
             </div>
             <p>
               {{ post.created_at | relativeTime }}
@@ -30,6 +32,15 @@
       <div class="post-card-content">
         <div>
           {{ post.content }}
+          <div class="row">
+            <div
+              class="col"
+              v-for="image in post.images"
+              :key="`post-image-${image.id}`"
+            >
+              <img :src="image.path" />
+            </div>
+          </div>
         </div>
       </div>
       <hr />
@@ -61,9 +72,7 @@
         <div v-for="comment in comments" :key="`comment-${comment.id}`">
           <post-comment :comment="comment"></post-comment>
         </div>
-        <div class="post-card-comment">
-          123
-        </div>
+        <div class="post-card-comment"></div>
       </div>
     </card>
   </div>

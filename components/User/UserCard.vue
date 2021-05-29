@@ -7,7 +7,6 @@
         <img :src="user.profile_background_path" class="user-cover-photo" />
       </div>
       <a href="javascript:void(0)">
-        <img :src="user.profile_photo_path" />
         <img class="avatar" :src="user.profile_photo_path" alt="Avatar" />
         <h5 class="title">{{ user.first_name }} {{ user.last_name }}</h5>
       </a>

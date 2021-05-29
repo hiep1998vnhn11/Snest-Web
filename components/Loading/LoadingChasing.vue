@@ -1,10 +1,12 @@
 <template>
-  <div class="chasing-loading-container" v-if="loading">
-    <div class="chasing-spinner">
-      <div class="dot1"></div>
-      <div class="dot2"></div>
+  <slide-y-down-transition>
+    <div class="chasing-loading-container" v-if="loading">
+      <div class="chasing-spinner">
+        <div class="dot1"></div>
+        <div class="dot2"></div>
+      </div>
     </div>
-  </div>
+  </slide-y-down-transition>
 </template>
 
 <script>
