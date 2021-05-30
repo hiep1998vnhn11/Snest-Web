@@ -23,8 +23,6 @@ Vue.component('slide-y-down-transition', SlideYDownTransition)
 Vue.component('zoom-center-transition', ZoomCenterTransition)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: 'dist/error.png',
-  loading: 'dist/loading.gif',
   attempt: 1
 })
 Vue.component(Input.name, Input)

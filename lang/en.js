@@ -183,6 +183,7 @@ export default {
   Posts: 'Posts',
   All: 'All',
   More: 'More',
+  'Search for new Message': 'Search for new Message',
   profile: {
     Posts: 'Posts',
     About: 'About',

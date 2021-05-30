@@ -125,9 +125,8 @@
         </div>
       </div>
       <div class="container">
+        <slider></slider>
         <post-create :loading="loading_user"></post-create>
-
-        123
       </div>
       <div class="mt-3" v-if="posts.length">
         <post

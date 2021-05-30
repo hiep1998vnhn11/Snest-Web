@@ -160,8 +160,8 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      showNew: true,
-      showCard: true,
+      showNew: false,
+      showCard: false,
       search: '',
       message: '',
       suggested: [],
