@@ -2,47 +2,103 @@
   <div>
     <div class="messages-card-container">
       <zoom-center-transition :duration="200" mode="out-in">
-        <card class="messages-card" v-if="showNew">
+        <div class="messages-card new" v-if="showNew">
           <div class="messages-card-title">
             <h5 class="title">
-              Card header
+              {{ $t('Search for new Message') }}
             </h5>
-            <i
-              class="fas fa-times"
-              style="cursor:pointer"
-              @click="showNew = false"
-            ></i>
+            <base-button
+              class="btn-danger"
+              icon
+              size="sm"
+              round
+              @click="showNew = !showNew"
+            >
+              <i class="tim-icons icon-simple-remove"></i>
+            </base-button>
           </div>
-          {{ $t('To:') }}
-          <base-input v-model="search"> </base-input>
-          <hr />
-          <div class="messages-card-content">
-            te
+          <div class="messages-card-footer new">
+            {{ $t('To:') }}
+            <div class="messages-card-textarea-container">
+              <base-input v-model="search"> </base-input>
+            </div>
           </div>
-        </card>
+          <perfect-scrollbar>
+            <div class="messages-card-content">
+              <loading-chasing :loading="true"></loading-chasing>
+            </div>
+          </perfect-scrollbar>
+        </div>
       </zoom-center-transition>
 
       <zoom-center-transition :duration="200" mode="out-in">
-        <card class="messages-card" v-show="false">
+        <div class="messages-card" v-if="showCard">
           <div class="messages-card-title">
             <div class="title">
               <base-avatar
                 :src="currentUser.profile_photo_path"
                 outlined
                 alt="avatar"
+                status
+                :online="currentUser.online_status.status"
               >
               </base-avatar>
-              {{ currentUser.firstName }} {{ currentUser.lastName }}
+              <div class="name ml-2">
+                {{ currentUser.full_name }}
+                <div class="time" v-if="currentUser.online_status.status">
+                  {{ $t('Active') }}
+                </div>
+                <div class="time" v-else>
+                  {{ $t('Actived') }}
+                  {{ currentUser.online_status.time | offlineTime }}
+                </div>
+              </div>
             </div>
-            <i
-              class="fas fa-times"
-              style="cursor:pointer"
-              @click="showNew = false"
-            ></i>
+            <div>
+              <base-button
+                class="btn-primary"
+                icon
+                size="sm"
+                round
+                @click="showCard = !showCard"
+              >
+                <i class="tim-icons icon-video-66"></i>
+              </base-button>
+              <base-button
+                class="btn-success"
+                size="sm"
+                icon
+                round
+                @click="showCard = !showCard"
+              >
+                <i class="fas fa-phone"></i>
+              </base-button>
+              <base-button
+                class="btn-danger"
+                icon
+                size="sm"
+                round
+                @click="showCard = !showCard"
+              >
+                <i class="tim-icons icon-simple-remove"></i>
+              </base-button>
+            </div>
           </div>
-          <div class="messages-card-content">
-            te
-          </div>
+          <perfect-scrollbar>
+            <div class="messages-card-content">
+              <div
+                v-for="message in messagesList"
+                :key="`message-row-card-${message.id}`"
+              >
+                <messages-row
+                  :message="message"
+                  :isCurrent="true"
+                  :isCard="true"
+                ></messages-row>
+              </div>
+            </div>
+          </perfect-scrollbar>
+
           <div class="messages-card-footer">
             <base-button
               class="btn-primary"
@@ -83,7 +139,7 @@
               <i class="fas fa-paper-plane"></i>
             </base-button>
           </div>
-        </card>
+        </div>
       </zoom-center-transition>
     </div>
     <base-button
@@ -91,7 +147,7 @@
       icon
       round
       id="messages-button-create"
-      @click="onSendMessage"
+      @click="showNew = !showNew"
     >
       <i class="fas fa-edit"></i>
     </base-button>
@@ -100,18 +156,83 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { ZoomCenterTransition } from 'vue2-transitions'
 
 export default {
-  components: {
-    ZoomCenterTransition
-  },
   data() {
     return {
-      showNew: false,
+      showNew: true,
+      showCard: true,
       search: '',
       message: '',
-      suggested: []
+      suggested: [],
+      messagesList: [
+        {
+          id: 1,
+          user_id: 1,
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello'
+        },
+        {
+          id: 2,
+          user_id: 1,
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello 11'
+        },
+        {
+          id: 6,
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello'
+        },
+        {
+          id: 3,
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello 11'
+        },
+        {
+          id: 5,
+          user_id: 1,
+
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello'
+        },
+        {
+          id: 4,
+          user_id: 1,
+
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello 11'
+        }
+      ]
     }
   },
   computed: {
@@ -133,7 +254,6 @@ export default {
   display: flex;
   bottom: 20px;
   right: 60px;
-  background: green;
   height: 500px;
 
   .messages-card {
@@ -144,8 +264,24 @@ export default {
     border: 1px solid;
     border-color: rgba(1, 1, 1, 0.1);
     border-radius: 10px;
-    background: orange;
     position: relative;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.5s ease-in-out;
+    background: #fff;
+    & > .ps {
+      height: 400px;
+      margin-top: 50px;
+    }
+    &.new {
+      & > .ps {
+        height: 400px;
+        margin-top: 100px;
+      }
+    }
+    &:hover {
+      transition: 0.5s ease-in-out;
+      transform: translateY(-10px);
+    }
 
     .messages-card-title {
       position: absolute;
@@ -154,26 +290,24 @@ export default {
       left: 0;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       height: 50px;
       padding: 5px 10px 5px;
-
+      width: 100%;
+      border-bottom: solid 1px rgba(1, 1, 1, 0.1);
+      z-index: 1050;
       .title {
-        font-size: 1.1rem;
+        display: flex;
+        font-weight: bold;
+        .time {
+          font-weight: 100;
+          font-size: 0.8rem;
+        }
       }
     }
-    .messages-card-content {
-      position: absolute;
-      overflow-y: hidden;
-      left: 0;
-      top: 50px;
-      width: 100%;
-      height: 400px;
-      background: red;
-      padding: 5px;
 
-      &:hover {
-        overflow-y: auto;
-      }
+    .messages-card-content {
+      padding: 5px 5px 5px 5px;
     }
 
     .messages-card-footer {
@@ -185,9 +319,16 @@ export default {
       display: flex;
       padding: 5px 10px 5px;
       justify-content: flex-end;
+      border-top: solid 1px rgba(0, 0, 0, 0.1);
+      &.new {
+        bottom: auto;
+        top: 50px;
+        border: none;
+      }
       .messages-card-textarea-container {
         position: relative;
-        width: 200px;
+        flex: 1;
+        margin-left: 10px;
         .messages-card-textarea {
           border: 1px solid #ccc;
           font-family: inherit;

@@ -1,7 +1,8 @@
 <template>
   <div class="message-row" :class="{ 'is-current': isCurrent }">
     <div>
-      <base-avatar outlined :size="35" alt="avt"> </base-avatar>
+      <base-avatar outlined :size="35" alt="avt" v-if="!isCurrent">
+      </base-avatar>
     </div>
     <div class="message-row-content-cover">
       <div class="message-row-content-container">
@@ -13,6 +14,7 @@
             v-lazy="
               'https://i.pinimg.com/originals/d4/bc/c4/d4bcc46e371e194b20854acd1ba3a86b.jpg'
             "
+            :class="{ 'is-card': isCard }"
           />
           <div
             class="message-row-content-button"
@@ -46,6 +48,10 @@ export default {
       }
     },
     isCurrent: {
+      type: Boolean,
+      default: false
+    },
+    isCard: {
       type: Boolean,
       default: false
     }
@@ -91,6 +97,9 @@ export default {
           max-width: 300px;
           margin-top: 10px;
           border: solid 1px rgba(0, 0, 0, 0.1);
+          &.is-card {
+            max-width: 100%;
+          }
         }
 
         &.is-current {
