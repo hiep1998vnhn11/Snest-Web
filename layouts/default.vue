@@ -65,17 +65,10 @@ export default {
     },
     initScrollbar() {
       let docClasses = document.body.classList
-      let isWindows = navigator.platform.startsWith('Win')
-      if (isWindows) {
-        // if we are on windows OS we activate the perfectScrollbar function
-        initScrollbar('sidebar')
-        initScrollbar('main-panel')
-        initScrollbar('sidebar-wrapper')
-
-        docClasses.add('perfect-scrollbar-on')
-      } else {
-        docClasses.add('perfect-scrollbar-off')
-      }
+      initScrollbar('sidebar')
+      initScrollbar('main-panel')
+      initScrollbar('sidebar-wrapper')
+      docClasses.add('perfect-scrollbar-on')
     }
   },
   mounted() {

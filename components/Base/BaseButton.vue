@@ -78,4 +78,8 @@ export default {
     padding: 0 3px;
   }
 }
+
+.btn-fas {
+  font-size: 1.2rem;
+}
 </style>

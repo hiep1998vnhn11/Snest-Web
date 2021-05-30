@@ -1,0 +1,221 @@
+$border-radius: 999px;
+$queue-playlist-width: 350px;
+$top-height: 150px;
+$message-left-width-m: 80px;
+$message-left-width: 350px;
+$message-right-width: 350px;
+$additional-width: $message-right-width + $message-left-width;
+$message-navbar-height: 70px;
+.message-layout {
+  position: relative;
+  .content {
+    margin-left: $message-left-width;
+    // margin-top: $message-navbar-height;
+    width: calc(100% - #{$additional-width});
+    transition: width 0.3s;
+    & > .ps {
+      height: 100vh;
+    }
+    @include media-breakpoint-down(md) {
+      margin-left: $message-left-width-m !important;
+      width: calc(100% - #{$message-left-width-m}) !important;
+    }
+    // @include media-breakpoint-up(lg) {
+    //   width: calc(100% - #{$message-left-width}) !important;
+    // }
+    min-width: 720px;
+  }
+  .wrapper {
+    padding: $message-navbar-height 15px $message-navbar-height 15px;
+    // @include media-breakpoint-down(md) {
+    //   padding: 20px 38px 100px 38px !important;
+    // }
+  }
+}
+
+.message-sidebar-right {
+  aside {
+    width: $message-right-width;
+    height: 100vh;
+    right: 0;
+    top: 0;
+    position: fixed;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    background: transparent;
+    transition: right 0.3s;
+    z-index: 1050;
+    & > .ps {
+      height: 100vh;
+    }
+    // overflow-y: auto;
+    &.fixed {
+      right: 0 !important;
+    }
+    .header {
+      width: 100%;
+      height: $top-height;
+      padding: 10px;
+      z-index: 1111;
+      &.is-sticky {
+        background: var(--background);
+        box-shadow: 0 3px 5px var(--sticky-header-box-shadow);
+        position: sticky;
+        top: 0;
+      }
+      .avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .logo {
+        text-align: center;
+        margin-top: 10px;
+      }
+      .tab {
+        flex: 1 1;
+        display: flex;
+        background: var(--alpha-bg);
+        padding: 3px;
+        border-radius: $border-radius;
+        & > button {
+          border-radius: $border-radius;
+          flex: 1;
+          background: transparent;
+          font-size: 12px;
+          flex-grow: 1;
+          padding: 8px 5px;
+          font-weight: 500;
+          &.current {
+            color: var(--primary-text);
+            background: var(--tab-active);
+          }
+        }
+      }
+      .others {
+        button {
+          margin-left: 4px;
+          line-height: 1;
+          padding: 6px 8px;
+          i {
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 1.5px;
+          }
+        }
+      }
+    }
+  }
+  .playlist {
+    padding: 8px 8px 100px 8px;
+  }
+  .next-up {
+    margin-top: 15px;
+    .text-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .from {
+      color: var(--text-secondary);
+    }
+    .list {
+      margin-top: 10px;
+    }
+  }
+}
+
+.message-sidebar-left {
+  aside {
+    width: $queue-playlist-width;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    position: fixed;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    background: transparent;
+    transition: left 0.3s;
+    z-index: 1111;
+    & > .ps {
+      height: 100vh;
+    }
+    // overflow-y: auto;
+    &.fixed {
+      right: 0 !important;
+    }
+    .header {
+      width: 100%;
+      padding: 80px 10px 0px 10px;
+      z-index: 1111;
+      background: whitesmoke;
+      &.is-sticky {
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 0;
+      }
+      .logo {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        padding: 15px;
+      }
+
+      .title {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .tab {
+        flex: 1 1;
+        display: flex;
+        background: var(--alpha-bg);
+        padding: 3px;
+        border-radius: $border-radius;
+        & > button {
+          border-radius: $border-radius;
+          flex: 1;
+          background: transparent;
+          font-size: 12px;
+          flex-grow: 1;
+          padding: 8px 5px;
+          font-weight: 500;
+          &.current {
+            color: var(--primary-text);
+            background: var(--tab-active);
+          }
+        }
+      }
+      .others {
+        button {
+          margin-left: 4px;
+          line-height: 1;
+          padding: 6px 8px;
+          i {
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 1.5px;
+          }
+        }
+      }
+    }
+  }
+  .playlist {
+    padding: 12px;
+  }
+  .next-up {
+    margin-top: 15px;
+    .text-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .from {
+      color: var(--text-secondary);
+    }
+    .list {
+      margin-top: 10px;
+    }
+  }
+}

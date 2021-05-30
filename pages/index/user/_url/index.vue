@@ -35,10 +35,6 @@
         </div>
       </div>
     </card>
-    <div class="test-loading">
-      <loading-chasing :loading="true"></loading-chasing>
-    </div>
-
     <loading-chasing :loading="loading"></loading-chasing>
     <div v-if="posts.length">
       <post
@@ -47,7 +43,12 @@
         :key="`user-param-post-${post.id}`"
       ></post>
     </div>
-    <observer @intersect="intersected"></observer>
+    <slide-y-down-transition>
+      <observer v-if="!lastPost" @intersect="intersected"></observer>
+      <div v-else>
+        {{ $t('NotHavePostToFind') }}
+      </div>
+    </slide-y-down-transition>
   </div>
 </template>
 
@@ -57,6 +58,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      lastPost: false,
       loading: false,
       error: null,
       posts: [],
@@ -165,17 +167,21 @@ export default {
       this.loading = true
       try {
         const { data } = await axios.get(
-          `/v1/user/${url}/get_post?page=${page}&limit=5`
+          `/v1/user/${url}/get_post?page=${page}&limit=2`
         )
-        this.posts = [...this.posts, ...data.data.data]
-        this.page = page + 1
+        if (data.data.data.length) {
+          this.posts = [...this.posts, ...data.data.data]
+          this.page = page + 1
+        } else {
+          this.lastPost = true
+        }
       } catch (err) {
         this.toastError(err.toString())
       }
       this.loading = false
     },
     intersected() {
-      // this.fetchData()
+      this.fetchPost(this.page, this.$route.params.url)
     },
     onClear() {
       this.year = this.postedBy = this.privacy = null

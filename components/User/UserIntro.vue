@@ -27,16 +27,11 @@ export default {
       default: () => {}
     }
   },
-  data: {
-    tabIndex: 1
+  data() {
+    return {
+      tabIndex: 1
+    }
   }
 }
 </script>
-<style lang="scss">
-.user-cover-photo {
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-}
-</style>
+<style lang="scss"></style>

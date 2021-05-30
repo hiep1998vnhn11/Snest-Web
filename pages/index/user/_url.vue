@@ -3,12 +3,13 @@
     <div class="container">
       <div class="row">
         <div class="col-md-8">
-          <user-edit :user="user"> </user-edit>
+          <user-card :user="user"> </user-card>
+          <!-- <user-edit :user="user"> </user-edit> -->
           <nuxt-child></nuxt-child>
         </div>
         <div class="col-md-4">
-          <user-card :user="user"> </user-card>
           <user-intro :user="user" />
+          <user-friend :user="user" />
         </div>
       </div>
     </div>

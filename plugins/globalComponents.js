@@ -10,11 +10,23 @@ import {
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions'
+import VueLazyload from 'vue-lazyload'
+import 'perfect-scrollbar/css/perfect-scrollbar.css'
+import PerfectScrollbar from 'vue2-perfect-scrollbar'
+import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
+
+Vue.use(PerfectScrollbar)
 /**
  * You can register global components here and use them as a plugin in your main Vue instance
  */
 Vue.component('slide-y-down-transition', SlideYDownTransition)
 Vue.component('zoom-center-transition', ZoomCenterTransition)
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: 'dist/error.png',
+  loading: 'dist/loading.gif',
+  attempt: 1
+})
 Vue.component(Input.name, Input)
 Vue.component(InputNumber.name, InputNumber)
 Vue.use(Dialog)

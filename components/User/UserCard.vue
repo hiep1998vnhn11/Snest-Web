@@ -1,11 +1,11 @@
 <template>
   <card class="card-user">
     <loading-chasing :loading="loading"></loading-chasing>
+    <div class="user-cover-photo">
+      <img v-lazy="user.info.profile_background_path" />
+    </div>
     <p class="card-text"></p>
     <div class="author">
-      <div>
-        <img :src="user.profile_background_path" class="user-cover-photo" />
-      </div>
       <a href="javascript:void(0)">
         <img class="avatar" :src="user.profile_photo_path" alt="Avatar" />
         <h5 class="title">{{ user.first_name }} {{ user.last_name }}</h5>
@@ -47,14 +47,11 @@
       </slide-y-down-transition>
     </div>
     <div slot="footer" class="button-container">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane :label="$t('Profile.Posts')" name="Posts"></el-tab-pane>
-        <el-tab-pane :label="$t('Profile.About')" name="About"></el-tab-pane>
-        <el-tab-pane
-          :label="$t('Profile.Friends')"
-          name="Friends"
-        ></el-tab-pane>
-        <el-tab-pane :label="$t('Profile.More')" name="More"></el-tab-pane>
+      <el-tabs v-model="tab" @tab-click="handleClick">
+        <el-tab-pane :label="$t('Posts')" name=""></el-tab-pane>
+        <el-tab-pane :label="$t('About')" name="about"></el-tab-pane>
+        <el-tab-pane :label="$t('Friends')" name="friends"></el-tab-pane>
+        <el-tab-pane :label="$t('More')" name="More"></el-tab-pane>
       </el-tabs>
     </div>
   </card>
@@ -62,11 +59,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import axios from 'axios'
-import { SlideYDownTransition } from 'vue2-transitions'
 export default {
-  components: {
-    SlideYDownTransition
-  },
   props: {
     user: {
       type: Object,
@@ -80,7 +73,7 @@ export default {
       displayStory: '',
       story: '',
       loading: false,
-      activeName: 'Posts'
+      tab: ''
     }
   },
   mounted() {},
@@ -132,17 +125,6 @@ export default {
       }
       this.story = ''
       this.loading = this.editStory = false
-    },
-    test() {
-      this.$notify({
-        message:
-          'Welcome to <b>Vue Black Dashboard Pro</b> - a beautiful resource for every web developer',
-        timeout: 3000,
-        icon: 'tim-icons icon-bell-55',
-        horizontalAlign: 'right',
-        verticalAlign: 'top',
-        type: 'danger'
-      })
     }
   }
 }
@@ -153,5 +135,10 @@ export default {
   width: 100%;
   top: 0;
   left: 0;
+
+  img {
+    max-height: 400px;
+    width: 100%;
+  }
 }
 </style>
