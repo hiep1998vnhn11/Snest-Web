@@ -1,6 +1,6 @@
 <template>
   <div class="message-action">
-    <nav :class="{ 'is-sticky': isSticky }">
+    <header>
       <div class="navigation">
         <base-button round icon class="btn-fas" size="sm">
           <i class="fas fa-plus-circle"></i>
@@ -17,7 +17,7 @@
           <i class="tim-icons icon-send"></i>
         </base-button>
       </div>
-    </nav>
+    </header>
   </div>
 </template>
 <script>
@@ -37,26 +37,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-$top-height: 70px;
 .message-action {
-  nav {
+  header {
     padding: 0 20px;
-    height: $top-height;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
+    position: absolute;
     bottom: 0;
     left: 0;
-    position: absolute;
-    width: 100%;
     z-index: 1112;
     background: whitesmoke;
     border-top: solid 1px rgba(0, 0, 0, 0.1);
-    &.is-sticky {
-      background: var(--background);
-      box-shadow: 0 3px 5px var(--sticky-header-box-shadow);
-    }
+    width: 100%;
     .navigation {
       display: flex;
       align-items: center;

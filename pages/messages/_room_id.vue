@@ -1,12 +1,13 @@
 <template>
   <div>
-    <messages-action></messages-action>
     <messages-sidebar-right :isShowSidebar="isShowSidebar" />
     <div class="message-container" ref="messagePageContainer">
-      <div v-for="message in messages" :key="`message-row-${message.id}`">
-        <messages-row :message="message"></messages-row>
+      <div v-for="message in messagesList" :key="`message-row-${message.id}`">
+        <messages-row
+          :message="message"
+          :isCurrent="currentUserId === message.user_id"
+        ></messages-row>
       </div>
-      <div>321</div>
     </div>
   </div>
 </template>
@@ -28,9 +29,11 @@ export default {
       search: '',
       showEmoji: false,
       isShowSidebar: true,
-      messages: [
+      currentUserId: null,
+      messagesList: [
         {
           id: 1,
+          user_id: 1,
           full_name: 'Hiep',
           profile_photo_path:
             'http://localhost:8000/storage/user/default-user-avatar.jpeg',
@@ -40,7 +43,18 @@ export default {
           content: 'Hello'
         },
         {
-          id: 1,
+          id: 2,
+          user_id: 1,
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello 11'
+        },
+        {
+          id: 6,
           full_name: 'Hiep',
           profile_photo_path:
             'http://localhost:8000/storage/user/default-user-avatar.jpeg',
@@ -48,6 +62,40 @@ export default {
             status: true
           },
           content: 'Hello'
+        },
+        {
+          id: 3,
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello 11'
+        },
+        {
+          id: 5,
+          user_id: 1,
+
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello'
+        },
+        {
+          id: 4,
+          user_id: 1,
+
+          full_name: 'Hiep',
+          profile_photo_path:
+            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
+          online_status: {
+            status: true
+          },
+          content: 'Hello 11'
         }
       ]
     }
@@ -79,6 +127,7 @@ export default {
     // }
   },
   mounted() {
+    this.currentUserId = this.currentUser.id
     // this.setDefaultMessage()
     // this.fetchData()
   },
@@ -252,7 +301,6 @@ export default {
   position: relative;
   bottom: 0;
   display: flex;
-  background: red;
   width: 100%;
   height: 100%;
   justify-content: flex-end;

@@ -1,6 +1,6 @@
 <template>
   <div class="message-navbar">
-    <nav :class="{ 'is-sticky': isSticky }">
+    <header :class="{ 'is-sticky': isSticky }">
       <div class="navigation">
         <base-avatar
           :src="currentUser.profile_photo_path"
@@ -31,25 +31,21 @@
         <base-button icon round style="font-size: 1.2rem">
           <i class="tim-icons icon-alert-circle-exc"></i>
         </base-button>
-        <div class="profile-action profile">
-          <img
-            src="https://s120-ava-talk.zadn.vn/2/4/9/3/21/120/58a03ada3f14043029fe8b521af00648.jpg"
-            alt="logo"
-            width="45"
-          />
-          <i class="ic-svg-vip-label icon"></i>
-        </div>
       </div>
-    </nav>
+    </header>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  data() {
-    return {
-      isSticky: true
+  props: {
+    isSticky: {
+      type: Boolean,
+      default: true
     }
+  },
+  data() {
+    return {}
   },
   methods: {},
   created() {},
@@ -60,22 +56,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-$top-height: 70px;
 .message-navbar {
-  nav {
+  header {
     padding: 0 20px;
-    height: $top-height;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
-    position: absolute;
     width: 100%;
     z-index: 1112;
     background: whitesmoke;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.08);
     &.is-sticky {
-      background: var(--background);
       box-shadow: 0 3px 5px var(--sticky-header-box-shadow);
     }
     .navigation {
@@ -99,37 +93,6 @@ $top-height: 70px;
       margin-right: 15px;
       display: flex;
       align-items: center;
-      .profile-action {
-        display: inline-block;
-        margin-left: 10px;
-        img {
-          border-radius: 50%;
-          border: 2px solid #fccc2e;
-        }
-        &.profile {
-          position: relative;
-          padding: 5px 0;
-          .icon {
-            position: absolute;
-            bottom: 5px;
-            left: 0;
-            right: 0;
-            margin: auto;
-            height: 10px;
-            width: 22px;
-            background-repeat: no-repeat;
-            background-size: cover;
-          }
-        }
-      }
-    }
-    .btn {
-      padding: 10px;
-      i {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
     }
   }
 }

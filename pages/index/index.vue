@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoggedIn">
+  <div>
     <!-- sidebar left -->
     <side-bar
       :short-title="$t('sidebar.shortTitle')"

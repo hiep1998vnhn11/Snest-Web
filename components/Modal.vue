@@ -13,6 +13,7 @@
       tabindex="-1"
       role="dialog"
       :aria-hidden="!show"
+      @keyup.esc="closeModal"
     >
       <div
         class="modal-dialog"

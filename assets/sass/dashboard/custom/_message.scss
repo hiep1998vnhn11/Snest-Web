@@ -8,13 +8,14 @@ $additional-width: $message-right-width + $message-left-width;
 $message-navbar-height: 70px;
 .message-layout {
   position: relative;
-  .content {
+  .message-layout-content {
+    position: relative;
     margin-left: $message-left-width;
     // margin-top: $message-navbar-height;
     width: calc(100% - #{$additional-width});
     transition: width 0.3s;
     & > .ps {
-      height: 100vh;
+      height: calc(100vh - 140px);
     }
     @include media-breakpoint-down(md) {
       margin-left: $message-left-width-m !important;
@@ -24,9 +25,10 @@ $message-navbar-height: 70px;
     //   width: calc(100% - #{$message-left-width}) !important;
     // }
     min-width: 720px;
+    height: 100vh;
   }
-  .wrapper {
-    padding: $message-navbar-height 15px $message-navbar-height 15px;
+  .message-layout-wrapper {
+    padding: 15px;
     // @include media-breakpoint-down(md) {
     //   padding: 20px 38px 100px 38px !important;
     // }
