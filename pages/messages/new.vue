@@ -109,12 +109,12 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await axios.post('/v1/user/friend/get', {
+        const response = await this.$axiox.$post('/v1/user/friend/get', {
           search_key: val.toLowerCase()
         })
-        this.result = response.data.data
+        this.result = response.data
       } catch (err) {
-        this.error = err.response.data.messasge
+        this.error = err.response.messasge
       }
       this.loading = false
     }

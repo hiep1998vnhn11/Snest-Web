@@ -16,12 +16,14 @@ const getters = {
 
 const actions = {
   async getNumberUnread({ commit }) {
-    const response = await axios.post('/v1/user/notification/number_unread')
-    commit('SET_NUMBER_UNREAD', response.data.data)
+    const response = await this.$axiox.$post(
+      '/v1/user/notification/number_unread'
+    )
+    commit('SET_NUMBER_UNREAD', response.data)
   },
   async getNotifications({ commit }) {
-    const response = await axios.post('/v1/user/notification/get')
-    commit('SET_NOTIFICATION', response.data.data.data)
+    const response = await this.$axiox.$post('/v1/user/notification/get')
+    commit('SET_NOTIFICATION', response.data.data)
     commit('SET_NUMBER_UNREAD', 0)
   }
 }

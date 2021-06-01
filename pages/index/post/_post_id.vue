@@ -13,13 +13,13 @@ export default {
       ? `/v1/user/post/${postId}/get`
       : `/v1/guest/post/${postId}/get`
     try {
-      const response = await axios.get(url)
-      const commentsResponse = await axios.get(
+      const response = await this.$axiox.$get(url)
+      const commentsResponse = await this.$axiox.$get(
         `/v1/user/post/${postId}/get_comment`
       )
       return {
-        post: response.data.data,
-        comments: commentsResponse.data.data
+        post: response.data,
+        comments: commentsResponse.data
       }
     } catch (err) {
       error(err)

@@ -23,9 +23,9 @@ const actions = {
         page: state.page
       }
     }
-    const response = await axios.get(url, params)
+    const response = await this.$axiox.$get(url, params)
     if (response.data.data.data.length) {
-      commit('SET_THRESHES', response.data.data.data)
+      commit('SET_THRESHES', response.data.data)
     }
   },
   setThreshPage({ commit }) {
@@ -33,8 +33,8 @@ const actions = {
   },
   async getParticipant({ commit }, roomId) {
     let url = `/v1/user/thresh/${roomId}/participant/get`
-    const response = await axios.post(url)
-    commit('SET_PARTICIPANT', response.data.data)
+    const response = await this.$axiox.$post(url)
+    commit('SET_PARTICIPANT', response.data)
   }
 }
 

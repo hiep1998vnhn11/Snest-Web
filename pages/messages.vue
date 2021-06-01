@@ -32,12 +32,12 @@ export default {
     async fetchFriend(searchKey) {
       this.loadingSearch = true
       try {
-        const response = await axios.post('/v1/user/friend/get', {
+        const response = await this.$axiox.$post('/v1/user/friend/get', {
           search_key: searchKey
         })
-        this.friends = response.data.data
+        this.friends = response.data
       } catch (err) {
-        this.errorSearch = err.response.data.message
+        this.errorSearch = err.response.message
       }
       this.loadingSearch = false
     },

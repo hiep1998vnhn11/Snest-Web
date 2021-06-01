@@ -81,7 +81,7 @@ export default {
     return {
       user: {
         email: '',
-        password: window.localStorage.getItem('password') || ''
+        password: ''
       },
       email: 'admin@jsonapi.com',
       password: 'secret',

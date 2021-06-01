@@ -25,24 +25,24 @@ const actions = {
     if (state.drawer !== drawer) commit('SET_DRAWER', drawer)
   },
   async search({ commit, state }, payload) {
-    const response = await axios.post('/v1/user/search/get', payload)
+    const response = await this.$axiox.$post('/v1/user/search/get', payload)
     const isSearch = state.searchHistory.find(
       search => search === payload.search_key
     )
     if (!isSearch) commit('ADD_SEARCH_HISTORY', payload.search_key)
-    commit('SET_SEARCH_RESULT', response.data.data)
+    commit('SET_SEARCH_RESULT', response.data)
   },
   async getSearchHistory({ commit, state }) {
     if (!state.isSetStorage) {
-      const response = await axios.post('/v1/user/search/history')
+      const response = await this.$axiox.$post('/v1/user/search/history')
       const _SearchHistory = this.localStorage.getItem('_SearchHistory')
-      if (_SearchHistory !== response.data.data) {
+      if (_SearchHistory !== response.data) {
         this.localStorage.setItem(
           '_SearchHistory',
-          JSON.stringify(response.data.data)
+          JSON.stringify(response.data)
         )
       }
-      commit('SET_SEARCH_HISTORY', response.data.data)
+      commit('SET_SEARCH_HISTORY', response.data)
       commit('SET_IS_SET_STORAGE', true)
     } else {
       const searchHistory = JSON.parse(
@@ -53,11 +53,11 @@ const actions = {
   },
   async deleteSearchHistory({ commit }, { key, value }) {
     commit('DELETE_SEARCH_HISTORY', key)
-    await axios.delete(`/v1/user/search/${value}/delete`)
+    await this.$axiox.$delete(`/v1/user/search/${value}/delete`)
   },
   async getTrending({ commit }) {
-    const response = await axios.get('/v1/guest/search/trending')
-    commit('SET_TRENDING', response.data.data)
+    const response = await this.$axiox.$get('/v1/guest/search/trending')
+    commit('SET_TRENDING', response.data)
   }
 }
 

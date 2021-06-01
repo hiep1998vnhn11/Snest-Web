@@ -31,9 +31,9 @@ const getters = {
 const actions = {
   //Get thresh by userId
   async getThreshByUser({ commit, state }, user) {
-    const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
-    if (response.data.data) {
-      const thresh = Object.assign(response.data.data, {
+    const response = await this.$axiox.$post(`/v1/user/thresh/${user.id}/get`)
+    if (response.data) {
+      const thresh = Object.assign(response.data, {
         participants: user,
         typing: false
       })
@@ -47,7 +47,7 @@ const actions = {
   },
   async getMessageCard({ commit, state }) {
     if (state.thresh.id) {
-      const response = await axios.get(
+      const response = await this.$axiox.$get(
         `/v1/user/thresh/${state.thresh.id}/message/get`,
         {
           params: {
@@ -56,26 +56,26 @@ const actions = {
           }
         }
       )
-      const messages = response.data.data.data
+      const messages = response.data.data
       if (messages && messages.length) {
-        commit('SET_MESSAGE', response.data.data.data)
+        commit('SET_MESSAGE', response.data.data)
       }
     }
   },
   async getRoom({ commit }) {
     const url = '/v1/user/room/store'
-    const response = await axios.get(url)
-    commit('SET_ROOM', response.data.data)
+    const response = await this.$axiox.$get(url)
+    commit('SET_ROOM', response.data)
   },
   async getMessage({ commit, state }, roomId) {
     const url = `/v1/user/thresh/${roomId}/message/get`
-    const response = await axios.get(url, {
+    const response = await this.$axiox.$get(url, {
       params: {
         page: state.pageMessage,
         limit: 25
       }
     })
-    const messages = response.data.data.data
+    const messages = response.data.data
     if (messages && messages.length) {
       commit('SET_MESSAGE', messages)
     }
@@ -84,7 +84,7 @@ const actions = {
     const url = `/v1/user/thresh/${message.thresh_id}/message/send`
     commit('SEND_MESSAGE', message)
     commit('thresh/SEND_MESSAGE', message, { root: true })
-    await axios.post(url, {
+    await this.$axiox.$post(url, {
       content: message.content
     })
   },
@@ -106,10 +106,10 @@ const actions = {
   },
   async setThreshCard({ commit }, user) {
     if (user) {
-      const response = await axios.post(`/v1/user/thresh/${user.id}/get`)
+      const response = await this.$axiox.$post(`/v1/user/thresh/${user.id}/get`)
       if (response.data.data) {
         commit('SET_THRESH_CARD', {
-          room: response.data.data,
+          room: response.data,
           participants: user
         })
       } else {
@@ -126,11 +126,11 @@ const actions = {
   },
   async deleteMessage({ commit }, { messageId, messageIndex }) {
     commit('DELETE_MESSAGE', messageIndex)
-    await axios.delete(`/v1/user/thresh/message/${messageId}/delete`)
+    await this.$axiox.$delete(`/v1/user/thresh/message/${messageId}/delete`)
   },
   async reverseMessage({ commit }, { messageId, messageIndex }) {
     commit('REVERSE_MESSAGE', messageIndex)
-    await axios.patch(`/v1/user/thresh/message/${messageId}/reverse`)
+    await this.$axiox.$patch(`/v1/user/thresh/message/${messageId}/reverse`)
   }
 }
 const mutations = {

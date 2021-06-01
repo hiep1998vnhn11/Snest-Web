@@ -208,7 +208,7 @@ export default {
         if (e > 0) this.comment.liked_count += 1
       }
       let url = `/v1/user/post/comment/${this.comment.id}/handle_like`
-      await axios.post(url, {
+      await this.$axiox.$post(url, {
         status: e
       })
     },

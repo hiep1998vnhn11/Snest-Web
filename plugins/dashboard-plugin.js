@@ -8,7 +8,7 @@ import './globalComponents'
 // A plugin file where you could register global directives
 import './globalDirectives'
 import './mixinx'
-import './socket'
+// import './socket'
 // Sidebar on the right. Used as a local plugin in DashboardLayout.vue
 import SideBar from '@/components/SidebarPlugin'
 // RTL (right to left plugin to support rtl layout). If you don't need support for rtl, remove this plugin

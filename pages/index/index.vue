@@ -148,7 +148,7 @@ export default {
       console.log(e)
       this.$store.commit('post/LIKE_POST', e)
       let url = `/v1/user/post/${e.post.id}/handle_like`
-      await axios.post(url, {
+      await this.$axiox.$post(url, {
         status: e.status
       })
     },

@@ -35,56 +35,60 @@ const actions = {
         limit: 5
       }
     }
-    const postResponse = await axios.get(url, params)
-    if (postResponse.data.data.data.length) {
-      commit('SET_POST', postResponse.data.data.data)
+    const postResponse = await this.$axiox.$get(url, params)
+    if (postResponse.data.data.length) {
+      commit('SET_POST', postResponse.data.data)
     }
   },
   setFeedPage({ commit }) {
     commit('SET_FEED_PAGE')
   },
   async getParamPost({ commit }, postId) {
-    const paramPostResponse = await axios.get(`/v1/user/post/${postId}/get`)
-    commit('SET_PARAM_POST', paramPostResponse.data.data)
+    const paramPostResponse = await this.$axiox.$get(
+      `/v1/user/post/${postId}/get`
+    )
+    commit('SET_PARAM_POST', paramPostResponse.data)
   },
   async createPost({ commit }, post) {
-    const response = await axios.post(`v1/user/post/create`, post, {
+    const response = await this.$axiox.$post(`v1/user/post/create`, post, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
-    commit('CREATE_POST', response.data.data)
+    commit('CREATE_POST', response.data)
   },
   async deletePost({ commit }, postId) {
     const url = `/v1/user/post/${postId}/delete`
-    await axios.post(url)
+    await this.$axiox.$post(url)
     commit('SET_PARAM_POST', null)
     commit('DELETE_POST', postId)
   },
   async updatePost({ commit }, payload) {
     // payload: { post_id: int, post: formData}
     commit('DELETE_POST', payload.post_id)
-    const response = await axios.post(`v1/user/post/${payload.post_id}/update`)
-    commit('CREATE_POST', response.data.data)
+    const response = await this.$axiox.$post(
+      `v1/user/post/${payload.post_id}/update`
+    )
+    commit('CREATE_POST', response.data)
   },
   async getUserPost({ commit, state, rootState }, payload) {
     const url = rootState['user/currentUser']
       ? '/v1/user/post/store'
       : '/v1/guest/post/store'
-    const userPostResponse = await axios.get(url, {
+    const userPostResponse = await this.$axiox.$get(url, {
       params: {
         user_url: payload.user_url,
         page: state.userPostPage,
         limit: 2
       }
     })
-    if (userPostResponse.data.data.data.length) {
-      commit('SET_USER_POST', userPostResponse.data.data.data)
+    if (userPostResponse.data.data.length) {
+      commit('SET_USER_POST', userPostResponse.data.data)
     }
   },
   async createUserPost({ commit }, post) {
-    const response = await axios.post(`v1/user/post/create`, post)
-    commit('CREATE_POST', response.data.data)
+    const response = await this.$axiox.$post(`v1/user/post/create`, post)
+    commit('CREATE_POST', response.data)
   },
   setPage({ commit }) {
     commit('SET_PAGE')

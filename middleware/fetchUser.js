@@ -4,12 +4,11 @@ export default async function({ app, store, $axios }) {
   $axios.setToken('Bearer' + access_token)
   if (access_token && !store.getters['user/currentUser']) {
     try {
-      await store.dispatch('fetchConfigs')
       store.commit('user/SET_ACCESS_TOKEN', access_token)
       await store.dispatch('user/getUser', access_token)
     } catch (err) {
       console.log(err)
-      // app.$cookies.remove('access_token')
+      app.$cookies.remove('access_token')
     }
   }
 }

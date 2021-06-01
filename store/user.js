@@ -66,7 +66,7 @@ const actions = {
 
   async getUser({ commit, state }) {
     const response = await this.$axios.$post('/auth/me')
-    commit('SET_CURRENT_USER', response.data.data)
+    commit('SET_CURRENT_USER', response.data)
   },
   async logout({ commit }) {
     await this.$axios.$post('/auth/logout')

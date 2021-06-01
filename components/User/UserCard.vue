@@ -100,7 +100,7 @@ export default {
       this.loading = true
       try {
         const url = '/v1/user/update_profile'
-        await axios.post(url, {
+        await this.$axiox.$post(url, {
           story: this.story,
           story_privacy: 'public'
         })

@@ -166,11 +166,11 @@ export default {
     async fetchPost(page = 1, url = '') {
       this.loading = true
       try {
-        const { data } = await axios.get(
+        const { data } = await this.$axiox.$get(
           `/v1/user/${url}/get_post?page=${page}&limit=2`
         )
-        if (data.data.data.length) {
-          this.posts = [...this.posts, ...data.data.data]
+        if (data.data.length) {
+          this.posts = [...this.posts, ...data.data]
           this.page = page + 1
         } else {
           this.lastPost = true
@@ -193,7 +193,7 @@ export default {
       console.log(e)
       this.$store.commit('post/LIKE_USER_POST', e)
       let url = `/v1/user/post/${e.post.id}/handle_like`
-      await axios.post(url, {
+      await this.$axiox.$post(url, {
         status: e.status
       })
     },

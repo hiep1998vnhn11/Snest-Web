@@ -116,8 +116,10 @@ export default {
       if (this.info.url) return
       this.loading = true
       try {
-        const response = await axios.get(`/v1/user/${this.user_url}/get_info`)
-        this.info = response.data.data
+        const response = await this.$axiox.$get(
+          `/v1/user/${this.user_url}/get_info`
+        )
+        this.info = response.data
       } catch (err) {
         this.toastError(err.toString())
       }

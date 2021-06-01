@@ -140,11 +140,11 @@ export default {
     },
     async getParticipant() {
       const url = `/v1/user/thresh/${this.$route.params.room_id}/participant/get`
-      const response = await axios.post(url)
-      if (response.data.data)
+      const response = await this.$axiox.$post(url)
+      if (response.data)
         this.$store.commit('message/SET_THRESH', {
           id: this.$route.params.room_id,
-          participants: response.data.data,
+          participants: response.data,
           typing: false
         })
     },
@@ -203,14 +203,14 @@ export default {
         this.text = ''
         try {
           const url = `/v1/user/thresh/${this.thresh.id}/message/send`
-          const response = await axios.post(url, {
+          const response = await this.$axiox.$post(url, {
             content: message.content
           })
           if (this.thresh.participants.id !== this.currentUser.id) {
             this.socket.emit('sendToUser', {
               userId: this.thresh.participants.id,
               roomId: this.$route.params.room_id,
-              message: response.data.data,
+              message: response.data,
               user: this.currentUser
             })
           }
