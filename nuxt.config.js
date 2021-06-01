@@ -1,7 +1,4 @@
 export default {
-  // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
-
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'Admin-Snest',
@@ -65,7 +62,7 @@ export default {
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['nuxt-i18n'],
+  modules: ['nuxt-i18n', '@nuxtjs/axios', 'cookie-universal-nuxt'],
 
   i18n: {
     locales: [
@@ -86,7 +83,9 @@ export default {
     langDir: 'lang/',
     defaultLocale: 'en'
   },
-
+  axios: {
+    baseURL: process.env.NUXT_ENV_API_URL // Used as fallback if no runtime config is provided
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
   loadingIndicator: {

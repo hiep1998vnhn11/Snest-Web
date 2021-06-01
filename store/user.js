@@ -1,23 +1,13 @@
-import axios from 'axios'
-import Cookies from 'js-cookie'
 const initialState = () => ({
   currentUser: null,
-  token: Cookies.get('access_token') || null,
+  token: null,
   socket: null,
-  setHeader() {
-    axios.defaults.headers.common['Authorization'] =
-      'Bearer' + Cookies.get('access_token')
-  },
   friends: []
 })
 const state = () => ({
   currentUser: null,
-  token: Cookies.get('access_token') || null,
+  token: null,
   socket: null,
-  setHeader() {
-    axios.defaults.headers.common['Authorization'] =
-      'Bearer' + Cookies.get('access_token')
-  },
   friends: [],
   user: {}
 })
@@ -32,88 +22,74 @@ const getters = {
 
 const actions = {
   async login({ commit, state }, user) {
-    const response = await axios.post('/auth/login', {
+    const response = await this.$axios.$post('/auth/login', {
       email: user.email,
       password: user.password
     })
-    const token = response.data.access_token
-    Cookies.set('access_token', token, { expires: 1 })
+    const token = response.access_token
+    this.app.$cookies.set('access_token', token, {
+      maxAge: response.expires_in
+    })
     commit('SET_ACCESS_TOKEN', token)
   },
 
   async fetchUserParam({ commit, state }, userUrl) {
     const url = state.token ? '/v1/user/get_user' : '/v1/guest/user/get'
-    const { data } = await axios.get(url, {
+    const { data } = await this.$axios.$get(url, {
       params: {
         user_url: userUrl
       }
     })
-    commit('SET_PARAM_USER', data.data)
+    commit('SET_PARAM_USER', data)
   },
 
   async loginFacebook({ commit, state }, access_token) {
-    const response = await axios.post('/auth/facebook/login', {
+    const response = await this.$axios.$post('/auth/facebook/login', {
       access_token
     })
-    const token = response.data.access_token
-    Cookies.set('access_token', token, { expires: 1 })
+    const token = response.access_token
+    this.app.$cookies.set('access_token', token, {
+      maxAge: response.expires_in
+    })
     commit('SET_ACCESS_TOKEN', token)
-    state.setHeader()
-    const responseUser = await axios.post('/auth/me')
-    commit('SET_CURRENT_USER', responseUser.data.data)
   },
   async loginGoogle({ commit, state }, id_token) {
-    const response = await axios.post('/auth/google/login', {
+    const response = await this.$axios.$post('/auth/google/login', {
       id_token
     })
-    const token = response.data.access_token
-    Cookies.set('access_token', token, {
-      expires: response.data.expires_in / (60 * 60 * 24)
+    const token = response.access_token
+    this.app.$cookies.set('access_token', token, {
+      maxAge: response.expires_in
     })
     commit('SET_ACCESS_TOKEN', token)
-    state.setHeader()
-    const responseUser = await axios.post('/auth/me')
-    commit('SET_CURRENT_USER', responseUser.data.data)
   },
 
   async getUser({ commit, state }) {
-    state.setHeader()
-    try {
-      const response = await axios.post('/auth/me')
-      commit('SET_CURRENT_USER', response.data.data)
-    } catch (err) {
-      Cookies.remove('access_token')
-      commit('DESTROY_TOKEN')
-    }
+    const response = await this.$axios.$post('/auth/me')
+    commit('SET_CURRENT_USER', response.data.data)
   },
   async logout({ commit }) {
-    // if (FB && typeof (FB !== undefined))
-    //   FB.getLoginStatus(async response => {
-    //     if (response.status === 'connected') {
-    //       await FB.logout()
-    //     }
-    //   })
-    await axios.post('/auth/logout')
+    await this.$axios.$post('/auth/logout')
     Cookies.remove('access_token')
     commit('DESTROY_TOKEN')
   },
   async register({}, user) {
-    await axios.post('/auth/register', user)
+    await this.$axios.$post('/auth/register', user)
   },
   async changeInfo(context, payload) {
     const url = '/v1/user/update_profile'
-    const response = await axios.post(url, payload)
-    return response.data
+    const response = await this.$axios.$post(url, payload)
+    return response
   },
   async getFriend(context) {
     const url = '/v1/user/relationship/friend/store?status=1'
-    const response = await axios.get(url)
-    context.commit('SET_FRIENDS', response.data.data)
+    const response = await this.$axios.$get(url)
+    context.commit('SET_FRIENDS', response.data)
   },
   async refreshToken({ commit, state }) {
     state.setHeader()
     const url = '/auth/token/refresh'
-    const response = await axios.post(url)
+    const response = await this.$axios.$post(url)
     const token = response.data.access_token
     Cookies.set('access_token', token, { expires: 1 })
     commit('SET_ACCESS_TOKEN', token)

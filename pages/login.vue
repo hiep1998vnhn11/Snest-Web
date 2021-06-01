@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       user: {
-        email: window.localStorage.getItem('email') || '',
+        email: '',
         password: window.localStorage.getItem('password') || ''
       },
       email: 'admin@jsonapi.com',
@@ -104,6 +104,12 @@ export default {
       }
       this.$nuxt.$loading.finish()
     }
+  },
+  mounted() {
+    if (window.localStorage.getItem('email'))
+      this.user.email = window.localStorage.getItem('email')
+    if (window.localStorage.getItem('password'))
+      this.user.password = window.localStorage.getItem('password')
   }
 }
 </script>

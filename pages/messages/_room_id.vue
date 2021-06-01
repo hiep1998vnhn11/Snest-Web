@@ -172,7 +172,7 @@ export default {
       this.$emit('convert-info')
     },
     onFocusTyping() {
-      window.socket.emit('typingUser', {
+      this.socket.emit('typingUser', {
         userId: this.thresh.participants.id,
         userName: this.thresh.participants.name,
         roomId: this.thresh.id,
@@ -180,7 +180,7 @@ export default {
       })
     },
     onBlurTyping() {
-      window.socket.emit('typingUser', {
+      this.socket.emit('typingUser', {
         userId: this.thresh.participants.id,
         userName: this.thresh.participants.name,
         roomId: this.thresh.id,
@@ -207,7 +207,7 @@ export default {
             content: message.content
           })
           if (this.thresh.participants.id !== this.currentUser.id) {
-            window.socket.emit('sendToUser', {
+            this.socket.emit('sendToUser', {
               userId: this.thresh.participants.id,
               roomId: this.$route.params.room_id,
               message: response.data.data,
@@ -233,12 +233,12 @@ export default {
     },
     createNewCall() {
       const call_id = v4()
-      window.socket.emit('create-call', {
+      this.socket.emit('create-call', {
         call_id,
         user_id: this.thresh.participants.id,
         user: this.currentUser
       })
-      window.socket.on('create-call-success', () => {
+      this.socket.on('create-call-success', () => {
         this.$route.push(
           this.localePath({
             name: 'call-call_id',
@@ -251,7 +251,7 @@ export default {
     },
     createNewPrivateCall() {
       const call_id = uuidv4()
-      window.socket.emit('create-call', {
+      this.socket.emit('create-call', {
         call_id,
         user_id: this.thresh.participants.id,
         user: this.currentUser
@@ -273,7 +273,7 @@ export default {
       })
       //call with userId
       //   // if (this.thresh.participants.online_status) const call_id = v4()
-      //   window.socket.emit('create-private-call', {
+      //   this.socket.emit('create-private-call', {
       //     call_id,
       //     user_id: userId
       //   })

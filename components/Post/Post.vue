@@ -274,7 +274,6 @@ export default {
     },
     async onCommentPost() {
       try {
-        console.log(window.socket)
       } catch (err) {
         this.toastError(err.toString())
       }

@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import moment from 'moment'
 
-window.moment = moment
-
 // moment.updateLocale('en', {
 //   relativeTime: {
 //     future: 'in %s',

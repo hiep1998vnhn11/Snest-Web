@@ -35,9 +35,9 @@ const actions = {
   async getSearchHistory({ commit, state }) {
     if (!state.isSetStorage) {
       const response = await axios.post('/v1/user/search/history')
-      const _SearchHistory = window.localStorage.getItem('_SearchHistory')
+      const _SearchHistory = this.localStorage.getItem('_SearchHistory')
       if (_SearchHistory !== response.data.data) {
-        window.localStorage.setItem(
+        this.localStorage.setItem(
           '_SearchHistory',
           JSON.stringify(response.data.data)
         )
@@ -46,7 +46,7 @@ const actions = {
       commit('SET_IS_SET_STORAGE', true)
     } else {
       const searchHistory = JSON.parse(
-        window.localStorage.getItem('_SearchHistory')
+        this.localStorage.getItem('_SearchHistory')
       )
       commit('SET_SEARCH_HISTORY', searchHistory)
     }

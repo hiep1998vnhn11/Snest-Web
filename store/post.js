@@ -138,7 +138,7 @@ const mutations = {
       }
       if (status > 0) {
         state.posts[index].liked_count += 1
-        window.socket.emit('likePost', {
+        this.socket.emit('likePost', {
           user,
           post: state.posts[index]
         })
@@ -164,7 +164,7 @@ const mutations = {
       }
       if (status > 0) {
         state.userPost[index].liked_count += 1
-        window.socket.emit('likePost', {
+        this.socket.emit('likePost', {
           user,
           post: state.userPost[index]
         })

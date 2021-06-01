@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import './extra/polyfills'
-import './axios'
 import './filters'
 // Notifications plugin. Used on Notifications page
 import Notifications from '@/components/NotificationPlugin'
