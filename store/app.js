@@ -25,7 +25,7 @@ const actions = {
     if (state.drawer !== drawer) commit('SET_DRAWER', drawer)
   },
   async search({ commit, state }, payload) {
-    const response = await this.$axiox.$post('/v1/user/search/get', payload)
+    const response = await this.$axios.$post('/v1/user/search/get', payload)
     const isSearch = state.searchHistory.find(
       search => search === payload.search_key
     )
@@ -34,7 +34,7 @@ const actions = {
   },
   async getSearchHistory({ commit, state }) {
     if (!state.isSetStorage) {
-      const response = await this.$axiox.$post('/v1/user/search/history')
+      const response = await this.$axios.$post('/v1/user/search/history')
       const _SearchHistory = this.localStorage.getItem('_SearchHistory')
       if (_SearchHistory !== response.data) {
         this.localStorage.setItem(
@@ -53,10 +53,10 @@ const actions = {
   },
   async deleteSearchHistory({ commit }, { key, value }) {
     commit('DELETE_SEARCH_HISTORY', key)
-    await this.$axiox.$delete(`/v1/user/search/${value}/delete`)
+    await this.$axios.$delete(`/v1/user/search/${value}/delete`)
   },
   async getTrending({ commit }) {
-    const response = await this.$axiox.$get('/v1/guest/search/trending')
+    const response = await this.$axios.$get('/v1/guest/search/trending')
     commit('SET_TRENDING', response.data)
   }
 }

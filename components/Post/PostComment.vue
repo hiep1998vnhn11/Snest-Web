@@ -104,7 +104,7 @@ export default {
     async onGetSubComment() {
       this.loading = true
       try {
-        const { data } = await this.$axiox.$get(
+        const { data } = await this.$axios.$get(
           `/v1/user/post/comment/${this.comment.id}/get_sub_comment`
         )
         this.subComments = data.data

@@ -13,8 +13,8 @@ export default {
       ? `/v1/user/post/${postId}/get`
       : `/v1/guest/post/${postId}/get`
     try {
-      const response = await this.$axiox.$get(url)
-      const commentsResponse = await this.$axiox.$get(
+      const response = await this.$axios.$get(url)
+      const commentsResponse = await this.$axios.$get(
         `/v1/user/post/${postId}/get_comment`
       )
       return {

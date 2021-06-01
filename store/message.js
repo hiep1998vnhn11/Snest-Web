@@ -31,7 +31,7 @@ const getters = {
 const actions = {
   //Get thresh by userId
   async getThreshByUser({ commit, state }, user) {
-    const response = await this.$axiox.$post(`/v1/user/thresh/${user.id}/get`)
+    const response = await this.$axios.$post(`/v1/user/thresh/${user.id}/get`)
     if (response.data) {
       const thresh = Object.assign(response.data, {
         participants: user,
@@ -47,7 +47,7 @@ const actions = {
   },
   async getMessageCard({ commit, state }) {
     if (state.thresh.id) {
-      const response = await this.$axiox.$get(
+      const response = await this.$axios.$get(
         `/v1/user/thresh/${state.thresh.id}/message/get`,
         {
           params: {
@@ -64,12 +64,12 @@ const actions = {
   },
   async getRoom({ commit }) {
     const url = '/v1/user/room/store'
-    const response = await this.$axiox.$get(url)
+    const response = await this.$axios.$get(url)
     commit('SET_ROOM', response.data)
   },
   async getMessage({ commit, state }, roomId) {
     const url = `/v1/user/thresh/${roomId}/message/get`
-    const response = await this.$axiox.$get(url, {
+    const response = await this.$axios.$get(url, {
       params: {
         page: state.pageMessage,
         limit: 25
@@ -84,7 +84,7 @@ const actions = {
     const url = `/v1/user/thresh/${message.thresh_id}/message/send`
     commit('SEND_MESSAGE', message)
     commit('thresh/SEND_MESSAGE', message, { root: true })
-    await this.$axiox.$post(url, {
+    await this.$axios.$post(url, {
       content: message.content
     })
   },
@@ -106,7 +106,7 @@ const actions = {
   },
   async setThreshCard({ commit }, user) {
     if (user) {
-      const response = await this.$axiox.$post(`/v1/user/thresh/${user.id}/get`)
+      const response = await this.$axios.$post(`/v1/user/thresh/${user.id}/get`)
       if (response.data.data) {
         commit('SET_THRESH_CARD', {
           room: response.data,
@@ -126,11 +126,11 @@ const actions = {
   },
   async deleteMessage({ commit }, { messageId, messageIndex }) {
     commit('DELETE_MESSAGE', messageIndex)
-    await this.$axiox.$delete(`/v1/user/thresh/message/${messageId}/delete`)
+    await this.$axios.$delete(`/v1/user/thresh/message/${messageId}/delete`)
   },
   async reverseMessage({ commit }, { messageId, messageIndex }) {
     commit('REVERSE_MESSAGE', messageIndex)
-    await this.$axiox.$patch(`/v1/user/thresh/message/${messageId}/reverse`)
+    await this.$axios.$patch(`/v1/user/thresh/message/${messageId}/reverse`)
   }
 }
 const mutations = {

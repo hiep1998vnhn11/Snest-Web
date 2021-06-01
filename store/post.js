@@ -35,7 +35,7 @@ const actions = {
         limit: 5
       }
     }
-    const postResponse = await this.$axiox.$get(url, params)
+    const postResponse = await this.$axios.$get(url, params)
     if (postResponse.data.data.length) {
       commit('SET_POST', postResponse.data.data)
     }
@@ -44,13 +44,13 @@ const actions = {
     commit('SET_FEED_PAGE')
   },
   async getParamPost({ commit }, postId) {
-    const paramPostResponse = await this.$axiox.$get(
+    const paramPostResponse = await this.$axios.$get(
       `/v1/user/post/${postId}/get`
     )
     commit('SET_PARAM_POST', paramPostResponse.data)
   },
   async createPost({ commit }, post) {
-    const response = await this.$axiox.$post(`v1/user/post/create`, post, {
+    const response = await this.$axios.$post(`v1/user/post/create`, post, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -59,14 +59,14 @@ const actions = {
   },
   async deletePost({ commit }, postId) {
     const url = `/v1/user/post/${postId}/delete`
-    await this.$axiox.$post(url)
+    await this.$axios.$post(url)
     commit('SET_PARAM_POST', null)
     commit('DELETE_POST', postId)
   },
   async updatePost({ commit }, payload) {
     // payload: { post_id: int, post: formData}
     commit('DELETE_POST', payload.post_id)
-    const response = await this.$axiox.$post(
+    const response = await this.$axios.$post(
       `v1/user/post/${payload.post_id}/update`
     )
     commit('CREATE_POST', response.data)
@@ -75,7 +75,7 @@ const actions = {
     const url = rootState['user/currentUser']
       ? '/v1/user/post/store'
       : '/v1/guest/post/store'
-    const userPostResponse = await this.$axiox.$get(url, {
+    const userPostResponse = await this.$axios.$get(url, {
       params: {
         user_url: payload.user_url,
         page: state.userPostPage,
@@ -87,7 +87,7 @@ const actions = {
     }
   },
   async createUserPost({ commit }, post) {
-    const response = await this.$axiox.$post(`v1/user/post/create`, post)
+    const response = await this.$axios.$post(`v1/user/post/create`, post)
     commit('CREATE_POST', response.data)
   },
   setPage({ commit }) {

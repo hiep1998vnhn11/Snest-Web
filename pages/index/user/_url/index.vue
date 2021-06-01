@@ -166,7 +166,7 @@ export default {
     async fetchPost(page = 1, url = '') {
       this.loading = true
       try {
-        const { data } = await this.$axiox.$get(
+        const { data } = await this.$axios.$get(
           `/v1/user/${url}/get_post?page=${page}&limit=2`
         )
         if (data.data.length) {
@@ -193,7 +193,7 @@ export default {
       console.log(e)
       this.$store.commit('post/LIKE_USER_POST', e)
       let url = `/v1/user/post/${e.post.id}/handle_like`
-      await this.$axiox.$post(url, {
+      await this.$axios.$post(url, {
         status: e.status
       })
     },

@@ -49,7 +49,7 @@ export default {
       this.loading = true
       try {
         const url = this.isLoggedIn ? '/v1/user/get_user' : '/v1/guest/user/get'
-        const response = await this.$axiox.$get(url, {
+        const response = await this.$axios.$get(url, {
           params: {
             user_url: userUrl
           }

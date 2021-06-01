@@ -32,7 +32,7 @@ export default {
     async fetchFriend(searchKey) {
       this.loadingSearch = true
       try {
-        const response = await this.$axiox.$post('/v1/user/friend/get', {
+        const response = await this.$axios.$post('/v1/user/friend/get', {
           search_key: searchKey
         })
         this.friends = response.data

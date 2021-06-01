@@ -109,7 +109,7 @@ export default {
       this.loading = true
       this.error = null
       try {
-        const response = await this.$axiox.$post('/v1/user/friend/get', {
+        const response = await this.$axios.$post('/v1/user/friend/get', {
           search_key: val.toLowerCase()
         })
         this.result = response.data
