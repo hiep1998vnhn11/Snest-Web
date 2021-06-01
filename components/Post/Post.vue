@@ -30,7 +30,7 @@
       </div>
       <div class="post-card-content">
         <div>
-          <div>{{ post.content }}</div>
+          <div v-html="post.content"></div>
           <div class="row">
             <div
               class="col"
@@ -336,6 +336,8 @@ export default {
     }
   },
   mounted() {
+    if (this.post.content)
+      this.post.content = this.post.content.replace(/\r?\n/g, '<br />')
     if (this.show) this.getComment(this.post.uid, 0)
   }
 }

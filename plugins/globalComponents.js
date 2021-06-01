@@ -9,7 +9,11 @@ import {
   TabPane
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions'
+import {
+  SlideYDownTransition,
+  ZoomCenterTransition,
+  SlideYUpTransition
+} from 'vue2-transitions'
 import VueLazyload from 'vue-lazyload'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 import PerfectScrollbar from 'vue2-perfect-scrollbar'
@@ -21,6 +25,7 @@ Vue.use(PerfectScrollbar)
  */
 Vue.component('slide-y-down-transition', SlideYDownTransition)
 Vue.component('zoom-center-transition', ZoomCenterTransition)
+Vue.component('slide-y-up-transition', SlideYUpTransition)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   attempt: 1

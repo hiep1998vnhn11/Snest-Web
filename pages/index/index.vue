@@ -33,18 +33,26 @@
           :loading="loading_user"
           @created="onCreatedPost"
         ></post-create>
-        <div class="mt-3" v-if="posts.length">
-          <post
-            class="mt-3"
-            v-for="(post, index) in posts"
-            :key="`post-component-feed-${index}`"
-            :post="post"
-            :index="index"
-            :like_status="post.like_status"
-          ></post>
-        </div>
+        <slide-y-up-transition>
+          <div class="index-loading-cover" v-show="loading">
+            <loading-chasing :loading="true"></loading-chasing>
+          </div>
+        </slide-y-up-transition>
+
+        <slide-y-down-transition>
+          <div class="mt-3" v-if="posts.length">
+            <post
+              class="mt-3"
+              v-for="(post, index) in posts"
+              :key="`post-component-feed-${index}`"
+              :post="post"
+              :index="index"
+              :like_status="post.like_status"
+            ></post>
+            <observer @intersect="intersected"></observer>
+          </div>
+        </slide-y-down-transition>
       </div>
-      <!-- <observer @intersect="intersected"></observer> -->
     </div>
   </div>
 </template>
@@ -149,7 +157,7 @@ export default {
       this.loading = false
     },
     intersected() {
-      this.fetchData(this.page)
+      this.fetchPost(this.page)
     },
     async onLike(e) {
       console.log(e)
@@ -210,5 +218,18 @@ export default {
 .slide-fade-leave-to {
   transform: translateX(10px);
   opacity: 0;
+}
+
+.index-loading-cover {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  z-index: 2000;
+  background: white;
+  left: 50%;
+  top: 100px;
+  transform: translateX(-50%);
+  border: solid 1px rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
 }
 </style>

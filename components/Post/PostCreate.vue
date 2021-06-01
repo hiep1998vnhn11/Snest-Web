@@ -24,6 +24,7 @@
             autosize
             :placeholder="$t('Post.DisableInput')"
             v-model="post.content"
+            class="post-create-input"
           >
           </el-input>
         </div>
@@ -167,6 +168,14 @@ export default {
 
 <style lang="scss">
 .post-create {
+  .post-create-input {
+    textarea {
+      padding: 10px;
+      border-radius: 15px;
+      height: 30px;
+      resize: none;
+    }
+  }
   .create-post-preview-image {
     position: relative;
     border-radius: 10px;
