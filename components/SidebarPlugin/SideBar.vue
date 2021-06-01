@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar" :data="backgroundColor" :home="home">
     <div class="sidebar-wrapper" ref="sidebarScrollArea">
-      <div class="logo">
+      <div class="logo" v-if="!home">
         <nuxt-link
           :to="localePath({ path: '/' })"
           class="simple-text logo-mini"
@@ -57,7 +57,7 @@ export default {
       type: String,
       default: 'vue',
       validator: value => {
-        let acceptedValues = ['', 'vue', 'blue', 'green', 'primary']
+        let acceptedValues = ['', 'vue', 'blue', 'green', 'primary', 'white']
         return acceptedValues.indexOf(value) !== -1
       },
       description:

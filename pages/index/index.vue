@@ -1,141 +1,44 @@
 <template>
   <div>
     <!-- sidebar left -->
-    <side-bar
-      :short-title="$t('sidebar.shortTitle')"
-      :title="$t('sidebar.title')"
-      home
-    >
-      <template slot="links">
-        <sidebar-item
-          :link="{
-            name: $t('Dashboard'),
-            icon: 'tim-icons icon-chart-pie-36',
-            path: localePath({ name: 'admin' })
-          }"
-        >
-        </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.icons'),
-            icon: 'tim-icons icon-atom',
-            path: localePath({ name: 'admin-icon' })
-          }"
-        >
-        </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.maps'),
-            icon: 'tim-icons icon-pin',
-            path: localePath({ name: 'admin-goole' })
-          }"
-        >
-        </sidebar-item>
-
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.notifications'),
-            icon: 'tim-icons icon-bell-55',
-            path: localePath({ name: 'admin-notifications' })
-          }"
-        >
-        </sidebar-item>
-
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.userProfile'),
-            icon: 'tim-icons icon-single-02',
-            path: localePath({ name: 'admin-user' })
-          }"
-        >
-        </sidebar-item>
-
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.regularTables'),
-            icon: 'tim-icons icon-puzzle-10',
-            path: localePath({ name: 'admin-regular' })
-          }"
-        ></sidebar-item>
-
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.typography'),
-            icon: 'tim-icons icon-align-center',
-            path: localePath({ name: 'admin-typography' })
-          }"
-        ></sidebar-item>
-      </template>
+    <side-bar home backgroundColor="white" class="home-sidebar-left">
+      <div class="home-sidebar-left-top">
+        <perfect-scrollbar>
+          <user-button
+            :profile_photo_path="currentUser.profile_photo_path"
+            :user_name="currentUser.full_name"
+            :user_url="currentUser.url"
+            v-for="n in 10"
+            :key="n"
+          ></user-button>
+        </perfect-scrollbar>
+      </div>
+      <div class="home-sidebar-left-bottom">
+        <perfect-scrollbar>
+          <user-button
+            :profile_photo_path="currentUser.profile_photo_path"
+            :user_name="currentUser.full_name"
+            :user_url="currentUser.url"
+            v-for="n in 10"
+            :key="n"
+          ></user-button>
+        </perfect-scrollbar>
+      </div>
     </side-bar>
-    <div class="home-container">
-      <!-- sidebar right -->
-      <div width="22rem" style="z-index: 3; overflow: hidden;">
-        <!-- Default temblade -->
-        <div>
-          <div class="trending-card">
-            <div class="box">
-              <h2>
-                {{ $t('Trending') }}
-                <div class="description">
-                  {{ $t('TrendingDescription') }}
-                </div>
-              </h2>
 
-              <div class="content">
-                <transition name="slide-fade">
-                  <table>
-                    <tr>
-                      <th>Tops</th>
-                      <th>Tag</th>
-                      <th>Counts</th>
-                    </tr>
-                    <tr
-                      v-for="(value, index) in sortedTrending"
-                      :key="value[0]"
-                    >
-                      <th>{{ index + 1 }}</th>
-                      <th>
-                        #
-                        <nuxt-link
-                          custom
-                          :to="
-                            localePath({
-                              name: 'index-search-top',
-                              query: { search_key: value[0] }
-                            })
-                          "
-                          v-slot="{ href, navigate }"
-                        >
-                          <a
-                            :href="href"
-                            @click="navigate"
-                            class="text-decoration-none"
-                          >
-                            {{ value[0] }}
-                          </a>
-                        </nuxt-link>
-                      </th>
-                      <th>{{ value[1] }}</th>
-                    </tr>
-                  </table>
-                </transition>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="home-container">
       <div class="container">
-        <slider></slider>
+        <!-- <slider></slider> -->
         <post-create :loading="loading_user"></post-create>
-      </div>
-      <div class="mt-3" v-if="posts.length">
-        <post
-          class="mt-3"
-          v-for="(post, index) in posts"
-          :key="`post-component-feed-${index}`"
-          :post="post"
-          :index="index"
-        ></post>
+        <div class="mt-3" v-if="posts.length">
+          <post
+            class="mt-3"
+            v-for="(post, index) in posts"
+            :key="`post-component-feed-${index}`"
+            :post="post"
+            :index="index"
+          ></post>
+        </div>
       </div>
       <!-- <observer @intersect="intersected"></observer> -->
     </div>
@@ -144,6 +47,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { fetchFeedPost } from '@/api'
 import axios from 'axios'
 export default {
   props: ['loading_user'],
@@ -154,11 +58,11 @@ export default {
   },
   middleware: 'auth',
   computed: {
-    ...mapGetters('post', ['posts']),
     ...mapGetters('user', ['currentUser', 'friends', 'isLoggedIn']),
-    ...mapGetters('app', ['trending']),
     sortedTrending() {
-      return Object.entries(this.trending).sort(([, a], [, b]) => b - a)
+      return this.trending
+        ? Object.entries(this.trending).sort(([, a], [, b]) => b - a)
+        : []
     }
   },
   data() {
@@ -167,12 +71,16 @@ export default {
       loadingFriend: false,
       loadingTrending: false,
       error: null,
-      drawer: null
+      drawer: null,
+      page: 1,
+      posts: [],
+      lastPost: false
     }
   },
   mounted() {
-    if (!this.friends.length && this.isLoggedIn) this.fetchFriend()
-    this.fetchTrending()
+    this.fetchPost(1)
+    // if (!this.friends.length && this.isLoggedIn) this.fetchFriend()
+    // this.fetchTrending()
   },
   methods: {
     ...mapActions('post', ['getPost', 'setFeedPage']),
@@ -181,6 +89,22 @@ export default {
     ...mapActions('socket', ['connectSocket']),
     ...mapActions('message', ['getThreshByUser']),
     ...mapActions('app', ['getTrending']),
+    async fetchPost(page = 1) {
+      if (this.lastPost) return
+      this.loading = true
+      try {
+        const { data } = await fetchFeedPost(page)
+        if (data.data.length) {
+          this.posts = [...this.posts, ...data.data]
+          this.page = page + 1
+        } else {
+          this.lastPost = true
+        }
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
+    },
     async fetchTrending() {
       this.loadingTrending = true
       try {
@@ -218,7 +142,7 @@ export default {
       this.loading = false
     },
     intersected() {
-      this.fetchData()
+      this.fetchData(this.page)
     },
     async onLike(e) {
       console.log(e)
@@ -236,155 +160,36 @@ export default {
 </script>
 
 <style lang="scss">
-.sidebar-container-scroll {
-  overflow-y: hidden;
-  height: 100%;
-  &:hover {
-    overflow-y: auto;
-  }
-  &::-webkit-scrollbar {
-    width: 0.35rem;
-  }
-  &::-webkit-scrollbar-track {
-    background: white;
-    -webkit-border-radius: 10px;
-    border-radius: 25px;
-    padding: 10px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: #9c27b0;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-  }
-}
-/* .slide-fade-leave-active below version 2.1.8 */
-.trending-card {
-  position: relative;
-  height: 400px;
-  .box {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    right: 1rem;
-    bottom: 1rem;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    transition: 0.5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.5s ease-in-out;
-    &:hover {
-      transition: 0.5s ease-in-out;
-      transform: translateY(-10px);
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
-      .content {
-        display: flex;
-      }
-      h2 {
-        opacity: 0.8;
-        z-index: 10;
-        transform: translateY(calc(-180px + 50%));
-        font-size: 1.8rem;
-        transition: 0.5s ease-in-out;
-        .description {
-          opacity: 1;
-        }
-      }
-    }
-    h2 {
-      position: absolute;
-      opacity: 0.2;
-      font-size: 3rem;
-      font-weight: 900;
-      transition: 0.5s ease-in-out;
-      text-align: center;
-      .description {
-        font-size: 1rem;
-        font-weight: 500;
-        transition: 0.5s ease-in-out;
-        opacity: 0;
-      }
-    }
+.home-sidebar-left {
+  padding: 5px 10px;
 
-    .content {
-      position: absolute;
-      bottom: 0px;
-      text-align: center;
-      h3 {
-        font-size: 1.8rem;
-        z-index: 1000;
-        color: rgba(255, 255, 255, 0.5);
-        transition: 0.5%;
-      }
-      p {
-        font-size: 1rem;
-        z-index: 1000;
-        transition: 0.5%;
-      }
-    }
-  }
-}
-.suggestion-card {
-  position: relative;
-  height: 300px;
-  bottom: 0px;
-  .box {
+  .home-sidebar-left-top {
+    top: 0;
+    left: 0;
+    height: 50%;
+    width: 100%;
     position: absolute;
-    top: 1rem;
-    left: 1rem;
-    right: 1rem;
-    bottom: 1rem;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    transition: 0.5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.5s ease-in-out;
-    &:hover {
-      transition: 0.5s ease-in-out;
-      transform: translateY(-10px);
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.5);
-      h2 {
-        opacity: 0.8;
-        transform: translateY(calc(-130px + 50%));
-        font-size: 1.8rem;
-        transition: 0.5s ease-in-out;
-      }
-      .content {
-        transform: translateY(20px);
-        transition: 0.5s ease-in-out;
-      }
+    padding: 10px 0;
+
+    .ps {
+      height: 100%;
+      padding: 5px;
     }
-    h2 {
-      position: absolute;
-      opacity: 0.2;
-      font-size: 3rem;
-      font-weight: 900;
-      transition: 0.5s ease-in-out;
-    }
-    .content {
-      text-align: center;
-      transition: 0.5s ease-in-out;
-      width: 100%;
-      padding: 10px;
-      h3 {
-        font-size: 1.225rem;
-        z-index: 1000;
-        color: rgba(255, 255, 255, 0.5);
-        transition: 0.5%;
-      }
-      p {
-        font-size: 1rem;
-        z-index: 1000;
-        transition: 0.5%;
-      }
+  }
+  .home-sidebar-left-bottom {
+    bottom: 0;
+    left: 0;
+    height: 50%;
+    width: 100%;
+    position: absolute;
+    padding: 10px 0;
+    .ps {
+      height: 100%;
+      padding: 5px;
     }
   }
 }
+
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }

@@ -1,12 +1,11 @@
 <template>
   <div class="container">
-    <post :post="post" :comments="comments" :page="true" class="mt-1"></post>
+    <post :post="post" show class="mt-1"></post>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-
 export default {
   async asyncData({ params, store, $http, error }) {
     const postId = params.post_id

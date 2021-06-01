@@ -26,6 +26,17 @@
     margin: 0;
   }
 
+  &.btn-user {
+    display: flex;
+    align-items: center;
+    padding: 5px !important;
+    .btn-user-name {
+      margin-left: 10px;
+      font-weight: 600;
+      color: #000;
+    }
+  }
+
   &.btn-icon {
     // see above for color variations
     height: $icon-size-regular;

@@ -143,10 +143,10 @@ export default {
         right: 0;
         transform: translate(100%, -50%);
       }
-      &:hover {
-        .post-comment-button {
-          display: block;
-        }
+    }
+    &:hover {
+      .post-comment-button {
+        display: block;
       }
     }
 

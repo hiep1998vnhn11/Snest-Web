@@ -49,7 +49,8 @@ export default {
   middleware: 'auth',
   data() {
     return {
-      sidebarBackground: 'vue' //vue|blue|orange|green|red|primary
+      sidebarBackground: 'vue',
+      isSticky: false
     }
   },
   computed: {
