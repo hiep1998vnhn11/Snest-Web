@@ -103,11 +103,6 @@ export default {
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
-    ...mapActions('post', ['createPost']),
-    onClickCreatePost() {
-      $('create-post-dialog').modal('toggle')
-    },
-
     onClickAddImage() {
       this.$refs['create-post-input-image'].click()
     },
@@ -145,11 +140,20 @@ export default {
             formData.append('files[]', image)
           })
         }
-        if (this.post.content) formData.append('content', this.content)
+        if (this.post.content) formData.append('content', this.post.content)
         formData.append('privacy', this.post.privacy)
-        await this.createPost(formData)
+        const response = await this.$axios.$post(
+          `v1/user/post/create`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        this.$emit('created', response.data)
       } catch (err) {
-        console.log(err)
+        this.toastError(err.toString())
       }
       this.visible = 'public'
       this.post.content = ''

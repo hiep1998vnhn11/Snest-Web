@@ -29,7 +29,10 @@
     <div class="home-container">
       <div class="container">
         <!-- <slider></slider> -->
-        <post-create :loading="loading_user"></post-create>
+        <post-create
+          :loading="loading_user"
+          @created="onCreatedPost"
+        ></post-create>
         <div class="mt-3" v-if="posts.length">
           <post
             class="mt-3"
@@ -37,6 +40,7 @@
             :key="`post-component-feed-${index}`"
             :post="post"
             :index="index"
+            :like_status="post.like_status"
           ></post>
         </div>
       </div>
@@ -48,7 +52,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import { fetchFeedPost } from '@/api'
-import axios from 'axios'
 export default {
   props: ['loading_user'],
   head() {
@@ -74,7 +77,8 @@ export default {
       drawer: null,
       page: 1,
       posts: [],
-      lastPost: false
+      lastPost: false,
+      offset: 0
     }
   },
   mounted() {
@@ -89,6 +93,9 @@ export default {
     ...mapActions('socket', ['connectSocket']),
     ...mapActions('message', ['getThreshByUser']),
     ...mapActions('app', ['getTrending']),
+    onCreatedPost(post) {
+      this.posts.unshift(post)
+    },
     async fetchPost(page = 1) {
       if (this.lastPost) return
       this.loading = true

@@ -1,4 +1,3 @@
-import axios from 'axios'
 const state = () => ({
   mini: false,
   drawer: true,

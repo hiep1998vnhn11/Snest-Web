@@ -25,7 +25,26 @@
           </div>
           <perfect-scrollbar>
             <div class="messages-card-content">
-              <loading-chasing :loading="true"></loading-chasing>
+              <loading-chasing :loading="loadingNew"></loading-chasing>
+              <slide-y-down-transition>
+                <div v-if="suggested.length">
+                  <span>
+                    {{ $t('YourAreFollowing') }}
+                  </span>
+                  <div
+                    v-for="user in suggested"
+                    :key="`suggested-user-${user.id}`"
+                  >
+                    <user-button
+                      :profile_photo_path="user.profile_photo_path"
+                      :user_name="user.full_name"
+                      :user_url="user.url"
+                    ></user-button>
+                  </div>
+
+                  {{ suggested }}
+                </div>
+              </slide-y-down-transition>
             </div>
           </perfect-scrollbar>
         </div>
@@ -156,12 +175,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { debounce } from 'lodash'
 export default {
   data() {
     return {
       showNew: false,
+      loadingNew: false,
       showCard: false,
+      list: [],
       search: '',
       message: '',
       suggested: [],
@@ -242,7 +263,24 @@ export default {
   methods: {
     onSendMessage() {
       console.log(this.message)
+    },
+    async searchList(value) {
+      this.loadingNew = true
+      try {
+        const { data } = await this.$axios.$get(
+          `/v1/user/follow?search_key=${value}`
+        )
+        this.suggested = data.data
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loadingNew = false
     }
+  },
+  watch: {
+    search: debounce(function(value) {
+      this.searchList(value)
+    }, 500)
   }
 }
 </script>

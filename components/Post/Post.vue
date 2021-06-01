@@ -28,7 +28,6 @@
           </base-button>
         </div>
       </div>
-
       <div class="post-card-content">
         <div>
           <div>{{ post.content }}</div>
@@ -64,8 +63,13 @@
                 <emoji-group @onClick="onClickEmojiPost" />
               </div>
             </slide-y-down-transition>
-            <base-button block type="neutral" @click="onClickLikePost">
-              Like
+            <base-button
+              block
+              :type="reactionTypes[likeStatus.status]"
+              @click="onClickLikePost"
+            >
+              <img :src="reactionImg[likeStatus.status]" class="mr-3" />
+              {{ reactionName }}
             </base-button>
           </div>
           <div class="col-6">
@@ -158,9 +162,7 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
 import { mapGetters } from 'vuex'
-import { fetchPostComment } from '@/api'
 export default {
   props: {
     post: {
@@ -175,6 +177,7 @@ export default {
     }
   },
   data() {
+    const vm = this
     return {
       hoverLike: false,
       showPost: false,
@@ -188,42 +191,52 @@ export default {
       comments: [],
       page: 1,
       lastComment: false,
-      loading: false
+      loading: false,
+      reactionNames: {
+        2: vm.$t('Love'),
+        3: vm.$t('Haha'),
+        4: vm.$t('Yay'),
+        5: vm.$t('Wow'),
+        6: vm.$t('Sad'),
+        7: vm.$t('Angry')
+      },
+      reactionTypes: {
+        0: 'neutral',
+        1: 'info',
+        2: 'danger',
+        3: 'success',
+        4: 'success',
+        5: 'success',
+        6: 'secondary',
+        7: 'danger'
+      },
+      reactionImg: {
+        0: '/img/icons/reaction/like.svg',
+        1: '/img/icons/reaction/like.svg',
+        2: '/img/icons/reaction/love.svg',
+        3: '/img/icons/reaction/haha.svg',
+        4: '/img/icons/reaction/care.svg',
+        5: '/img/icons/reaction/wow.svg',
+        6: '/img/icons/reaction/sad.svg',
+        7: '/img/icons/reaction/angry.svg'
+      },
+      offset: 0,
+      likeStatus: this.post.like_status || { status: 0 }
     }
   },
   methods: {
-    async onClickEmojiPost(e) {
-      if (!this.currentUser) return
-      if (this.comment.like_status) {
-        const likeStatus = this.comment.like_status.status
-        this.comment.like_status.status = likeStatus === e ? 0 : e
-        if (this.comment.like_status.status === 0 && likeStatus !== 0) {
-          this.comment.liked_count -= 1
-        } else if (this.comment.like_status.status !== 0 && likeStatus === 0)
-          this.comment.liked_count += 1
-      } else {
-        this.comment.like_status = {
-          status: e
-        }
-        if (e > 0) this.comment.liked_count += 1
-      }
-      let url = `/v1/user/post/comment/${this.comment.id}/handle_like`
-      await this.$axios.$post(url, {
-        status: e
-      })
+    onClickEmojiPost(e) {
+      this.handleLikeStatus(e)
     },
-    async getComment(postId = null, page = 1) {
-      if (!postId) return
+    async getComment(postId = null, offset = 0) {
+      if (!postId || this.lastComment) return
       this.loading = true
       try {
-        const { data } = await fetchPostComment(postId, page)
-        if (data.data.length) {
-          this.page = page + 1
-          this.comments = [...data.data.reverse(), ...this.comments]
-          if (!data.next_page_url) this.lastComment = true
-        } else {
-          this.lastComment = true
-        }
+        let requestUrl = `/v1/user/post/${postId}/get_comment?offset=${offset}&limit=5`
+        const { data } = await this.$axios.get(requestUrl)
+        this.offset = this.offset + data.data.length
+        this.comments = [...data.data.reverse(), ...this.comments]
+        if (data.data.length < 5) this.lastComment = true
       } catch (err) {
         this.toastError(err.toString())
       }
@@ -233,11 +246,19 @@ export default {
       this.$refs['post-card-file-input'].click()
     },
     onClickLikePost() {
-      if (!this.comment.like_status || this.comment.like_status.status === 0) {
-        this.onClickLike(1)
-      } else {
-        this.onClickLike(0)
+      this.handleLikeStatus(1)
+    },
+    async handleLikeStatus(status) {
+      const likeStatus = this.likeStatus.status
+      this.likeStatus.status = likeStatus === status ? 0 : status
+      if (this.likeStatus.status === 0 && likeStatus !== 0) {
+        this.post.liked_count -= 1
+      } else if (this.likeStatus.status !== 0 && likeStatus === 0) {
+        this.post.liked_count += 1
+        //TOTO socket
       }
+      let url = `/v1/user/post/${this.post.id}/handle_like`
+      await this.$axios.$post(url, { status })
     },
     onChangeFile(e) {
       var files = e.target.files || e.dataTransfer.files
@@ -260,10 +281,11 @@ export default {
       this.$refs['post-card-file-input'].value = ''
     },
     onClickShowMore() {
-      this.getComment(this.post.uid, this.page)
+      this.getComment(this.post.uid, this.offset)
     },
     onClickShowComment() {
       this.showComment = true
+      if (!this.comments.length) this.onClickShowMore()
       this.$refs['post-card-actions-input'].focus()
       // var postCardRef = this.$refs['post-card']
       // postCardRef.scrollTo({
@@ -273,18 +295,48 @@ export default {
       this.$refs['post-card'].scrollTop = this.$refs['post-card'].scrollHeight
     },
     async onCommentPost() {
+      if (!this.file.img && !this.text) return
+      this.loading = true
       try {
+        var formData = new FormData()
+        if (this.file.img) {
+          formData.append('file', this.img)
+        }
+        if (this.text) formData.append('content', this.text)
+        if (!this.showComment) this.showComment = true
+        const response = await this.$axios.$post(
+          `v1/user/post/${this.post.id}/create_comment`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+        //TOTO socket
+        const comment = { ...response.data, user: this.currentUser }
+        this.comments.push(comment)
+        this.offset = this.offset + 1
+        this.$emit('increateCommentCount')
+        this.post.comments_count = this.post.comments_count + 1
       } catch (err) {
         this.toastError(err.toString())
       }
+      this.file.img = null
+      this.file.name = null
+      this.text = ''
+      this.loading = false
     }
   },
   created() {},
   computed: {
-    ...mapGetters('user', ['currentUser'])
+    ...mapGetters('user', ['currentUser']),
+    reactionName() {
+      return this.reactionNames[this.likeStatus.status] || this.$t('Like')
+    }
   },
   mounted() {
-    if (this.show) this.getComment(this.post.uid, 1)
+    if (this.show) this.getComment(this.post.uid, 0)
   }
 }
 </script>

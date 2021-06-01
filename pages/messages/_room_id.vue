@@ -14,7 +14,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import { VEmojiPicker } from 'v-emoji-picker'
 

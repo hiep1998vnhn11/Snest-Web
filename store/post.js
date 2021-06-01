@@ -1,5 +1,3 @@
-import axios from 'axios'
-import { fetchFeedPost } from '@/api'
 const initialState = () => ({
   posts: [],
   tab: 'home-tab',

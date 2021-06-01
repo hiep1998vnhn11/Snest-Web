@@ -54,17 +54,17 @@ export default {
   },
   computed: {
     tableClass() {
-      return this.type && `table-${this.type}`;
+      return this.type && `table-${this.type}`
     }
   },
   methods: {
     hasValue(item, column) {
-      return item[column.toLowerCase()] !== 'undefined';
+      return item[column ? column.toLowerCase() : null] !== 'undefined'
     },
     itemValue(item, column) {
-      return item[column.toLowerCase()];
+      return item[column ? column.toLowerCase() : null]
     }
   }
-};
+}
 </script>
 <style></style>
