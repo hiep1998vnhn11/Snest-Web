@@ -3,7 +3,7 @@
     <card class="post-card" ref="post-card">
       <div class="post-card-header">
         <base-avatar
-          :src="post.user.profile_photo_path"
+          :src="post.user_profile_photo_path"
           alt="avt"
           outlined
           :size="40"
@@ -14,8 +14,8 @@
           <div>
             <div class="post-card-header-name">
               <user-name
-                :user_url="post.user.url"
-                :user_name="post.user.full_name"
+                :user_url="post.user_url"
+                :user_name="post.user_name"
               ></user-name>
             </div>
             <p>
@@ -44,12 +44,43 @@
       <hr />
       <div class="post-card-reaction">
         <div class="post-card-reaction-count">
-          <div @click="onClickShowLike" v-if="post.liked_count">
+          <div @click="onClickShowLike" v-if="post.likes && post.likes.counter">
             <img
+              v-show="post.likes[1]"
               class="reaction-icon"
-              src="@/assets/img/icons/reaction/like.svg"
+              src="/img/icons/reaction/like.svg"
             />
-            {{ post.liked_count }} {{ $t('PeoplesLikePost') }}
+            <img
+              v-show="post.likes[2]"
+              class="reaction-icon"
+              src="/img/icons/reaction/love.svg"
+            />
+            <img
+              v-show="post.likes[3]"
+              class="reaction-icon"
+              src="/img/icons/reaction/haha.svg"
+            />
+            <img
+              v-show="post.likes[4]"
+              class="reaction-icon"
+              src="/img/icons/reaction/care.svg"
+            />
+            <img
+              v-show="post.likes[5]"
+              class="reaction-icon"
+              src="/img/icons/reaction/wow.svg"
+            />
+            <img
+              v-show="post.likes[6]"
+              class="reaction-icon"
+              src="/img/icons/reaction/sad.svg"
+            />
+            <img
+              v-show="post.likes[7]"
+              class="reaction-icon"
+              src="/img/icons/reaction/angry.svg"
+            />
+            {{ post.likes.counter }} {{ $t('PeoplesLikePost') }}
           </div>
           <div v-else>
             {{ $t('ThisPostNotHaveAnyLike') }}
@@ -109,7 +140,7 @@
         </div>
       </slide-y-down-transition>
 
-      <div class="post-card-actions">
+      <div class="post-card-actions" v-show="post">
         <base-avatar
           :src="currentUser.profile_photo_path"
           alt="avt"
@@ -171,9 +202,7 @@
     </card>
 
     <el-dialog
-      :title="
-        `${likes_count} ${$t('PeopleWhoLikePostOf')} ${post.user.full_name}`
-      "
+      :title="`${likes_count} ${$t('PeopleWhoLikePostOf')} ${post.user_name}`"
       :visible.sync="likeDialog"
       width="500px"
       center
@@ -328,9 +357,14 @@ export default {
       const likeStatus = this.likeStatus.status
       this.likeStatus.status = likeStatus === status ? 0 : status
       if (this.likeStatus.status === 0 && likeStatus !== 0) {
-        this.post.liked_count -= 1
+        this.post.likes.counter -= 1
+        if (this.post.likes[status]) {
+          this.post.likes[status] -= 1
+        } else this.post.likes[status] = 0
       } else if (this.likeStatus.status !== 0 && likeStatus === 0) {
-        this.post.liked_count += 1
+        this.post.likes.counter += 1
+        if (this.post.likes[status]) this.post.likes[status] += 1
+        else this.post.likes[status] = 1
         //TOTO socket
       }
       let url = `/v1/user/post/${this.post.id}/handle_like`
@@ -412,8 +446,14 @@ export default {
     }
   },
   mounted() {
-    if (this.post.content)
-      this.post.content = this.post.content.replace(/\r?\n/g, '<br />')
+    let likes = { counter: 0 }
+    if (this.post.like_group.length) {
+      this.post.like_group.forEach(group => {
+        likes.counter += group.counter
+        likes[group.status] = group.counter
+      })
+    }
+    this.post.likes = likes
     if (this.show) this.getComment(this.post.uid, 0)
   }
 }
@@ -451,25 +491,6 @@ export default {
       cursor: pointer;
     }
   }
-
-  .post-card-actions {
-    display: flex;
-    padding: 5px;
-    .post-card-actions-input-container {
-      margin-left: 10px;
-      padding-right: 10px;
-      flex: 1;
-      .post-card-actions-input {
-        textarea {
-          padding: 10px;
-          border-radius: 15px;
-          height: 30px;
-          resize: none;
-        }
-      }
-    }
-  }
-
   .post-card-preview-img {
     position: relative;
     width: 300px;
@@ -511,5 +532,23 @@ export default {
 .reaction-icon {
   width: 16px;
   height: 16px;
+}
+
+.post-card-actions {
+  display: flex;
+  padding: 5px;
+  .post-card-actions-input-container {
+    margin-left: 10px;
+    padding-right: 10px;
+    flex: 1;
+    .post-card-actions-input {
+      textarea {
+        padding: 10px;
+        border-radius: 15px;
+        height: 30px;
+        resize: none;
+      }
+    }
+  }
 }
 </style>

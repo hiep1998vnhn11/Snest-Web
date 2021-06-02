@@ -25,6 +25,7 @@
           v-on="listeners"
           class="form-control"
           aria-describedby="addon-right addon-left"
+          autocomplete="false"
         />
       </slot>
       <slot name="addonRight">

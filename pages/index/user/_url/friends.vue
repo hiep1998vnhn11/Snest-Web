@@ -43,7 +43,6 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { fetchUserFriend } from '@/api'
 export default {
   data() {
     return {
@@ -75,12 +74,10 @@ export default {
       try {
         this.search = searchKey
         this.type = type
-        const response = await fetchUserFriend(
-          url,
-          page,
-          this.search,
-          this.type
-        )
+        let requestUrl = `/v1/user/${url}/get_friend?page=${page}&limit=12`
+        if (this.type) requestUrl += `&type=${this.type}`
+        if (this.search) requestUrl += `&search_key=${this.search}`
+        const response = await this.$axios.$get(requestUrl)
         if (page !== 1) {
           if (response.data.data.length) {
             this.friends = [...this.friends, ...response.data.data]

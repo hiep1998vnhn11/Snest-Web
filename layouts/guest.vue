@@ -53,15 +53,8 @@
   </div>
 </template>
 <script>
-// import TopNavbar from "./TopNavbar.vue";
-import { ZoomCenterTransition } from 'vue2-transitions'
-
 export default {
-  components: {
-    ZoomCenterTransition
-  },
   middleware: 'guest',
-
   props: {
     backgroundColor: {
       type: String,
@@ -75,7 +68,7 @@ export default {
       pageTransitionDuration: 200,
       year: new Date().getFullYear(),
       pageClass: 'login-page',
-      sidebarBackground: 'vue' //vue|blue|orange|green|red|primary
+      sidebarBackground: 'vue'
     }
   },
   computed: {

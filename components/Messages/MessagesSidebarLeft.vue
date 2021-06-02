@@ -52,7 +52,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { fetchMessageRoom } from '@/api'
 export default {
   props: {},
   data() {
@@ -84,7 +83,9 @@ export default {
       this.search = searchKey || ''
       this.loading = true
       try {
-        const { data } = await fetchMessageRoom(page, this.search)
+        let requestUrl = `/v1/user/room/get?limit=12&page=${page}`
+        if (searchKey) requestUrl += `&search_key=${searchKey}`
+        const { data } = await this.$axios.$get(requestUrl)
         if (page == 1) {
           this.rooms = data.data
         } else {

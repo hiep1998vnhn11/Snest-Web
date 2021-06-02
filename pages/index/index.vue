@@ -59,7 +59,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { fetchFeedPost } from '@/api'
+import { PER_PAGE } from '@/const'
 export default {
   props: ['loading_user'],
   head() {
@@ -108,7 +108,9 @@ export default {
       if (this.lastPost) return
       this.loading = true
       try {
-        const { data } = await fetchFeedPost(page)
+        const { data } = await this.$axios.$get(
+          `/v1/user/post?page=${page}&limit=${PER_PAGE}`
+        )
         if (data.data.length) {
           this.posts = [...this.posts, ...data.data]
           this.page = page + 1
@@ -160,7 +162,6 @@ export default {
       this.fetchPost(this.page)
     },
     async onLike(e) {
-      console.log(e)
       this.$store.commit('post/LIKE_POST', e)
       let url = `/v1/user/post/${e.post.id}/handle_like`
       await this.$axios.$post(url, {
