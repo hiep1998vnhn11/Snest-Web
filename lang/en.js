@@ -23,6 +23,12 @@ export default {
   PeopleWhoLikePostOf: 'People who like post of',
   ThisPostNotHaveAnyComment: 'This post not have any comment',
   Wow: 'Wow',
+  IsFollowing: 'Is following',
+  Messages: 'Messages',
+  AreBlocked: 'Are blocked by this user',
+  RequestingFriend: 'Requesting add friend',
+  PeopleAreFolowing: 'People are folowing',
+
   common: {
     select_lang: 'Language',
     Login: 'Login',

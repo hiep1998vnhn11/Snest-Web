@@ -42,13 +42,13 @@
         v-for="post in posts"
         :key="`user-param-post-${post.id}`"
       ></post>
+      <slide-y-down-transition>
+        <observer v-if="!lastPost" @intersect="intersected"></observer>
+        <div v-else>
+          {{ $t('NotHavePostToFind') }}
+        </div>
+      </slide-y-down-transition>
     </div>
-    <slide-y-down-transition>
-      <observer v-if="!lastPost" @intersect="intersected"></observer>
-      <div v-else>
-        {{ $t('NotHavePostToFind') }}
-      </div>
-    </slide-y-down-transition>
   </div>
 </template>
 

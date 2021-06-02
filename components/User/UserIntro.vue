@@ -4,18 +4,29 @@
       {{ $t('Intro') }}
     </h4>
     <div class="card-description">
-      <p>
+      <div>
         <i class="tim-icons icon-map-big"></i>
-        {{ $t('LiveIn') }} <strong>{{ user.info.live_at }}</strong>
-      </p>
-      <p>
+        {{ $t('LiveIn') }} <strong>{{ user.live_at }}</strong>
+      </div>
+      <div>
         <i class="tim-icons icon-square-pin"></i>
-        {{ $t('From') }} <strong>{{ user.info.from }}</strong>
-      </p>
-      <p>
+        {{ $t('From') }} <strong>{{ user.from }}</strong>
+      </div>
+      <div>
         <i class="tim-icons icon-gift-2"></i>
-        {{ $t('BirthDay') }} <strong>{{ user.info.birthday }}</strong>
-      </p>
+        {{ $t('BirthDay') }} <strong>{{ user.birthday }}</strong>
+      </div>
+      <div>
+        <i class="tim-icons icon-gift-2"></i>
+        {{ user.name }}{{ $t('IsFollowing') }}
+        <strong>{{ user.follows_count }} </strong>
+        {{ $t('People') }}
+      </div>
+      <div>
+        <i class="tim-icons icon-heart-2"></i>
+        <strong>{{ user.followeds_count }}</strong>
+        {{ $t('PeopleAreFolowing') }}
+      </div>
     </div>
   </card>
 </template>

@@ -14,17 +14,21 @@
         {{ $t('SeeAllFriends') }}
       </nuxt-link>
     </div>
-    <div>{{ user.friends_count }} {{ $t('Friends') }}</div>
+    <div>{{ friends_count }} {{ $t('Friends') }}</div>
+    <div v-for="friend in friends" :key="`friend-card-${friend.id}`">
+      {{ Friend }}
+    </div>
   </card>
 </template>
 <script>
 export default {
   props: {
-    user: {
-      type: Object,
-      default() {
-        return {}
-      }
+    friends: {
+      type: Array
+    },
+    friends_count: {
+      type: Number,
+      default: 0
     }
   },
   data() {

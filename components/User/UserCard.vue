@@ -2,7 +2,7 @@
   <card class="card-user">
     <loading-chasing :loading="loading"></loading-chasing>
     <div class="user-cover-photo">
-      <img v-lazy="user.info.profile_background_path" />
+      <img v-lazy="user.profile_background_path" />
     </div>
     <p class="card-text"></p>
     <div class="author">
@@ -11,14 +11,14 @@
         <h5 class="title">{{ user.first_name }} {{ user.last_name }}</h5>
       </a>
       <slide-y-down-transition>
-        <p class="description" v-if="user.info.story" v-show="!editStory">
-          {{ user.info.story }}
+        <p class="description" v-if="user.story" v-show="!editStory">
+          {{ user.story }}
         </p>
       </slide-y-down-transition>
       <slide-y-down-transition>
         <div v-if="currentUser.id === user.id">
           <a href="javascript:void(0)" @click="onSelectStory" v-if="!editStory">
-            {{ user.info.story ? $t('EditStory') : $t('AddStory') }}
+            {{ user.story ? $t('EditStory') : $t('AddStory') }}
           </a>
           <div v-if="editStory">
             <div class="form-floating">
@@ -47,12 +47,19 @@
       </slide-y-down-transition>
     </div>
     <div slot="footer" class="button-container">
-      <el-tabs v-model="tab" @tab-click="handleClick">
-        <el-tab-pane :label="$t('Posts')" name=""></el-tab-pane>
+      <el-tabs>
+        <el-tab-pane
+          :label="$t('Posts')"
+          name="main"
+          :to="localePath({ name: 'index-user-url' })"
+          active
+        >
+        </el-tab-pane>
         <el-tab-pane :label="$t('About')" name="about"></el-tab-pane>
         <el-tab-pane :label="$t('Friends')" name="friends"></el-tab-pane>
-        <el-tab-pane :label="$t('More')" name="More"></el-tab-pane>
+        <el-tab-pane :label="$t('More')" name="more"></el-tab-pane>
       </el-tabs>
+      <div class=""></div>
     </div>
   </card>
 </template>
@@ -66,13 +73,14 @@ export default {
     }
   },
   data() {
+    const vm = this
     return {
       tabIndex: 1,
       editStory: false,
       displayStory: '',
       story: '',
       loading: false,
-      tab: ''
+      tab: 'main'
     }
   },
   mounted() {},
@@ -85,16 +93,14 @@ export default {
   },
   methods: {
     onSelectStory() {
-      this.story = this.user.info.story
+      this.story = this.user.story
       this.editStory = true
     },
     onCancelStory() {
       this.story = ''
       this.editStory = false
     },
-    handleClick(tab, event) {
-      console.log(tab, event)
-    },
+    handleClick() {},
     async handleChangeStory() {
       this.loading = true
       try {
@@ -136,7 +142,7 @@ export default {
   left: 0;
 
   img {
-    max-height: 400px;
+    max-height: 200px;
     width: 100%;
   }
 }
