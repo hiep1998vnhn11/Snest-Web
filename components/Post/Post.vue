@@ -22,7 +22,6 @@
               {{ post.created_at | relativeTime }}
             </p>
           </div>
-
           <base-button type="neutral" size="sm" icon round>
             <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
           </base-button>
@@ -43,15 +42,23 @@
         </div>
       </div>
       <hr />
-
       <div class="post-card-reaction">
         <div class="post-card-reaction-count">
-          <div>
-            <img src="@/assets/img/icons/reaction/like.svg" />
+          <div @click="onClickShowLike" v-if="post.liked_count">
+            <img
+              class="reaction-icon"
+              src="@/assets/img/icons/reaction/like.svg"
+            />
             {{ post.liked_count }} {{ $t('PeoplesLikePost') }}
           </div>
-          <div @click="onClickShowComment">
+          <div v-else>
+            {{ $t('ThisPostNotHaveAnyLike') }}
+          </div>
+          <div @click="onClickShowComment" v-if="post.comments_count">
             {{ post.comments_count }} {{ $t('CommentsInPost') }}
+          </div>
+          <div v-else>
+            {{ $t('ThisPostNotHaveAnyComment') }}
           </div>
         </div>
 
@@ -68,7 +75,10 @@
               :type="reactionTypes[likeStatus.status]"
               @click="onClickLikePost"
             >
-              <img :src="reactionImg[likeStatus.status]" class="mr-3" />
+              <img
+                class="reaction-icon mr-3"
+                :src="reactionImg[likeStatus.status]"
+              />
               {{ reactionName }}
             </base-button>
           </div>
@@ -159,10 +169,51 @@
         {{ file.name }}
       </div>
     </card>
+
+    <el-dialog
+      :title="
+        `${likes_count} ${$t('PeopleWhoLikePostOf')} ${post.user.full_name}`
+      "
+      :visible.sync="likeDialog"
+      width="500px"
+      center
+      @closed="onCloseLikeDialog"
+    >
+      <slide-y-down-transition>
+        <div class="post-likes-dialog-content" v-if="likes_count">
+          <perfect-scrollbar>
+            <div
+              class="row mx-0"
+              v-for="like in likes"
+              :key="`people-like-${like.id}`"
+            >
+              <div class="col col-8">
+                <user-button
+                  :user_name="like.user_name"
+                  :user_url="like.user_url"
+                  :profile_photo_path="like.user_phofile_photo_path"
+                >
+                </user-button>
+              </div>
+              <div class="col col-4">
+                <img class="mr-3" :src="reactionImg[like.status]" />
+                {{ reactionNames[like.status] }}
+              </div>
+            </div>
+          </perfect-scrollbar>
+        </div>
+        <div v-else-if="!loadingLike">
+          {{ $t('ThisPostNotHaveAnyLike') }}
+        </div>
+      </slide-y-down-transition>
+
+      <loading-chasing :loading="loadingLike"></loading-chasing>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { DEFAULT_PER_PAGE } from '@/const'
 export default {
   props: {
     post: {
@@ -180,7 +231,12 @@ export default {
     const vm = this
     return {
       hoverLike: false,
+      likeDialog: false,
+      loadingLike: false,
+      likes: [],
+      likes_count: 0,
       showPost: false,
+      likeOffset: 0,
       showComment: this.show,
       text: '',
       typing: false,
@@ -227,6 +283,26 @@ export default {
   methods: {
     onClickEmojiPost(e) {
       this.handleLikeStatus(e)
+    },
+    async onClickShowLike() {
+      this.likeDialog = true
+      this.loadingLike = true
+      try {
+        const { data } = await this.$axios.$get(
+          `/v1/user/post/${this.post.uid}/get_like?offset=${this.offset}`
+        )
+        this.likes = data.likes
+        this.likes_count = data.likes_count
+        this.likeOffset += DEFAULT_PER_PAGE
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loadingLike = false
+    },
+    onCloseLikeDialog() {
+      this.likes = []
+      this.likes_count = 0
+      this.likeOffset = 0
     },
     async getComment(postId = null, offset = 0) {
       if (!postId || this.lastComment) return
@@ -420,5 +496,20 @@ export default {
       }
     }
   }
+}
+
+.post-likes-dialog-content {
+  .ps {
+    height: 500px;
+    .post-like-row {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+.reaction-icon {
+  width: 16px;
+  height: 16px;
 }
 </style>

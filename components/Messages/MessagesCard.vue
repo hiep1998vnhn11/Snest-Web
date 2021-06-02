@@ -41,8 +41,10 @@
                       :user_url="user.url"
                     ></user-button>
                   </div>
-
                   {{ suggested }}
+                </div>
+                <div v-else-if="notHaveNew && !loading">
+                  {{ $t('NotFoundAnyPeople') }}
                 </div>
               </slide-y-down-transition>
             </div>
@@ -182,6 +184,7 @@ export default {
       showNew: false,
       loadingNew: false,
       showCard: false,
+      notHaveNew: false,
       list: [],
       search: '',
       message: '',
@@ -266,11 +269,13 @@ export default {
     },
     async searchList(value) {
       this.loadingNew = true
+      this.notHaveNew = false
       try {
         const { data } = await this.$axios.$get(
           `/v1/user/follow?search_key=${value}`
         )
         this.suggested = data.data
+        if (!data.data.length) this.notHaveNew = true
       } catch (err) {
         this.toastError(err.toString())
       }
