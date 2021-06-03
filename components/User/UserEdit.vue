@@ -5,15 +5,24 @@
     </h5>
     <form @submit.prevent="updateProfile">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-10">
           <base-input
             type="text"
-            label="Company"
+            :label="$t('UrlToYourProfile')"
             :disabled="true"
-            placeholder="Company"
-            v-model="user.company"
+            v-model="user.url"
           >
           </base-input>
+        </div>
+        <div class="col-md-2 change-url-button-container">
+          <base-button
+            type="success"
+            block
+            class="change-url-button"
+            @click="onClickChangeUrl"
+          >
+            {{ $t('Change') }}
+          </base-button>
         </div>
         <div class="col-md-3">
           <base-input
@@ -115,6 +124,45 @@
         Save
       </base-button>
     </form>
+
+    <el-dialog
+      :title="$t('ReqestingChangeUrl')"
+      :visible.sync="url.dialog"
+      width="500px"
+      center
+    >
+      <loading-chasing :loading="url.loading"></loading-chasing>
+      <span>
+        It should be noted that the content will not be aligned in center by
+        default
+      </span>
+      <div class="row">
+        <div class="col-md-8">
+          <base-input
+            placeholder="Url"
+            v-model="url.text"
+            class="mt-1"
+            :error="url.error"
+            @change="url.error = ''"
+            success="sae"
+          >
+          </base-input>
+        </div>
+        <div class="col-md-4">
+          <button type="success" class="btn-success btn" @click="checkUrl">
+            {{ $t('Check') }}
+          </button>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <base-button @click="url.dialog = false">
+          {{ $t('Cancel') }}
+        </base-button>
+        <base-button type="primary" @click="url.dialog = false">
+          {{ $t('Confirm') }}
+        </base-button>
+      </span>
+    </el-dialog>
   </card>
 </template>
 <script>
@@ -144,12 +192,37 @@ export default {
         show_from: '',
         jobs: [],
         educates: []
-      }
+      },
+      url: {
+        text: '',
+        dialog: false,
+        loading: false,
+        error: ''
+      },
+      loading: false
     }
   },
   methods: {
     updateProfile() {
       alert('Your data: ' + JSON.stringify(this.user))
+    },
+    async checkUrl() {
+      if (!this.url.text) return
+      this.url.loading = true
+      try {
+        await this.$axios.$post(`/v1/user/check-url`, {
+          url: this.url.text
+        })
+        this.url.error = ''
+        this.toastSuccess(this.$t('ThisUrlCanBeUsed'))
+      } catch (err) {
+        this.url.error = this.$t('ValidUrl')
+      }
+      this.url.loading = false
+    },
+    onClickChangeUrl() {
+      this.url.dialog = true
+      this.url.text = this.currentUser.url
     }
   },
   computed: {
@@ -165,4 +238,9 @@ export default {
   }
 }
 </script>
-<style></style>
+<style lang="scss" scoped>
+.change-url-button-container {
+  display: flex;
+  align-items: center;
+}
+</style>

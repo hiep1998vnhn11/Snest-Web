@@ -46,20 +46,16 @@
         </div>
       </slide-y-down-transition>
     </div>
-    <div slot="footer" class="button-container">
-      <el-tabs>
-        <el-tab-pane
-          :label="$t('Posts')"
-          name="main"
-          :to="localePath({ name: 'index-user-url' })"
-          active
-        >
-        </el-tab-pane>
-        <el-tab-pane :label="$t('About')" name="about"></el-tab-pane>
-        <el-tab-pane :label="$t('Friends')" name="friends"></el-tab-pane>
-        <el-tab-pane :label="$t('More')" name="more"></el-tab-pane>
-      </el-tabs>
-      <div class=""></div>
+    <div class="tab-container">
+      <router-link
+        :to="localePath({ name: tab.name, params: { url: $route.params.url } })"
+        v-for="tab in tabs"
+        :key="`user-tab-${tab.name}`"
+      >
+        <base-button>
+          {{ tab.label }}
+        </base-button>
+      </router-link>
     </div>
   </card>
 </template>
@@ -80,7 +76,13 @@ export default {
       displayStory: '',
       story: '',
       loading: false,
-      tab: 'main'
+      tabs: [
+        { name: 'index-user-url', label: 'Posts' },
+        { name: 'index-user-url-about', label: 'About' },
+        { name: 'index-user-url-friends', label: 'Friends' },
+        { name: 'index-user-url-more', label: 'More' },
+        { name: 'index-user-url-edit', label: 'Edit', require: true }
+      ]
     }
   },
   mounted() {},
@@ -145,5 +147,9 @@ export default {
     max-height: 200px;
     width: 100%;
   }
+}
+
+.tab-container {
+  display: flex;
 }
 </style>

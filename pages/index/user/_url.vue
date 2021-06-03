@@ -4,7 +4,6 @@
       <div class="row">
         <div class="col-md-8">
           <user-card :user="user"> </user-card>
-          <user-edit :user="user"> </user-edit>
           <nuxt-child></nuxt-child>
         </div>
         <div class="col-md-4">

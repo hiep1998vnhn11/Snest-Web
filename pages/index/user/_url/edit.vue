@@ -1,15 +1,16 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8"><user-edit :currentUser="user"> </user-edit></div>
-      <div class="col-md-4"><user-card> </user-card></div>
-    </div>
+  <div>
+    <user-edit> </user-edit>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'user',
-  middleware: 'checkUrl'
+  middleware: 'checkUrl',
+  computed: {
+    ...mapGetters('user', ['currentUser'])
+  }
 }
 </script>
 <style></style>

@@ -1,11 +1,11 @@
 .form-group.has-danger .error,
 .input-group.has-danger .error {
-  color: $danger-states;
+  color: $danger-states !important;
 }
 
 .form-group.has-success .error,
 .input-group.has-success .error {
-  color: $success;
+  color: $success !important;
 }
 
 @include form-control-lg-padding(

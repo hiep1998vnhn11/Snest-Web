@@ -4,9 +4,7 @@
     <h4 class="title">
       {{ $t('Actions') }}
     </h4>
-    <div class="card-description">
-      {{ followStatus }}
-    </div>
+    <div class="card-description"></div>
     <slide-y-up-transition>
       <base-button v-if="!followStatus.status" block @click="onFollow(true)">
         <i class="tim-icons icon-user-run"></i>
@@ -25,15 +23,13 @@
     <el-popover
       placement="bottom"
       width="300"
-      trigger="manual"
-      v-model="friendPopover"
-      style="padding: 2px !impotant"
+      trigger="click"
+      popper-class="popover-default"
     >
       <base-button
         :type="buttonsType[friendStatus.status].type"
         block
         slot="reference"
-        @click="friendPopover = !friendPopover"
       >
         <i
           :class="buttonsType[friendStatus.status].icon"
@@ -42,12 +38,54 @@
         {{ buttonsType[friendStatus.status].text }}
       </base-button>
       <div>
-        <base-button size="sm" block>
-          Un friend
+        <base-button type="danger" block v-if="friendStatus.status !== 3">
+          {{ $t('Favorite') }}
+        </base-button>
+        <base-button
+          type="danger"
+          block
+          v-if="friendStatus.status === 1"
+          @click="handleFriend(0)"
+        >
+          {{ $t('Unfriend') }}
+        </base-button>
+        <base-button
+          type="success"
+          block
+          v-if="friendStatus.status === 0"
+          @click="handleFriend(2)"
+        >
+          {{ $t('AddFriend') }}
+        </base-button>
+        <base-button
+          type="primary"
+          block
+          v-if="friendStatus.status === 2"
+          @click="handleFriend('cancel-request')"
+        >
+          {{ $t('CancelRequesting') }}
+        </base-button>
+        <base-button
+          type="info"
+          block
+          v-if="friendStatus.status === 2"
+          @click="handleFriend('accept')"
+        >
+          {{ $t('AcceptFriend') }}
+        </base-button>
+        <base-button
+          type="neutral"
+          block
+          v-if="friendStatus.status === 2"
+          @click="handleFriend('cancel-friend')"
+        >
+          {{ $t('RefuseFriend') }}
+        </base-button>
+        <base-button type="danger" block @click="handleFriend(3)">
+          {{ $t('BlockThisUser') }}
         </base-button>
       </div>
     </el-popover>
-    {{ friendStatus }}
   </card>
 </template>
 <script>
@@ -88,7 +126,7 @@ export default {
         },
         3: {
           type: 'primary',
-          text: vm.$t('AreBlocked'),
+          text: vm.$t('YouBlockedThisUser'),
           icon: 'fa fa-user-times'
         }
       }
@@ -108,6 +146,28 @@ export default {
         Object.keys(response.data.data).forEach(
           key => (this.followStatus[key] = response.data.data[key])
         )
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
+    },
+
+    async handleFriend(status) {
+      let statusArray = {
+        0: 'unfriend',
+        2: 'add-friend',
+        3: 'block-friend',
+        cancel: 'cancel-friend',
+        'cancel-request': 'cancel-friend-request',
+        accept: 'accept-friend'
+      }
+      if (!statusArray[status]) return
+      this.loading = true
+      try {
+        const { data } = await this.$axios.$post(
+          `/v1/user/${this.$route.params.url}/${statusArray[status]}`
+        )
+        Object.keys(data).forEach(key => (this.friendStatus[key] = data[key]))
       } catch (err) {
         this.toastError(err.toString())
       }

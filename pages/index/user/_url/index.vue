@@ -4,37 +4,6 @@
       v-if="user && currentUser && user.id === currentUser.id"
       class="mt-3"
     ></post-create>
-    <card class="card-post-filter">
-      <div class="card-post-filter-title">
-        {{ $t('Posts') }}
-        <base-button @click="filterDialog = true" type="neutral" icon round>
-          {{ $t('profile.Filters') }}
-        </base-button>
-        <v-btn class="text-capitalize danger--text rounded-lg" outlined text>
-          {{ $t('profile.ManagePosts') }}
-        </v-btn>
-      </div>
-      <div class="row no-gutters pa-1">
-        <div class="col-6">
-          <v-btn
-            class="text-capitalize"
-            block
-            text
-            :to="localePath({ name: 'index-user-url' })"
-            active-class="primary--text"
-          >
-            <v-icon class="mr-3">mdi-view-list</v-icon>
-            {{ $t('profile.ListView') }}
-          </v-btn>
-        </div>
-        <div class="col-6">
-          <v-btn class="text-capitalize" block text>
-            <v-icon class="mr-3">mdi-view-grid</v-icon>
-            {{ $t('profile.GridView') }}
-          </v-btn>
-        </div>
-      </div>
-    </card>
     <loading-chasing :loading="loading"></loading-chasing>
     <div v-if="posts.length">
       <post
