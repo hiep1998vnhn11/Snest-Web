@@ -70,7 +70,7 @@ const actions = {
   },
   async logout({ commit }) {
     await this.$axios.$post('/auth/logout')
-    Cookies.remove('access_token')
+    this.$cookies.remove('access_token')
     commit('DESTROY_TOKEN')
   },
   async register({}, user) {
@@ -91,7 +91,7 @@ const actions = {
     const url = '/auth/token/refresh'
     const response = await this.$axios.$post(url)
     const token = response.data.access_token
-    Cookies.set('access_token', token, { expires: 1 })
+    this.$cookies.set('access_token', token, { expires: 1 })
     commit('SET_ACCESS_TOKEN', token)
   }
 }

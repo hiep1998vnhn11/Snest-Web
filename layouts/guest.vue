@@ -1,9 +1,6 @@
 <template>
-  <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
+  <div class="" :class="{ 'nav-open': $sidebar.showSidebar }">
     <notifications></notifications>
-    <layout-sidebar-share :background-color.sync="sidebarBackground">
-    </layout-sidebar-share>
-
     <base-nav
       v-model="showMenu"
       type="white"
@@ -42,10 +39,9 @@
       </ul>
     </base-nav>
 
-    <div class="main-panel" :data="sidebarBackground">
-      <div class="nonav-content guest">
+    <div class="guest">
+      <div class="guest-content">
         <zoom-center-transition :duration="200" mode="out-in">
-          <!-- your content here -->
           <Nuxt></Nuxt>
         </zoom-center-transition>
       </div>
@@ -55,12 +51,6 @@
 <script>
 export default {
   middleware: 'guest',
-  props: {
-    backgroundColor: {
-      type: String,
-      default: 'black'
-    }
-  },
   data() {
     return {
       showMenu: false,
@@ -114,42 +104,14 @@ export default {
 }
 </script>
 <style lang="scss">
-.navbar.auth-navbar {
-  top: 0;
-}
-
-$scaleSize: 0.8;
-@keyframes zoomIn8 {
-  from {
-    opacity: 0;
-    transform: scale3d($scaleSize, $scaleSize, $scaleSize);
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.wrapper-full-page .zoomIn {
-  animation-name: zoomIn8;
-}
-
-@keyframes zoomOut8 {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    transform: scale3d($scaleSize, $scaleSize, $scaleSize);
-  }
-}
-
-.wrapper-full-page .zoomOut {
-  animation-name: zoomOut8;
-}
-
 .guest {
+  height: 100vh;
+  width: 100%;
+  display: flex;
   background-image: url('/img/guest-background.jpeg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  justify-content: center;
+  align-items: center;
 }
 </style>

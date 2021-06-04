@@ -61,27 +61,30 @@
         <template slot="title">
           <div class="notification d-none d-lg-block d-xl-block"></div>
           <i class="tim-icons icon-bell-55"></i>
-          <p class="d-lg-none">Notifications</p>
+          <p class="d-lg-none">
+            {{ $t('Notifications') }}
+          </p>
         </template>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">
-            Mike John responded to your email
-          </a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">You have 5 more tasks</a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item"
-            >Your friend Michael is in town</a
-          >
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Another notification</a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Another one</a>
-        </li>
+        <div class="scroll-dropdown-container">
+          <dlv class="scroll-header">
+            <div class="title">
+              {{ $t('Notifications') }}
+            </div>
+            <nuxt-link :to="localePath({ name: 'messages-room_id' })">
+              <base-button icon round size="sm" class="icon">
+                <i class="tim-icons icon-alert-circle-exc"></i>
+              </base-button>
+            </nuxt-link>
+          </dlv>
+          <perfect-scrollbar>
+            <li class="nav-link" v-for="n in 21" :key="`notification-${n}`">
+              <a href="#" class="nav-item dropdown-item">
+                Mike John responded to your email Mike John responded to your
+                email
+              </a>
+            </li>
+          </perfect-scrollbar>
+        </div>
       </base-dropdown>
       <base-dropdown
         tag="li"
@@ -95,25 +98,25 @@
           <i class="tim-icons icon-chat-33"></i>
           <p class="d-lg-none">Messages</p>
         </template>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">
-            Mike John responded to your email
-          </a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">You have 5 more tasks</a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item"
-            >Your friend Michael is in town</a
-          >
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Another notification</a>
-        </li>
-        <li class="nav-link">
-          <a href="#" class="nav-item dropdown-item">Another one</a>
-        </li>
+        <div class="scroll-dropdown-container">
+          <dlv class="scroll-header">
+            <div class="title">
+              {{ $t('Messages') }}
+            </div>
+            <nuxt-link :to="localePath({ name: 'messages' })">
+              <base-button icon round size="sm" class="icon">
+                <i class="tim-icons icon-bullet-list-67"></i>
+              </base-button>
+            </nuxt-link>
+          </dlv>
+          <perfect-scrollbar>
+            <li class="nav-link">
+              <a href="#" class="nav-item dropdown-item">
+                Mike John responded to your email
+              </a>
+            </li>
+          </perfect-scrollbar>
+        </div>
       </base-dropdown>
       <base-dropdown
         tag="li"
@@ -206,8 +209,39 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .top-navbar {
   top: 0px;
+}
+
+#message-dropdown-container {
+}
+
+.scroll-dropdown-container {
+  height: 600px;
+  position: relative;
+  padding-top: 50px;
+  .scroll-header {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    .title {
+      font-weight: bold;
+    }
+    .icon {
+      padding-top: 3px;
+
+      font-size: 1.2rem;
+    }
+  }
+  .ps {
+    height: 100%;
+  }
 }
 </style>

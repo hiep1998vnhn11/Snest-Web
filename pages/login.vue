@@ -1,75 +1,69 @@
 <template>
   <div>
     <div class="container">
-      <div class="col-lg-4 col-md-6 mt-3 ml-auto mr-auto">
-        <form @submit.prevent="handleSubmit()">
-          <card class="card-login card-white">
-            <template slot="header">
-              <img src="/img/card-primary.png" alt="" />
-              <h1 class="card-title">
-                {{ $t('common.Login') }}
-              </h1>
-            </template>
-
-            <div>
-              <base-input
-                required
-                :label="$t('EmailOrUsername')"
-                v-model="user.email"
-                type="email"
-                :placeholder="$t('common.EmailOrUsername')"
-                addon-left-icon="tim-icons icon-email-85"
-              >
-              </base-input>
-              <validation-error :errors="123" />
-
-              <base-input
-                required
-                :label="$t('Password')"
-                v-model="user.password"
-                :placeholder="$t('common.Password')"
-                addon-left-icon="tim-icons icon-lock-circle"
-                type="password"
-              >
-              </base-input>
-              <validation-error :errors="123" />
+      <form @submit.prevent="handleSubmit()">
+        <card class="card-login card-white">
+          <template slot="header">
+            <img src="@/assets/img/login-panel.jpeg" alt="login-panel" />
+            <h1 class="card-title">
+              {{ $t('common.Login') }}
+            </h1>
+          </template>
+          <div>
+            <base-input
+              required
+              :label="$t('EmailOrUsername')"
+              v-model="user.email"
+              type="email"
+              :placeholder="$t('common.EmailOrUsername')"
+              addon-left-icon="tim-icons icon-email-85"
+            >
+            </base-input>
+            <validation-error :errors="123" />
+            <base-input
+              required
+              :label="$t('Password')"
+              v-model="user.password"
+              :placeholder="$t('common.Password')"
+              addon-left-icon="tim-icons icon-lock-circle"
+              type="password"
+            >
+            </base-input>
+            <validation-error :errors="123" />
+          </div>
+          <div slot="footer">
+            <base-button
+              native-type="submit"
+              type="primary"
+              class="mb-3"
+              size="lg"
+              block
+            >
+              {{ $t('Login') }}
+            </base-button>
+            <div class="pull-left">
+              <h6>
+                <nuxt-link
+                  class="link footer-link"
+                  :to="localePath({ name: 'register' })"
+                >
+                  {{ $t('common.register') }}
+                </nuxt-link>
+              </h6>
             </div>
-
-            <div slot="footer">
-              <base-button
-                native-type="submit"
-                type="primary"
-                class="mb-3"
-                size="lg"
-                block
-              >
-                {{ $t('Login') }}
-              </base-button>
-              <div class="pull-left">
-                <h6>
-                  <nuxt-link
-                    class="link footer-link"
-                    :to="localePath({ name: 'register' })"
-                  >
-                    {{ $t('common.register') }}
-                  </nuxt-link>
-                </h6>
-              </div>
-
-              <div class="pull-right">
-                <h6>
-                  <nuxt-link
-                    :to="localePath({ name: 'password-reset' })"
-                    class="link footer-link"
-                  >
-                    {{ $t('common.ForgotPassword') }} ?
-                  </nuxt-link>
-                </h6>
-              </div>
+            <div class="pull-right">
+              <h6>
+                <nuxt-link
+                  :to="localePath({ name: 'password-reset' })"
+                  class="link footer-link"
+                >
+                  {{ $t('common.ForgotPassword') }} ?
+                </nuxt-link>
+              </h6>
             </div>
-          </card>
-        </form>
-      </div>
+          </div>
+        </card>
+      </form>
     </div>
   </div>
 </template>
@@ -113,9 +107,26 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .navbar-nav .nav-item p {
   line-height: inherit;
   margin-left: 5px;
+}
+.card-login {
+  width: 100%;
+  padding-top: 230px;
+  position: relative;
+  img {
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 230px;
+    position: absolute;
+  }
+  .card-title {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+  }
 }
 </style>
