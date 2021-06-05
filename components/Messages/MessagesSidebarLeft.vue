@@ -37,12 +37,7 @@
             <div v-for="room in rooms" :key="`message-button-room-${room.id}`">
               <messages-user :user="room"></messages-user>
             </div>
-
-            <messages-user
-              :user="currentUser"
-              v-for="n in 20"
-              :key="n"
-            ></messages-user>
+            <messages-user :user="currentUser"></messages-user>
           </div>
         </div>
       </perfect-scrollbar>

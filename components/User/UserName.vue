@@ -92,6 +92,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
     user_name: {
@@ -113,6 +114,10 @@ export default {
   methods: {
     async onHover() {
       if (this.info.url) return
+      if (this.user_url === this.currentUser.url) {
+        this.info = this.currentUser
+        return
+      }
       this.loading = true
       try {
         const response = await this.$axios.$get(
@@ -125,8 +130,6 @@ export default {
       this.loading = false
     }
   },
-  created() {},
-  computed: {},
-  mounted() {}
+  computed: mapGetters('user', ['currentUser'])
 }
 </script>

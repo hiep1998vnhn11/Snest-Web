@@ -387,7 +387,7 @@ export default {
     onRemoveFile() {
       this.file.img = null
       this.file.name = null
-      this.$refs['post-card-preview-img'].src
+      this.$refs['post-card-preview-img'].src = ''
       this.$refs['post-card-file-input'].value = ''
     },
     onClickShowMore() {

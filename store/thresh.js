@@ -1,16 +1,19 @@
 const initialState = () => ({
   threshes: [],
+  room: null,
   page: 1,
   participant: null
 })
 const state = () => ({
   threshes: [],
   page: 1,
+  room: null,
   participant: null
 })
 
 const getters = {
   threshes: state => state.threshes,
+  room: state => state.room,
   participant: state => state.participant
 }
 
@@ -34,6 +37,12 @@ const actions = {
     let url = `/v1/user/thresh/${roomId}/participant/get`
     const response = await this.$axios.$post(url)
     commit('SET_PARTICIPANT', response.data)
+  },
+  async getRoom({ commit }, roomId) {
+    const { data } = await this.$axios.$get(
+      `/v1/user/message/room/${roomId}/get-type`
+    )
+    commit('SET_ROOM', data)
   }
 }
 
@@ -41,6 +50,10 @@ const mutations = {
   SET_THRESHES: function(state, threshes) {
     state.page += 1
     state.threshes = [...state.threshes, ...threshes]
+  },
+  SET_ROOM: function(state, data) {
+    state.room = data.room
+    state.participant = data.participant
   },
   SET_THRESH_PAGE: function(state) {
     state.page = 1

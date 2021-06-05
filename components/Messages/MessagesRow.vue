@@ -1,28 +1,33 @@
 <template>
   <div class="message-row" :class="{ 'is-current': isCurrent }">
     <div>
-      <base-avatar outlined :size="35" alt="avt" v-if="!isCurrent">
+      <base-avatar outlined :size="25" alt="avt" v-if="!isCurrent">
       </base-avatar>
     </div>
     <div class="message-row-content-cover">
       <div class="message-row-content-container">
         <div class="message-row-content" :class="{ 'is-current': isCurrent }">
-          <div>
-            {{ message.content }}
+          <div
+            v-html="message.content"
+            class="message-row-content__pre-line"
+          ></div>
+          <div v-if="message.media">
+            <img
+              v-if="types[message.media_type]"
+              v-lazy="message.media"
+              :class="{ 'is-card': isCard }"
+            />
+            <a :href="message.media" target="_blank" v-else>
+              {{ message.media_name }}
+            </a>
           </div>
-          <img
-            v-lazy="
-              'https://i.pinimg.com/originals/d4/bc/c4/d4bcc46e371e194b20854acd1ba3a86b.jpg'
-            "
-            :class="{ 'is-card': isCard }"
-          />
           <div
             class="message-row-content-button"
             :class="{
               'is-current': isCurrent
             }"
           >
-            <base-button icon round type="success">
+            <base-button icon round type="success" size="sm">
               <i class="tim-icons icon-sound-wave"></i>
             </base-button>
           </div>
@@ -31,7 +36,7 @@
         <div class="spacer"></div>
       </div>
       <div class="message-row-content-time">
-        Thứ 2 tuần rồi
+        {{ message.updated_at | relativeTime }}
       </div>
     </div>
   </div>
@@ -57,7 +62,15 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      types: {
+        png: 1,
+        gif: 1,
+        jpg: 1,
+        jpeg: 1,
+        svg: 1
+      }
+    }
   },
   methods: {},
   created() {},
@@ -87,16 +100,21 @@ export default {
         border-radius: 10px;
         border: solid 1px rgba(0, 0, 0, 0.1);
         background: whitesmoke;
-        padding: 7px;
+        padding: 7px 15px 7px 15px;
         word-wrap: break-word;
         max-width: 100%;
         position: relative;
+
+        .message-row-content__pre-line {
+          white-space: pre-line;
+        }
 
         img {
           border-radius: 5px;
           max-width: 300px;
           margin-top: 10px;
           border: solid 1px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
           &.is-card {
             max-width: 100%;
           }

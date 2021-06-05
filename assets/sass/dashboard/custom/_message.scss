@@ -8,30 +8,23 @@ $additional-width: $message-right-width + $message-left-width;
 $message-navbar-height: 70px;
 .message-layout {
   position: relative;
+  height: 100vh;
   .message-layout-content {
     position: relative;
     margin-left: $message-left-width;
     // margin-top: $message-navbar-height;
+    min-width: 720px;
     width: calc(100% - #{$additional-width});
     transition: width 0.3s;
-    & > .ps {
-      height: calc(100vh - 140px);
-    }
+    height: calc(100vh - 70px);
     @include media-breakpoint-down(md) {
       margin-left: $message-left-width-m !important;
       width: calc(100% - #{$message-left-width-m}) !important;
     }
-    // @include media-breakpoint-up(lg) {
-    //   width: calc(100% - #{$message-left-width}) !important;
-    // }
-    min-width: 720px;
-    height: 100vh;
   }
   .message-layout-wrapper {
-    padding: 15px;
-    // @include media-breakpoint-down(md) {
-    //   padding: 20px 38px 100px 38px !important;
-    // }
+    height: 100%;
+    position: relative;
   }
 }
 

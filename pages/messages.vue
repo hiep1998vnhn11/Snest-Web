@@ -63,7 +63,7 @@ export default {
     }
   },
   mounted() {
-    if (!this.threshes.length) this.fetchThresh()
+    // if (!this.threshes.length) this.fetchThresh()
   }
 }
 </script>

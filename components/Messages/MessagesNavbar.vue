@@ -1,20 +1,40 @@
 <template>
   <div class="message-navbar">
     <header :class="{ 'is-sticky': isSticky }">
-      <div class="navigation">
+      <div class="navigation" v-if="room.type === 3">
         <base-avatar
-          :src="currentUser.profile_photo_path"
+          :src="participant.profile_photo_path"
           online
           status
           outlined
         ></base-avatar>
         <div class="title">
           <user-name
-            :user_name="currentUser.full_name"
-            :user_url="currentUser.url"
+            :user_name="participant.full_name"
+            :user_url="participant.url"
           ></user-name>
-          <span v-if="!currentUser.status">
-            {{ $t('Actived') }} {{ currentUser.online_status | offlineTime }}
+          <span v-if="!participant.status">
+            {{ $t('Actived') }} {{ participant.online_status | offlineTime }}
+          </span>
+          <span v-else>
+            {{ $t('Active') }}
+          </span>
+        </div>
+      </div>
+      <div class="navigation" v-else>
+        <base-avatar
+          :src="participant.profile_photo_path"
+          online
+          status
+          outlined
+        ></base-avatar>
+        <div class="title">
+          <user-name
+            :user_name="participant.full_name"
+            :user_url="participant.url"
+          ></user-name>
+          <span v-if="!participant.status">
+            {{ $t('Actived') }} {{ participant.online_status | offlineTime }}
           </span>
           <span v-else>
             {{ $t('Active') }}
@@ -50,7 +70,8 @@ export default {
   methods: {},
   created() {},
   computed: {
-    ...mapGetters('user', ['currentUser'])
+    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('thresh', ['room', 'participant'])
   },
   mounted() {}
 }

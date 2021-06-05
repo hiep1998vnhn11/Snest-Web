@@ -66,7 +66,7 @@
           </p>
         </template>
         <div class="scroll-dropdown-container">
-          <dlv class="scroll-header">
+          <div class="scroll-header">
             <div class="title">
               {{ $t('Notifications') }}
             </div>
@@ -75,7 +75,7 @@
                 <i class="tim-icons icon-alert-circle-exc"></i>
               </base-button>
             </nuxt-link>
-          </dlv>
+          </div>
           <perfect-scrollbar>
             <li class="nav-link" v-for="n in 21" :key="`notification-${n}`">
               <a href="#" class="nav-item dropdown-item">
@@ -99,7 +99,7 @@
           <p class="d-lg-none">Messages</p>
         </template>
         <div class="scroll-dropdown-container">
-          <dlv class="scroll-header">
+          <div class="scroll-header">
             <div class="title">
               {{ $t('Messages') }}
             </div>
@@ -108,7 +108,7 @@
                 <i class="tim-icons icon-bullet-list-67"></i>
               </base-button>
             </nuxt-link>
-          </dlv>
+          </div>
           <perfect-scrollbar>
             <li class="nav-link">
               <a href="#" class="nav-item dropdown-item">
