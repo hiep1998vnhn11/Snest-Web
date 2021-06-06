@@ -86,11 +86,6 @@ export default {
       default: true,
       description: 'Whether modal should be appended to document body'
     },
-    scrollToBottom: {
-      type: Boolean,
-      default: true,
-      description: "Whether modal should scroll to it's bottom automatically"
-    },
     type: {
       type: String,
       default: '',
@@ -134,11 +129,6 @@ export default {
     closeModal() {
       this.$emit('update:show', false)
       this.$emit('close')
-    },
-    scrollModalToBottom() {
-      if (!this.scrollToBottom) return
-      let elm = this.$refs.modal
-      elm.scrollTop = elm.scrollHeight - elm.clientHeight
     }
   },
   mounted() {

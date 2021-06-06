@@ -16,7 +16,7 @@
       </base-button>
     </slide-y-up-transition>
 
-    <base-button type="info" block>
+    <base-button type="info" block @click="onClickMessages">
       <i class="tim-icons icon-chat-33"></i>
       {{ $t('Messages') }}
     </base-button>
@@ -89,6 +89,7 @@
   </card>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: {
     user: {
@@ -133,6 +134,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('thresh', ['getRoomByUrl']),
     async onFollow(status) {
       this.followStatus.status = status
       this.loading = true
@@ -168,6 +170,15 @@ export default {
           `/v1/user/${this.$route.params.url}/${statusArray[status]}`
         )
         Object.keys(data).forEach(key => (this.friendStatus[key] = data[key]))
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
+    },
+    async onClickMessages() {
+      this.loading = true
+      try {
+        await this.getRoomByUrl(this.user.url)
       } catch (err) {
         this.toastError(err.toString())
       }

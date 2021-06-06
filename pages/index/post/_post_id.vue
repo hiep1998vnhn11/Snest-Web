@@ -24,7 +24,7 @@ export default {
         post: response.data
       }
     } catch (err) {
-      this.toastError(err.toString())
+      error(err.toString())
     }
   },
   data() {

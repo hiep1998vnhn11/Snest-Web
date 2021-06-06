@@ -57,9 +57,15 @@
         title-tag="a"
         title-classes="nav-link"
         class="nav-item"
+        @change="onChaneNotificationDropdown"
       >
         <template slot="title">
-          <div class="notification d-none d-lg-block d-xl-block"></div>
+          <slide-y-down-transition>
+            <div
+              class="notification d-none d-lg-block d-xl-block"
+              v-if="notification.unread"
+            ></div>
+          </slide-y-down-transition>
           <i class="tim-icons icon-bell-55"></i>
           <p class="d-lg-none">
             {{ $t('Notifications') }}
@@ -77,11 +83,33 @@
             </nuxt-link>
           </div>
           <perfect-scrollbar>
-            <li class="nav-link" v-for="n in 21" :key="`notification-${n}`">
-              <a href="#" class="nav-item dropdown-item">
-                Mike John responded to your email Mike John responded to your
-                email
-              </a>
+            <loading-chasing :loading="notification.loading"></loading-chasing>
+            <li
+              class="nav-link"
+              v-for="notification in notification.list"
+              :key="`notification-${notification.id}`"
+            >
+              <router-link
+                v-if="
+                  notification.data.type === 'post' &&
+                    notification.type == 'App\\Notifications\\LikeNotification'
+                "
+                :to="
+                  localePath({
+                    name: 'index-post-post_id',
+                    params: { post_id: notification.data.id }
+                  })
+                "
+                class="nav-item dropdown-item"
+              >
+                {{ notification.data.username }}
+                <span v-show="notification.data.likes_count > 1">
+                  {{ $t('And') }} {{ notification.data.likes_count - 1 }}
+                  {{ $t('Peoples') }}
+                </span>
+                {{ $t('LikeYourPost') }}
+                {{ notification.type }}
+              </router-link>
             </li>
           </perfect-scrollbar>
         </div>
@@ -187,7 +215,12 @@ export default {
       activeNotifications: false,
       showMenu: false,
       searchModalVisible: false,
-      searchQuery: ''
+      searchQuery: '',
+      notification: {
+        unread: 0,
+        loading: false,
+        list: []
+      }
     }
   },
   methods: {
@@ -205,7 +238,37 @@ export default {
     },
     toggleMenu() {
       this.showMenu = !this.showMenu
+    },
+    async getNumberUnreadNotification() {
+      try {
+        const { data } = await this.$axios.$get(
+          '/v1/user/notification/number_unread'
+        )
+        this.notification.unread = data
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+    },
+    async getNotifications() {
+      if (!this.notification.unread) return
+      this.notification.loading = true
+      try {
+        const { data } = await this.$axios.$get('/v1/user/notification/get')
+        this.notification.list = data
+        this.notification.unread = 0
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.notification.loading = false
+    },
+    onChaneNotificationDropdown(isOpen) {
+      if (!isOpen) return
+      this.getNotifications()
+      this.notification.unread = 0
     }
+  },
+  mounted() {
+    this.getNumberUnreadNotification()
   }
 }
 </script>
@@ -219,6 +282,7 @@ export default {
 
 .scroll-dropdown-container {
   height: 600px;
+  min-width: 300px;
   position: relative;
   padding-top: 50px;
   .scroll-header {

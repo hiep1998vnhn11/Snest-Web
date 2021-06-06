@@ -6,10 +6,21 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'user',
-  middleware: 'checkUrl',
   computed: {
     ...mapGetters('user', ['currentUser'])
+  },
+  created() {
+    if (this.$route.params.url !== this.currentUser.url) {
+      this.toastError('Permission Denined!')
+      this.$router.push(
+        this.localePath({
+          name: 'index-user-url',
+          params: {
+            url: this.$route.params.url
+          }
+        })
+      )
+    }
   }
 }
 </script>

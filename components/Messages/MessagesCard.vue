@@ -53,38 +53,43 @@
       </zoom-center-transition>
 
       <zoom-center-transition :duration="200" mode="out-in">
-        <div class="messages-card" v-if="showCard">
+        <div class="messages-card" v-if="room">
           <div class="messages-card-title">
             <div class="title">
               <base-avatar
-                :src="currentUser.profile_photo_path"
+                :src="participant.profile_photo_path"
                 outlined
                 alt="avatar"
                 status
-                :online="currentUser.online_status.status"
+                :online="participant.online_status.status"
               >
               </base-avatar>
               <div class="name ml-2">
-                {{ currentUser.full_name }}
-                <div class="time" v-if="currentUser.online_status.status">
+                {{ participant.full_name }}
+                <div class="time" v-if="participant.online_status.status">
                   {{ $t('Active') }}
                 </div>
                 <div class="time" v-else>
                   {{ $t('Actived') }}
-                  {{ currentUser.online_status.time | offlineTime }}
+                  {{ participant.online_status.time | offlineTime }}
                 </div>
               </div>
             </div>
             <div>
-              <base-button
-                class="btn-primary"
-                icon
-                size="sm"
-                round
-                @click="showCard = !showCard"
+              <router-link
+                :to="
+                  localePath({
+                    name: 'messages-room_id',
+                    params: {
+                      room_id: room.id
+                    }
+                  })
+                "
               >
-                <i class="tim-icons icon-video-66"></i>
-              </base-button>
+                <base-button class="btn-primary" icon size="sm" round>
+                  <i class="tim-icons icon-bullet-list-67"></i>
+                </base-button>
+              </router-link>
               <base-button
                 class="btn-success"
                 size="sm"
@@ -99,25 +104,32 @@
                 icon
                 size="sm"
                 round
-                @click="showCard = !showCard"
+                @click="onCloseMessage"
               >
                 <i class="tim-icons icon-simple-remove"></i>
               </base-button>
             </div>
           </div>
-          <perfect-scrollbar>
-            <div class="messages-card-content">
-              <div
-                v-for="message in messagesList"
-                :key="`message-row-card-${message.id}`"
-              >
-                <messages-row
-                  :message="message"
-                  :isCurrent="true"
-                  :isCard="true"
-                ></messages-row>
+          <perfect-scrollbar ref="messages-card-scrollbar">
+            <slide-y-down-transition>
+              <div class="messages-card-content" v-if="messages.length">
+                <observer @intersec="intersected"></observer>
+
+                <div
+                  v-for="message in messages"
+                  :key="`message-row-card-${message.id}`"
+                >
+                  <messages-row
+                    :message="message"
+                    :isCurrent="true"
+                    :isCard="true"
+                  ></messages-row>
+                </div>
               </div>
-            </div>
+              <div v-else>
+                Not have
+              </div>
+            </slide-y-down-transition>
           </perfect-scrollbar>
 
           <div class="messages-card-footer">
@@ -126,39 +138,56 @@
               icon
               size="sm"
               round
-              @click="showNew = !showNew"
+              @click="onClickAddFile"
             >
-              <i class="fas fa-edit"></i>
-            </base-button>
-            <base-button
-              class="btn-info"
-              size="sm"
-              icon
-              round
-              @click="showNew = !showNew"
-            >
-              <i class="fas fa-edit"></i>
-            </base-button>
-            <base-button
-              class="btn-success"
-              icon
-              size="sm"
-              round
-              @click="showNew = !showNew"
-            >
-              <i class="fas fa-edit"></i>
+              <i class="tim-icons icon-cloud-upload-94"></i>
             </base-button>
             <div class="messages-card-textarea-container">
-              <span
-                class="messages-card-textarea"
-                role="textbox"
-                contenteditable
-                :v-model="message"
-              ></span>
+              <div class="messages-card-textarea-container__absolute">
+                <input
+                  type="file"
+                  class="custom-file-input"
+                  ref="message-input-file"
+                  @change="onFileChange"
+                  v-show="false"
+                />
+                <el-input
+                  type="textarea"
+                  autosize
+                  :placeholder="$t('TypeSomething...')"
+                  v-model="message.content"
+                  @keyup.enter="onSendMessage"
+                  class="textarea"
+                >
+                </el-input>
+              </div>
+              <slide-y-up-transition>
+                <div class="messages-card-img__absolute" v-show="message.file">
+                  <img ref="message-preview-img" src="" />
+                  <base-button
+                    size="sm"
+                    icon
+                    round
+                    class="image__button"
+                    @click="onRemoveFile"
+                  >
+                    <i class="tim-icons icon-simple-remove"></i>
+                  </base-button>
+                </div>
+              </slide-y-up-transition>
             </div>
-            <base-button size="sm" icon round class="btn-info">
-              <i class="fas fa-paper-plane"></i>
-            </base-button>
+            <slide-y-down-transition>
+              <base-button
+                size="sm"
+                icon
+                round
+                class="btn-info"
+                @click="onSendMessage"
+                v-show="message.content || message.file"
+              >
+                <i class="fas fa-paper-plane"></i>
+              </base-button>
+            </slide-y-down-transition>
           </div>
         </div>
       </zoom-center-transition>
@@ -187,85 +216,80 @@ export default {
       notHaveNew: false,
       list: [],
       search: '',
-      message: '',
       suggested: [],
-      messagesList: [
-        {
-          id: 1,
-          user_id: 1,
-          full_name: 'Hiep',
-          profile_photo_path:
-            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
-          online_status: {
-            status: true
-          },
-          content: 'Hello'
-        },
-        {
-          id: 2,
-          user_id: 1,
-          full_name: 'Hiep',
-          profile_photo_path:
-            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
-          online_status: {
-            status: true
-          },
-          content: 'Hello 11'
-        },
-        {
-          id: 6,
-          full_name: 'Hiep',
-          profile_photo_path:
-            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
-          online_status: {
-            status: true
-          },
-          content: 'Hello'
-        },
-        {
-          id: 3,
-          full_name: 'Hiep',
-          profile_photo_path:
-            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
-          online_status: {
-            status: true
-          },
-          content: 'Hello 11'
-        },
-        {
-          id: 5,
-          user_id: 1,
-
-          full_name: 'Hiep',
-          profile_photo_path:
-            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
-          online_status: {
-            status: true
-          },
-          content: 'Hello'
-        },
-        {
-          id: 4,
-          user_id: 1,
-
-          full_name: 'Hiep',
-          profile_photo_path:
-            'http://localhost:8000/storage/user/default-user-avatar.jpeg',
-          online_status: {
-            status: true
-          },
-          content: 'Hello 11'
-        }
-      ]
+      messages: [],
+      offset: 0,
+      message: {
+        content: '',
+        file: null,
+        fileName: null
+      }
     }
   },
   computed: {
-    ...mapGetters('thresh', ['thresh']),
+    ...mapGetters('thresh', ['room', 'participant']),
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
-    onSendMessage() {
-      console.log(this.message)
+    scrollToBottomElement(element) {
+      this.$nextTick(() => {
+        element.$el.scrollTop = element.$el.scrollHeight
+      })
+    },
+    async onSendMessage() {
+      if (!this.message.content && !this.message.file) return
+      this.loading = true
+      try {
+        var formData = new FormData()
+        if (this.message.file) formData.append('file', this.message.file)
+        if (this.message.content)
+          formData.append('content', this.message.content)
+        const url =
+          this.room.type == 1
+            ? `/v1/user/message/private-chat`
+            : `/v1/user/message/chat/${this.room.id}`
+        const response = await this.$axios.$post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        this.messages.push(response.data)
+        this.offset += 1
+        this.scrollToBottomElement(this.$refs['messages-card-scrollbar'])
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.message.content = ''
+      this.message.img = null
+      this.message.imgName = null
+      this.loading = false
+    },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      this.message.file = files[0]
+      this.message.fileName = files[0].name
+      if (this.checkImage(files[0].type)) this.createPreviewImage(files[0])
+    },
+    checkImage(type) {
+      if (type.split('/')[0] === 'image') return true
+      return false
+    },
+    createPreviewImage(image) {
+      const vm = this
+      var reader = new FileReader()
+      reader.onload = e =>
+        (vm.$refs['message-preview-img'].src = e.target.result)
+      reader.readAsDataURL(image)
+    },
+    onRemoveFile() {
+      this.message.file = null
+      this.message.fileName = null
+      this.$refs['message-preview-img'].src = ''
+      this.$refs['message-input-file'].value = ''
+    },
+    onClickAddFile() {
+      this.$refs['message-input-file'].click()
     },
     async searchList(value) {
       this.loadingNew = true
@@ -280,17 +304,46 @@ export default {
         this.toastError(err.toString())
       }
       this.loadingNew = false
+    },
+    onCloseMessage() {
+      this.$store.commit('thresh/REMOVE_ROOM')
+      this.messages = []
+      this.offset = 0
+    },
+    async getMessage(roomId = null, offset = 0, limit = 5, isIntersec = false) {
+      this.loading = true
+      try {
+        const { data } = await this.$axios.$get(
+          `/v1/user/message/room/${roomId}?offset=${offset}&limit=${limit}`
+        )
+        if (data.length) {
+          this.messages = [...this.messages, ...data.reverse()]
+          this.offset += limit
+          if (!isIntersec)
+            this.scrollToBottomElement(this.$refs['messages-card-scrollbar'])
+        }
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
+    },
+    intersected() {
+      this.getMessage(this.room.id, this.offset, 5, true)
     }
   },
   watch: {
     search: debounce(function(value) {
       this.searchList(value)
-    }, 500)
+    }, 500),
+    room(value) {
+      if (!value) return
+      this.getMessage(value.id, this.offset, 15)
+    }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .messages-card-container {
   position: fixed;
   z-index: 1040;
@@ -371,21 +424,40 @@ export default {
       .messages-card-textarea-container {
         position: relative;
         flex: 1;
-        margin-left: 10px;
-        .messages-card-textarea {
-          border: 1px solid #ccc;
-          font-family: inherit;
-          font-size: 1rem;
-          padding: 5px 10px;
-          display: block;
-          overflow: hidden;
-          resize: both;
-          min-height: calc(1rem + 10px);
-          line-height: calc(1rem + 5px);
+        margin-left: 5px;
+        margin-right: 5px;
+        .messages-card-textarea-container__absolute {
+          position: absolute;
+          width: 100%;
+          bottom: 0;
+          left: 0;
         }
-        .messages-card-textarea[contenteditable]:empty::before {
-          content: 'Aa...';
-          // color: gray;
+
+        .messages-card-img__absolute {
+          position: absolute;
+          max-width: 200px;
+          word-wrap: break-word;
+          bottom: 0;
+          right: 0;
+          img {
+            width: 200px;
+            border: solid 1px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+          }
+          .image__button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            transition: opacity ease-in-out 0.5s;
+            opacity: 0;
+          }
+
+          &:hover {
+            .image__button {
+              opacity: 1;
+              transition: opacity ease-in-out 0.5s;
+            }
+          }
         }
       }
     }

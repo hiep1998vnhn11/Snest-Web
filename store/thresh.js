@@ -43,6 +43,10 @@ const actions = {
       `/v1/user/message/room/${roomId}/get-type`
     )
     commit('SET_ROOM', data)
+  },
+  async getRoomByUrl({ commit }, url) {
+    const { data } = await this.$axios.$get(`/v1/user/message/user/${url}`)
+    commit('SET_ROOM_BY_URL', data)
   }
 }
 
@@ -78,6 +82,14 @@ const mutations = {
         thresh.last_message = message
       }
     })
+  },
+  SET_ROOM_BY_URL: function(state, data) {
+    state.room = data.room
+    state.participant = data.participant
+  },
+  REMOVE_ROOM: function(state) {
+    state.room = null
+    state.participant = null
   },
   RESET: function(state) {
     const s = initialState()

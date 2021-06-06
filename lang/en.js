@@ -28,6 +28,13 @@ export default {
   AreBlocked: 'Are blocked by this user',
   RequestingFriend: 'Requesting add friend',
   PeopleAreFolowing: 'People are folowing',
+  BlockThisUser: 'Block this user',
+  Favorite: 'Favorite',
+  UnFollow: 'UnFollow',
+  YouBlockedThisUser: 'You blocked this user',
+  Notifications: 'Notifications',
+  'TypeSomething...': 'Type something...',
+  Actived: 'Actived',
 
   common: {
     select_lang: 'Language',
