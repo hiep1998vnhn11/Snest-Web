@@ -1,7 +1,6 @@
 <template>
   <div>
     Main messagte
-    <nuxt-child />
   </div>
 </template>
 

@@ -120,7 +120,9 @@
         title-tag="a"
         title-classes="nav-link"
         class="nav-item"
+        @change="onChangeMessageDropdown"
       >
+        <loading-chasing :loading="loading"></loading-chasing>
         <template slot="title">
           <div class="notification d-none d-lg-block d-xl-block"></div>
           <i class="tim-icons icon-chat-33"></i>
@@ -138,6 +140,7 @@
             </nuxt-link>
           </div>
           <perfect-scrollbar>
+            {{ rooms }}
             <li class="nav-link">
               <a href="#" class="nav-item dropdown-item">
                 Mike John responded to your email
@@ -194,21 +197,14 @@
 </template>
 <script>
 import { CollapseTransition } from 'vue2-transitions'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     CollapseTransition
   },
   computed: {
-    routeName() {
-      const { path } = this.$route
-      let parts = path.split('/')
-      if (parts == ',') {
-        return 'Dashboard'
-      }
-      return parts.map(p => this.capitalizeFirstLetter(p)).join(' ')
-    },
-    ...mapGetters('user', ['currentUser'])
+    ...mapGetters('user', ['currentUser']),
+    ...mapGetters('thresh', ['rooms'])
   },
   data() {
     return {
@@ -220,10 +216,21 @@ export default {
         unread: 0,
         loading: false,
         list: []
-      }
+      },
+      loading: false
     }
   },
   methods: {
+    ...mapActions('thresh', ['getRooms']),
+    async fetchRooms() {
+      this.loading = true
+      try {
+        await this.getRooms()
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
+    },
     capitalizeFirstLetter(string) {
       if (!string || typeof string !== 'string') {
         return ''
@@ -265,6 +272,10 @@ export default {
       if (!isOpen) return
       this.getNotifications()
       this.notification.unread = 0
+    },
+    onChangeMessageDropdown(isOpen) {
+      if (!isOpen || this.rooms.length) return
+      this.fetchRooms()
     }
   },
   mounted() {

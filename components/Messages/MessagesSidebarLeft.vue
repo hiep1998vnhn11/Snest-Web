@@ -1,6 +1,7 @@
 <template>
   <div class="message-sidebar-left">
     <aside :class="{ fixed: true }" @click.stop>
+      <loading-chasing :loading="loading"></loading-chasing>
       <perfect-scrollbar @ps-scroll-y="handleScroll" ref="scrollbar">
         <div class="header" :class="{ 'is-sticky': isSticky }">
           <div class="logo">
@@ -25,10 +26,16 @@
             </button>
           </div>
           <div class="search">
-            <base-search
-              :placeholder="$t('SearchMessage')"
-              @onSearch="onSearch"
-            ></base-search>
+            <div class="search-bar">
+              <div class="search">
+                <i class="tim-icons icon-zoom-split"></i>
+                <input
+                  type="text"
+                  :placeholder="$t('SearchMessage')"
+                  v-model="search"
+                />
+              </div>
+            </div>
           </div>
           <hr class="my-1" />
         </div>
@@ -37,7 +44,6 @@
             <div v-for="room in rooms" :key="`message-button-room-${room.id}`">
               <messages-user :user="room"></messages-user>
             </div>
-            <messages-user :user="currentUser"></messages-user>
           </div>
         </div>
       </perfect-scrollbar>
@@ -46,25 +52,23 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
+import { debounce } from 'lodash'
 export default {
-  props: {},
   data() {
     return {
       isSticky: true,
-      page: 1,
+      offset: 0,
       search: '',
-      rooms: [],
       lastRoom: false,
-      loading: false
+      loading: false,
+      rooms: []
     }
   },
   computed: {
-    ...mapGetters('thresh', ['threshes']),
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
-    ...mapActions('thresh', ['getThreshes', 'setThreshPage']),
     handleScroll(e) {
       const target = e.target
       if (target.scrollTop > 10) {
@@ -73,49 +77,63 @@ export default {
         this.isSticky = false
       }
     },
-
-    async fetchRoom(page = 1, searchKey = null) {
-      this.search = searchKey || ''
+    async fetchRoom(offset = 0, searchKey = null) {
       this.loading = true
       try {
-        let requestUrl = `/v1/user/room/get?limit=12&page=${page}`
-        if (searchKey) requestUrl += `&search_key=${searchKey}`
-        const { data } = await this.$axios.$get(requestUrl)
-        if (page == 1) {
-          this.rooms = data.data
-        } else {
-          if (data.data.length) {
-            this.rooms = [...this.rooms, ...data.data]
-          } else {
-            this.lastRoom = true
-          }
-        }
-        this.page = page + 1
-      } catch (err) {
-        this.toastError(err.toString())
-      }
-      this.loading = false
-    },
-
-    onSearch(e) {
-      this.fetchRoom(1, e.trim())
-    },
-
-    async fetchThresh() {
-      if (this.threshes.length) return
-      this.loading = true
-      try {
-        await this.getThreshes()
+        let url = `/v1/user/room?limit=10`
+        if (offset) url += `&offset=${offset}`
+        if (searchKey) url += `&search_key=${searchKey}`
+        const { data } = await this.$axios.$get(url)
+        if (!data.length) return
+        if (offset === 0) this.rooms = data
+        else this.rooms = [...this.rooms, ...data]
+        this.offset = offset + 10
       } catch (err) {
         this.toastError(err.toString())
       }
       this.loading = false
     }
   },
-  created() {
-    this.fetchThresh()
+  watch: {
+    search: {
+      handler: debounce(function(value) {
+        this.fetchRoom(0, value)
+      }, 500),
+      immediate: true
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.search-bar {
+  flex: 1 1;
+  margin-left: 10px;
+  .search {
+    padding: 7px 10px;
+    background: rgba(0, 0, 0, 0.05);
+    max-width: 540px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    &:focus-within {
+      background: #fff;
+    }
+    i {
+      font-size: 20px;
+      color: #444;
+      padding-right: 8px;
+      margin-top: 5px;
+    }
+    input {
+      background: transparent !important;
+      outline: none !important;
+      border: none !important;
+      color: #444;
+      font-size: 15px;
+      width: 100%;
+      display: block;
+    }
+  }
+}
+</style>

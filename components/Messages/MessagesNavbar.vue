@@ -1,46 +1,69 @@
 <template>
   <div class="message-navbar">
-    <header :class="{ 'is-sticky': isSticky }">
-      <div class="navigation" v-if="room.type === 3">
-        <base-avatar
-          :src="participant.profile_photo_path"
-          online
-          status
-          outlined
-        ></base-avatar>
-        <div class="title">
-          <user-name
-            :user_name="participant.full_name"
-            :user_url="participant.url"
-          ></user-name>
-          <span v-if="!participant.status">
-            {{ $t('Actived') }} {{ participant.online_status | offlineTime }}
-          </span>
-          <span v-else>
-            {{ $t('Active') }}
-          </span>
+    <header>
+      <slide-y-down-transition>
+        <div class="navigation" v-if="!room">
+          <base-avatar
+            :src="currentUser.profile_photo_path"
+            online
+            status
+            outlined
+          ></base-avatar>
+          <div class="title">
+            <user-name
+              :user_name="currentUser.full_name"
+              :user_url="currentUser.url"
+            ></user-name>
+            <span v-if="!currentUser.status">
+              {{ $t('Actived') }} {{ currentUser.online_status | offlineTime }}
+            </span>
+            <span v-else>
+              {{ $t('Active') }}
+            </span>
+          </div>
         </div>
-      </div>
-      <div class="navigation" v-else>
-        <base-avatar
-          :src="participant.profile_photo_path"
-          online
-          status
-          outlined
-        ></base-avatar>
-        <div class="title">
-          <user-name
-            :user_name="participant.full_name"
-            :user_url="participant.url"
-          ></user-name>
-          <span v-if="!participant.status">
-            {{ $t('Actived') }} {{ participant.online_status | offlineTime }}
-          </span>
-          <span v-else>
-            {{ $t('Active') }}
-          </span>
+        <div class="navigation" v-else-if="room.type === 3">
+          <base-avatar
+            :src="participant.profile_photo_path"
+            online
+            status
+            outlined
+          ></base-avatar>
+          <div class="title">
+            <user-name
+              :user_name="participant.full_name"
+              :user_url="participant.url"
+            ></user-name>
+            <span v-if="!participant.status">
+              {{ $t('Actived') }} {{ participant.online_status | offlineTime }}
+            </span>
+            <span v-else>
+              {{ $t('Active') }}
+            </span>
+          </div>
         </div>
-      </div>
+        <div class="navigation" v-else>
+          <base-avatar
+            :src="participant.profile_photo_path"
+            online
+            status
+            outlined
+          ></base-avatar>
+          <div class="title">
+            <user-name
+              :user_name="participant.full_name"
+              :user_url="participant.url"
+            ></user-name>
+            <span v-if="!participant.status">
+              {{ $t('Actived') }} {{ participant.online_status | offlineTime }}
+            </span>
+            <span v-else>
+              {{ $t('Active') }}
+            </span>
+          </div>
+        </div>
+      </slide-y-down-transition>
+
       <div class="left">
         <base-button icon round @click="showThemeModal = !showThemeModal">
           <i class="fas fa-phone"></i>
@@ -58,12 +81,6 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  props: {
-    isSticky: {
-      type: Boolean,
-      default: true
-    }
-  },
   data() {
     return {}
   },

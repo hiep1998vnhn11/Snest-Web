@@ -35,13 +35,22 @@
                     v-for="user in suggested"
                     :key="`suggested-user-${user.id}`"
                   >
-                    <user-button
-                      :profile_photo_path="user.profile_photo_path"
-                      :user_name="user.full_name"
-                      :user_url="user.url"
-                    ></user-button>
+                    <button
+                      class="btn btn-user btn-block btn-neutral"
+                      @click="onOpenMessage(user.url)"
+                    >
+                      <base-avatar
+                        :src="user.profile_photo_path"
+                        outlined
+                        :size="35"
+                      ></base-avatar>
+                      <div class="btn-user-name">
+                        <div>
+                          {{ user.full_name }}
+                        </div>
+                      </div>
+                    </button>
                   </div>
-                  {{ suggested }}
                 </div>
                 <div v-else-if="notHaveNew && !loading">
                   {{ $t('NotFoundAnyPeople') }}
@@ -205,7 +214,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { debounce } from 'lodash'
 export default {
   data() {
@@ -231,6 +240,7 @@ export default {
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
+    ...mapActions('thresh', ['getRoomByUrl']),
     scrollToBottomElement(element) {
       this.$nextTick(() => {
         element.$el.scrollTop = element.$el.scrollHeight
@@ -329,6 +339,15 @@ export default {
     },
     intersected() {
       this.getMessage(this.room.id, this.offset, 5, true)
+    },
+    async onOpenMessage(url) {
+      this.loadingNew = true
+      try {
+        await this.getRoomByUrl(url)
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loadingNew = false
     }
   },
   watch: {

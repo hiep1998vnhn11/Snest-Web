@@ -35,7 +35,8 @@ export default {
   Notifications: 'Notifications',
   'TypeSomething...': 'Type something...',
   Actived: 'Actived',
-
+  SearchMessage: 'Search message',
+  Chats: 'Chats',
   common: {
     select_lang: 'Language',
     Login: 'Login',

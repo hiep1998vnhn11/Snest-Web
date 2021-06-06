@@ -1,33 +1,31 @@
 const initialState = () => ({
-  threshes: [],
+  rooms: [],
   room: null,
   page: 1,
   participant: null
 })
 const state = () => ({
-  threshes: [],
+  rooms: [],
   page: 1,
   room: null,
-  participant: null
+  participant: null,
+  offset: 0
 })
 
 const getters = {
   threshes: state => state.threshes,
   room: state => state.room,
+  rooms: state => state.rooms,
   participant: state => state.participant
 }
 
 const actions = {
-  async getThreshes({ commit, state }) {
-    const url = '/v1/user/thresh/store'
-    let params = {
-      params: {
-        page: state.page
-      }
-    }
-    const response = await this.$axios.$get(url, params)
-    if (response.data.data.length) {
-      commit('SET_THRESHES', response.data.data)
+  async getRooms({ commit, state }, searchKey = null) {
+    let url = `/v1/user/room?limit=10&offset=${state.offset}`
+    if (searchKey) url += `&search_key=${searchKey}`
+    const response = await this.$axios.$get(url)
+    if (response.data.length) {
+      commit('SET_ROOMS', response.data)
     }
   },
   setThreshPage({ commit }) {
@@ -51,9 +49,9 @@ const actions = {
 }
 
 const mutations = {
-  SET_THRESHES: function(state, threshes) {
-    state.page += 1
-    state.threshes = [...state.threshes, ...threshes]
+  SET_ROOMS: function(state, rooms) {
+    state.offset += 10
+    state.rooms = [...state.rooms, ...rooms]
   },
   SET_ROOM: function(state, data) {
     state.room = data.room
