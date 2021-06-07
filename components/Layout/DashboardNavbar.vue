@@ -102,13 +102,69 @@
                 "
                 class="nav-item dropdown-item"
               >
-                {{ notification.data.username }}
+                <strong>
+                  {{ notification.data.username }}
+                </strong>
                 <span v-show="notification.data.likes_count > 1">
                   {{ $t('And') }} {{ notification.data.likes_count - 1 }}
                   {{ $t('Peoples') }}
                 </span>
                 {{ $t('LikeYourPost') }}
-                {{ notification.type }}
+              </router-link>
+              <router-link
+                v-else-if="
+                  notification.data.type === 'post' &&
+                    notification.type ==
+                      'App\\Notifications\\CommentNotification'
+                "
+                :to="
+                  localePath({
+                    name: 'index-post-post_id',
+                    params: { post_id: notification.data.id }
+                  })
+                "
+                class="nav-item dropdown-item"
+              >
+                <strong>
+                  {{ notification.data.username }}
+                </strong>
+                {{ $t('CommentInYourPost') }}
+              </router-link>
+              <router-link
+                v-else-if="
+                  notification.type ==
+                    'App\\Notifications\\FriendNotification' &&
+                    notification.data.type == 'requesting'
+                "
+                :to="
+                  localePath({
+                    name: 'index-user-url',
+                    params: { url: notification.data.user_url }
+                  })
+                "
+                class="nav-item dropdown-item"
+              >
+                <strong>
+                  {{ notification.data.username }}
+                </strong>
+                {{ $t('SentYouFriendRequest') }}
+              </router-link>
+              <router-link
+                v-else-if="
+                  notification.type == 'App\\Notifications\\FriendNotification'
+                "
+                :to="
+                  localePath({
+                    name: 'index-user-url',
+                    params: { url: notification.data.user_url }
+                  })
+                "
+                class="nav-item dropdown-item"
+              >
+                <strong>
+                  {{ notification.data.username }}
+                </strong>
+                {{ $t('AcceptYourFriendRequest') }}
               </router-link>
             </li>
           </perfect-scrollbar>
@@ -140,10 +196,22 @@
             </nuxt-link>
           </div>
           <perfect-scrollbar>
-            {{ rooms }}
-            <li class="nav-link">
-              <a href="#" class="nav-item dropdown-item">
-                Mike John responded to your email
+            <li
+              class="nav-link"
+              v-for="room in rooms"
+              :key="`message-room-index-${room.id}`"
+            >
+              <a
+                href="javascript:void(0);"
+                class="nav-item dropdown-item message-nav-item"
+                @click="onOpenMessage(room.url)"
+              >
+                <base-avatar
+                  :size="30"
+                  outlined
+                  :src="room.photo"
+                ></base-avatar>
+                <strong>{{ room.full_name }}</strong>
               </a>
             </li>
           </perfect-scrollbar>
@@ -221,7 +289,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('thresh', ['getRooms']),
+    ...mapActions('thresh', ['getRooms', 'getRoomByUrl']),
     async fetchRooms() {
       this.loading = true
       try {
@@ -257,7 +325,6 @@ export default {
       }
     },
     async getNotifications() {
-      if (!this.notification.unread) return
       this.notification.loading = true
       try {
         const { data } = await this.$axios.$get('/v1/user/notification/get')
@@ -276,6 +343,15 @@ export default {
     onChangeMessageDropdown(isOpen) {
       if (!isOpen || this.rooms.length) return
       this.fetchRooms()
+    },
+    async onOpenMessage(url) {
+      this.loading = true
+      try {
+        await this.getRoomByUrl(url)
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loading = false
     }
   },
   mounted() {
@@ -317,6 +393,13 @@ export default {
   }
   .ps {
     height: 100%;
+  }
+}
+
+.message-nav-item {
+  display: flex;
+  strong {
+    margin-left: 10px;
   }
 }
 </style>

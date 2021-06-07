@@ -270,8 +270,7 @@ export default {
         this.toastError(err.toString())
       }
       this.message.content = ''
-      this.message.img = null
-      this.message.imgName = null
+      this.onRemoveFile()
       this.loading = false
     },
     onFileChange(e) {
@@ -356,6 +355,8 @@ export default {
     }, 500),
     room(value) {
       if (!value) return
+      this.messages = []
+      this.offset = 0
       this.getMessage(value.id, this.offset, 15)
     }
   }

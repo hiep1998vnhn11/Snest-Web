@@ -12,6 +12,7 @@
             :user="user"
             :friendStatus="friendStatus"
             :followStatus="followStatus"
+            :friendRequest="friendRequest"
             v-if="$route.params.url !== currentUser.url"
           ></user-action>
           <user-friend :user="friends" />
@@ -28,11 +29,13 @@ export default {
     const url = params.url
     try {
       const response = await $axios.$get(`/v1/guest/user/${url}`)
+      console.log(response.data.friend_request)
       return {
         user: response.data.user,
         friends: response.data.friends,
         friendStatus: response.data.friend_status || { status: 0 },
-        followStatus: response.data.follow_status || { status: 0 }
+        followStatus: response.data.follow_status || { status: 0 },
+        friendRequest: response.data.friend_request || null
       }
     } catch (err) {
       error(err)
