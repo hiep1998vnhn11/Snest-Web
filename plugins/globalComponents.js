@@ -18,8 +18,12 @@ import VueLazyload from 'vue-lazyload'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 import PerfectScrollbar from 'vue2-perfect-scrollbar'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
-
-Vue.use(PerfectScrollbar)
+import './socket'
+Vue.use(PerfectScrollbar, {
+  options: {
+    wheelPropagation: false
+  }
+})
 /**
  * You can register global components here and use them as a plugin in your main Vue instance
  */

@@ -24,33 +24,14 @@
     </div>
 
     <ul class="navbar-nav ml-auto">
-      <div class="search-bar input-group" @click="searchModalVisible = true">
-        <button
-          class="btn btn-link"
-          id="search-button"
-          data-toggle="modal"
-          data-target="#searchModal"
-        >
-          <i class="tim-icons icon-zoom-split"></i>
-        </button>
+      <div class="search-bar input-group">
+        <router-link :to="localePath({ name: 'index-search-people' })">
+          <button class="btn btn-link">
+            <i class="tim-icons icon-zoom-split"></i>
+          </button>
+        </router-link>
         <!-- You can choose types of search input -->
       </div>
-      <modal
-        :show.sync="searchModalVisible"
-        class="modal-search"
-        id="searchModal"
-        :centered="false"
-        :show-close="true"
-      >
-        <input
-          slot="header"
-          v-model="searchQuery"
-          type="text"
-          class="form-control"
-          id="inlineFormInputGroup"
-          placeholder="SEARCH"
-        />
-      </modal>
       <base-dropdown
         tag="li"
         menu-on-right
@@ -63,20 +44,18 @@
           <slide-y-down-transition>
             <div
               class="notification d-none d-lg-block d-xl-block"
-              v-if="notification.unread"
+              v-if="unread"
             ></div>
           </slide-y-down-transition>
           <i class="tim-icons icon-bell-55"></i>
-          <p class="d-lg-none">
-            {{ $t('Notifications') }}
-          </p>
+          <p class="d-lg-none">{{ $t('Notifications') }}</p>
         </template>
         <div class="scroll-dropdown-container">
           <div class="scroll-header">
             <div class="title">
               {{ $t('Notifications') }}
             </div>
-            <nuxt-link :to="localePath({ name: 'messages-room_id' })">
+            <nuxt-link :to="localePath({ name: 'messages' })">
               <base-button icon round size="sm" class="icon">
                 <i class="tim-icons icon-alert-circle-exc"></i>
               </base-button>
@@ -272,7 +251,8 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['currentUser']),
-    ...mapGetters('thresh', ['rooms'])
+    ...mapGetters('thresh', ['rooms']),
+    ...mapGetters(['unread'])
   },
   data() {
     return {
@@ -319,7 +299,7 @@ export default {
         const { data } = await this.$axios.$get(
           '/v1/user/notification/number_unread'
         )
-        this.notification.unread = data
+        this.$store.commit('SET_UNREAD', data)
       } catch (err) {
         this.toastError(err.toString())
       }
@@ -329,7 +309,7 @@ export default {
       try {
         const { data } = await this.$axios.$get('/v1/user/notification/get')
         this.notification.list = data
-        this.notification.unread = 0
+        this.$store.commit('SET_UNREAD', 0)
       } catch (err) {
         this.toastError(err.toString())
       }
@@ -352,10 +332,27 @@ export default {
         this.toastError(err.toString())
       }
       this.loading = false
+    },
+
+    toastNotification(message = 'Notification') {
+      this.$notify({
+        message: message,
+        timeout: 3000,
+        icon: 'tim-icons icon-bell-55',
+        horizontalAlign: 'left',
+        verticalAlign: 'top',
+        type: 'info'
+      })
+    },
+
+    receiveNotification() {
+      if (typeof window.socket === 'undefined' || window.socket.disconnected)
+        return
     }
   },
   mounted() {
     this.getNumberUnreadNotification()
+    // this.receiveNotification()
   }
 }
 </script>

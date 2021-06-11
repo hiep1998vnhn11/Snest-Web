@@ -9,6 +9,13 @@ export default function(context) {
       verticalAlign: 'top',
       type: 'danger'
     })
-    return redirect(app.localePath({ name: 'index-user-url', params }))
+    return redirect(
+      app.localePath({
+        name: 'index-user-url',
+        params: {
+          url: params.url
+        }
+      })
+    )
   }
 }

@@ -45,6 +45,14 @@ const actions = {
   async getRoomByUrl({ commit }, url) {
     const { data } = await this.$axios.$get(`/v1/user/message/user/${url}`)
     commit('SET_ROOM_BY_URL', data)
+  },
+  async onReceivedMessage({ commit, state }, { message, user }) {
+    if (message.room_id !== state.room.id) {
+      const { data } = await this.$axios.$get(
+        `/v1/user/message/user/${user.url}`
+      )
+      commit('SET_ROOM_BY_URL', data)
+    }
   }
 }
 

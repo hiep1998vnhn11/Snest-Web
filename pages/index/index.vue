@@ -4,23 +4,32 @@
     <side-bar home backgroundColor="white" class="home-sidebar-left">
       <div class="home-sidebar-left-top">
         <perfect-scrollbar>
+          <loading-chasing :loading="follow.loading"></loading-chasing>
+          <h3>
+            {{ $t('YouAreFollowing') }}
+          </h3>
           <user-button
-            :profile_photo_path="currentUser.profile_photo_path"
-            :user_name="currentUser.full_name"
-            :user_url="currentUser.url"
-            v-for="n in 10"
-            :key="n"
+            :profile_photo_path="user.profile_photo_path"
+            :user_name="user.full_name"
+            :user_url="user.url"
+            v-for="user in follow.users"
+            :key="`follow-user-${user.url}`"
           ></user-button>
         </perfect-scrollbar>
       </div>
       <div class="home-sidebar-left-bottom">
         <perfect-scrollbar>
+          <loading-chasing :loading="suggest.loading"></loading-chasing>
+          <h3>
+            {{ $t('SuggestUser') }}
+          </h3>
           <user-button
-            :profile_photo_path="currentUser.profile_photo_path"
-            :user_name="currentUser.full_name"
-            :user_url="currentUser.url"
-            v-for="n in 10"
-            :key="n"
+            :profile_photo_path="user.profile_photo_path"
+            :user_name="user.full_name"
+            :user_url="user.url"
+            :onlineStatus="user.onlineStatus"
+            v-for="user in suggest.users"
+            :key="`suggest-user-${user.url}`"
           ></user-button>
         </perfect-scrollbar>
       </div>
@@ -86,23 +95,32 @@ export default {
       page: 1,
       posts: [],
       lastPost: false,
-      offset: 0
+      offset: 0,
+      suggest: {
+        loading: false,
+        users: [],
+        offset: 0
+      },
+      follow: {
+        users: [],
+        loading: false,
+        offset: 0
+      }
     }
   },
-  mounted() {
-    this.fetchPost(1)
-    // if (!this.friends.length && this.isLoggedIn) this.fetchFriend()
-    // this.fetchTrending()
+  created() {
+    this.onMounted()
+    // this.fetchSuggest()
+    // this.fetchFollow()
   },
   methods: {
-    ...mapActions('post', ['getPost', 'setFeedPage']),
-    ...mapActions('user', ['getUser', 'getFriend']),
-    ...mapActions('app', ['setMini', 'setDrawer']),
-    ...mapActions('socket', ['connectSocket']),
-    ...mapActions('message', ['getThreshByUser']),
-    ...mapActions('app', ['getTrending']),
     onCreatedPost(post) {
       this.posts.unshift(post)
+    },
+    onMounted() {
+      this.fetchPost(1)
+      this.fetchSuggest()
+      this.fetchFollow()
     },
     async fetchPost(page = 1) {
       if (this.lastPost) return
@@ -127,7 +145,7 @@ export default {
       try {
         await this.getTrending()
       } catch (err) {
-        this.error = err.response ? err.response.data.message : err.toString()
+        this.toastError(err.toString())
       }
       this.loadingTrending = false
     },
@@ -137,7 +155,7 @@ export default {
       try {
         await this.getFriend()
       } catch (err) {
-        this.error = err.response.data.message
+        this.toastError(err.toString())
       }
       this.loadingFriend = false
     },
@@ -170,6 +188,36 @@ export default {
     },
     onComment(index, post) {
       this.$store.commit('post/COMMENTED_POST', index)
+    },
+    async fetchSuggest(offset = 0, limit = 10) {
+      this.suggest.loading = true
+      try {
+        const { data } = await this.$axios.$get(
+          `/v1/user/suggestUser?offset=${offset}&limit=${limit}`
+        )
+        if (data.length) {
+          this.suggest.users = [...this.suggest.users, ...data]
+          this.suggest.offset = offset + limit
+        }
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.suggest.loading = false
+    },
+    async fetchFollow(offset = 0, limit = 10) {
+      this.follow.loading = true
+      try {
+        const { data } = await this.$axios.$get(
+          `/v1/user/followUser?offset=${offset}&limit=${limit}`
+        )
+        if (data.length) {
+          this.follow.users = [...this.follow.users, ...data]
+          this.follow.offset = offset + limit
+        }
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.follow.loading = false
     }
   }
 }

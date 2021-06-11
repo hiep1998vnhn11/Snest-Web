@@ -15,8 +15,14 @@
       </nuxt-link>
     </div>
     <div>{{ friends_count }} {{ $t('Friends') }}</div>
-    <div v-for="friend in friends" :key="`friend-card-${friend.id}`">
-      {{ Friend }}
+    <div class="row">
+      <div
+        v-for="friend in friends"
+        :key="`friend-card-${friend.id}`"
+        class="col-3 text-center"
+      >
+        <base-friend :friend="friend"></base-friend>
+      </div>
     </div>
   </card>
 </template>

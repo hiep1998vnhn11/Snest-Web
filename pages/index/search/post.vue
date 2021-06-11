@@ -1,8 +1,6 @@
 <template>
-  <div class="row">
-    <div class="col col-2">
-      123
-    </div>
+  <div>
+    post
   </div>
 </template>
 <script>

@@ -119,18 +119,26 @@
               </base-button>
             </div>
           </div>
-          <perfect-scrollbar ref="messages-card-scrollbar">
+          <perfect-scrollbar
+            ref="messages-card-scrollbar"
+            @ps-y-reach-start="onScrollTop"
+          >
+            <slide-y-down-transition>
+              <div class="message-card-loading-container" v-show="loading">
+                <loading-chasing :loading="true"></loading-chasing>
+              </div>
+            </slide-y-down-transition>
+
             <slide-y-down-transition>
               <div class="messages-card-content" v-if="messages.length">
-                <observer @intersec="intersected"></observer>
-
+                <!-- <observer @intersect="intersected"></observer> -->
                 <div
                   v-for="message in messages"
                   :key="`message-row-card-${message.id}`"
                 >
                   <messages-row
                     :message="message"
-                    :isCurrent="true"
+                    :isCurrent="message.user_id === currentUser.id"
                     :isCard="true"
                   ></messages-row>
                 </div>
@@ -227,6 +235,7 @@ export default {
       search: '',
       suggested: [],
       messages: [],
+      loading: false,
       offset: 0,
       message: {
         content: '',
@@ -266,6 +275,7 @@ export default {
         this.messages.push(response.data)
         this.offset += 1
         this.scrollToBottomElement(this.$refs['messages-card-scrollbar'])
+        this.sendMessageSocket(response.data)
       } catch (err) {
         this.toastError(err.toString())
       }
@@ -319,6 +329,19 @@ export default {
       this.messages = []
       this.offset = 0
     },
+    sendMessageSocket(message) {
+      if (
+        this.participant.id === this.currentUser.id ||
+        typeof window.socket === 'undefined' ||
+        window.socket.disconnected
+      )
+        return
+      window.socket.emit('sendToUser', {
+        userId: this.participant.id,
+        url: this.currentUser.url,
+        message: message
+      })
+    },
     async getMessage(roomId = null, offset = 0, limit = 5, isIntersec = false) {
       this.loading = true
       try {
@@ -326,7 +349,7 @@ export default {
           `/v1/user/message/room/${roomId}?offset=${offset}&limit=${limit}`
         )
         if (data.length) {
-          this.messages = [...this.messages, ...data.reverse()]
+          this.messages = [...data.reverse(), ...this.messages]
           this.offset += limit
           if (!isIntersec)
             this.scrollToBottomElement(this.$refs['messages-card-scrollbar'])
@@ -347,8 +370,18 @@ export default {
         this.toastError(err.toString())
       }
       this.loadingNew = false
+    },
+    onScrollTop: debounce(function() {
+      if (this.loading) return
+      this.getMessage(this.room.id, this.offset, 5, true)
+    }, 250)
+  },
+  mounted() {
+    if (typeof window.socket !== 'undefined' && window.socket.connected) {
+      window.socket.on('receivedMessage', context => console.log(context))
     }
   },
+
   watch: {
     search: debounce(function(value) {
       this.searchList(value)
@@ -357,7 +390,7 @@ export default {
       if (!value) return
       this.messages = []
       this.offset = 0
-      this.getMessage(value.id, this.offset, 15)
+      this.getMessage(value.id, 0, 5, false)
     }
   }
 }
@@ -492,5 +525,17 @@ export default {
   z-index: 1040;
   bottom: 20px;
   right: 20px;
+}
+
+.message-card-loading-container {
+  border-radius: 9999px;
+  border: solid 1px rgba(0, 0, 0, 0.08);
+  background: whitesmoke;
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%);
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    post
+    i dex
   </div>
 </template>
 <script>
@@ -10,8 +10,8 @@ export default {
   },
   methods: {},
   created() {},
-  mounted() {},
-  computed: {}
+  computed: {},
+  mounted() {}
 }
 </script>
-<style scoped></style>
+<style lang="scss"></style>

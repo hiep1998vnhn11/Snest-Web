@@ -80,7 +80,6 @@ export default {
         { name: 'index-user-url', label: 'Posts' },
         { name: 'index-user-url-about', label: 'About' },
         { name: 'index-user-url-friends', label: 'Friends' },
-        { name: 'index-user-url-more', label: 'More' },
         { name: 'index-user-url-edit', label: 'Edit', require: true }
       ]
     }

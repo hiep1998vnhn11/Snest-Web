@@ -37,6 +37,9 @@ export default {
   Actived: 'Actived',
   SearchMessage: 'Search message',
   Chats: 'Chats',
+  Unfriend: 'Unfriend',
+  YouAreFollowing: 'You are following',
+  SuggestUser: 'Suggest user',
   common: {
     select_lang: 'Language',
     Login: 'Login',

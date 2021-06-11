@@ -38,7 +38,7 @@ function initScrollbar(className) {
 import DashboardNavbar from '@/components/Layout/DashboardNavbar.vue'
 import DashboardContent from '@/components/Layout/Content.vue'
 import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions'
-
+import { connectSocket, loginSocket } from '@/utils/socket'
 export default {
   components: {
     DashboardNavbar,
@@ -72,15 +72,19 @@ export default {
         initScrollbar('sidebar')
         initScrollbar('main-panel')
         initScrollbar('sidebar-wrapper')
-
         docClasses.add('perfect-scrollbar-on')
       } else {
         docClasses.add('perfect-scrollbar-off')
       }
+    },
+    mountedConnectSocket() {
+      const vm = this
+      connectSocket(vm)
     }
   },
   mounted() {
     this.initScrollbar()
+    connectSocket(this)
   }
 }
 </script>

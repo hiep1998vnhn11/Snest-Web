@@ -15,7 +15,7 @@
             :friendRequest="friendRequest"
             v-if="$route.params.url !== currentUser.url"
           ></user-action>
-          <user-friend :user="friends" />
+          <user-friend :friends="friends" :friends_count="user.friends_count" />
         </div>
       </div>
     </div>

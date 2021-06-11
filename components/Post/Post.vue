@@ -366,9 +366,19 @@ export default {
         if (this.post.likes[status]) this.post.likes[status] += 1
         else this.post.likes[status] = 1
         //TOTO socket
+        this.socketLikePost()
       }
       let url = `/v1/user/post/${this.post.id}/handle_like`
       await this.$axios.$post(url, { status })
+    },
+    socketLikePost() {
+      if (this.post.user_id === this.currentUser.id) return
+      if (typeof window.socket === 'undefined' || window.socket.disconnected)
+        return
+      window.socket.emit('likePost', {
+        user: this.currentUser,
+        post: this.post
+      })
     },
     onChangeFile(e) {
       var files = e.target.files || e.dataTransfer.files
