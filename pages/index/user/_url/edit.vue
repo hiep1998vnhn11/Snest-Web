@@ -1,5 +1,6 @@
 <template>
   <div>
+    <user-image />
     <user-edit> </user-edit>
   </div>
 </template>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ post }}
     <card class="post-card" ref="post-card">
       <div class="post-card-header">
         <base-avatar

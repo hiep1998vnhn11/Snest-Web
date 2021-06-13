@@ -10122,6 +10122,13 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
+vue-avatar-editor-improved@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/vue-avatar-editor-improved/-/vue-avatar-editor-improved-1.0.7.tgz#781e336fdfc8974229317cc3f08dfe145acd7bce"
+  integrity sha512-zmHkXbyZtW51MdID8V6lO4hf4fFQrqLasTNZvlSfAmIfLVC4wAwsVsjt7y7m8BqwuE6nrEFYNlt4IA1VAJ3x9A==
+  dependencies:
+    vue "^2.4.1"
+
 vue-chartjs@^3.4.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-3.5.1.tgz#d25e845708f7744ae51bed9d23a975f5f8fc6529"
@@ -10247,6 +10254,11 @@ vue2-transitions@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/vue2-transitions/-/vue2-transitions-0.3.0.tgz#765fc0d743103fcfe2d10f431697d8873a075c17"
   integrity sha512-m1ad8K8kufqiEhj5gXHkkqOioI5sW0FaMbRiO0Tv2WFfGbO2eIKrfkFiO3HPQtMJboimaLCN4p/zL81clLbG4w==
+
+vue@^2.4.1:
+  version "2.6.14"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.14.tgz#e51aa5250250d569a3fbad3a8a5a687d6036e235"
+  integrity sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==
 
 vue@^2.6.12:
   version "2.6.12"

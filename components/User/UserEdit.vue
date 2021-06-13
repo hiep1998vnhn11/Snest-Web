@@ -1,5 +1,5 @@
 <template>
-  <card style="position: relative">
+  <card>
     <h5 slot="header" class="title">
       {{ $t('EditProfile') }}
     </h5>
@@ -24,7 +24,7 @@
             {{ $t('Change') }}
           </base-button>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <base-input
             type="text"
             label="Username"
@@ -33,7 +33,7 @@
           >
           </base-input>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-8">
           <base-input
             type="email"
             :label="$t('Email address')"
@@ -51,7 +51,7 @@
             type="text"
             label="First Name"
             placeholder="First Name"
-            v-model="user.firstName"
+            v-model="user.first_name"
           >
           </base-input>
         </div>
@@ -60,7 +60,7 @@
             type="text"
             label="Last Name"
             placeholder="Last Name"
-            v-model="user.lastName"
+            v-model="user.last_name"
           >
           </base-input>
         </div>
@@ -70,9 +70,10 @@
         <div class="col-md-12">
           <base-input
             type="text"
-            label="Address"
+            :label="$t('Fullname')"
             placeholder="Home Address"
-            v-model="user.address"
+            v-model="user.full_name"
+            disabled
           >
           </base-input>
         </div>
@@ -99,9 +100,40 @@
         </div>
         <div class="col-md-4">
           <base-input
-            label="Postal Code"
+            :label="$t('Locale')"
             placeholder="ZIP Code"
-            v-model="user.postalCode"
+            v-model="user.locale"
+          >
+          </base-input>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <base-input
+            type="text"
+            :label="$t('Gender')"
+            :placeholder="$t('Gender')"
+            :disabled="info.gender"
+            v-model="info.gender"
+          >
+          </base-input>
+        </div>
+        <div class="col-md-4">
+          <base-input
+            :disabled="info.birthday"
+            type="text"
+            label="Country"
+            placeholder="Country"
+            v-model="info.birthday"
+          >
+          </base-input>
+        </div>
+        <div class="col-md-4">
+          <base-input
+            :label="$t('Locale')"
+            placeholder="ZIP Code"
+            v-model="info.locale"
           >
           </base-input>
         </div>
@@ -167,17 +199,30 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
       user: {
         name: '',
+        first_name: '',
+        last_name: '',
         email: '',
         phone_number: '',
         url: '',
         locale: '',
         profile_photo_path: '',
-        created_at: ''
+        created_at: '',
+        gender: '',
+        profile_background_path: '',
+        birthday: '',
+        live_at: '',
+        from: '',
+        story: '',
+        story_privacy: '',
+        locale: '',
+        show_live_at: '',
+        show_from: ''
       },
       info: {
         gender: '',
@@ -233,7 +278,7 @@ export default {
       this.user[key] = this.currentUser[key]
     })
     Object.keys(this.info).forEach(key => {
-      this.info[key] = this.currentUser.info
+      this.info[key] = this.currentUser.info[key]
     })
   }
 }
