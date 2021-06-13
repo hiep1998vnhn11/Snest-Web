@@ -118,20 +118,20 @@ export default {
       this.posts.unshift(post)
     },
     onMounted() {
-      this.fetchPost(1)
+      this.fetchPost(0)
       this.fetchSuggest()
       this.fetchFollow()
     },
-    async fetchPost(page = 1) {
+    async fetchPost(offset = 0) {
       if (this.lastPost) return
       this.loading = true
       try {
         const { data } = await this.$axios.$get(
-          `/v1/user/post?page=${page}&limit=${PER_PAGE}`
+          `/v1/user/post?offset=${offset}&limit=${PER_PAGE}`
         )
-        if (data.data.length) {
-          this.posts = [...this.posts, ...data.data]
-          this.page = page + 1
+        if (data.length) {
+          this.posts = [...this.posts, ...data]
+          this.offset = offset + PER_PAGE
         } else {
           this.lastPost = true
         }

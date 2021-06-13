@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ post }}
     <card class="post-card" ref="post-card">
       <div class="post-card-header">
         <base-avatar
@@ -22,9 +23,28 @@
               {{ post.created_at | relativeTime }}
             </p>
           </div>
-          <base-button type="neutral" size="sm" icon round>
-            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-          </base-button>
+          <base-dropdown tag="li" title-tag="a">
+            <template slot="title">
+              <!-- <base-button type="neutral" size="sm" icon round>
+                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+              </base-button> -->
+            </template>
+            <li class="px-1">
+              <router-link
+                :to="
+                  localePath({
+                    name: 'index-post-post_id',
+                    params: {
+                      post_id: post.uid
+                    }
+                  })
+                "
+                class="btn btn-block btn-neutral"
+              >
+                {{ $t('ViewPost') }}
+              </router-link>
+            </li>
+          </base-dropdown>
         </div>
       </div>
       <div class="post-card-content">
@@ -44,43 +64,43 @@
       <hr />
       <div class="post-card-reaction">
         <div class="post-card-reaction-count">
-          <div @click="onClickShowLike" v-if="post.likes && post.likes.counter">
+          <div @click="onClickShowLike" v-if="totalLikes && totalLikes.counter">
             <img
-              v-show="post.likes[1]"
+              v-show="totalLikes[1]"
               class="reaction-icon"
               src="/img/icons/reaction/like.svg"
             />
             <img
-              v-show="post.likes[2]"
+              v-show="totalLikes[2]"
               class="reaction-icon"
               src="/img/icons/reaction/love.svg"
             />
             <img
-              v-show="post.likes[3]"
+              v-show="totalLikes[3]"
               class="reaction-icon"
               src="/img/icons/reaction/haha.svg"
             />
             <img
-              v-show="post.likes[4]"
+              v-show="totalLikes[4]"
               class="reaction-icon"
               src="/img/icons/reaction/care.svg"
             />
             <img
-              v-show="post.likes[5]"
+              v-show="totalLikes[5]"
               class="reaction-icon"
               src="/img/icons/reaction/wow.svg"
             />
             <img
-              v-show="post.likes[6]"
+              v-show="totalLikes[6]"
               class="reaction-icon"
               src="/img/icons/reaction/sad.svg"
             />
             <img
-              v-show="post.likes[7]"
+              v-show="totalLikes[7]"
               class="reaction-icon"
               src="/img/icons/reaction/angry.svg"
             />
-            {{ post.likes.counter }} {{ $t('PeoplesLikePost') }}
+            {{ totalLikes.counter }} {{ $t('PeoplesLikePost') }}
           </div>
           <div v-else>
             {{ $t('ThisPostNotHaveAnyLike') }}
@@ -357,14 +377,14 @@ export default {
       const likeStatus = this.likeStatus.status
       this.likeStatus.status = likeStatus === status ? 0 : status
       if (this.likeStatus.status === 0 && likeStatus !== 0) {
-        this.post.likes.counter -= 1
-        if (this.post.likes[status]) {
-          this.post.likes[status] -= 1
-        } else this.post.likes[status] = 0
+        this.totalLikes.counter -= 1
+        if (this.totalLikes[status]) {
+          this.totalLikes[status] -= 1
+        } else this.totalLikes[status] = 0
       } else if (this.likeStatus.status !== 0 && likeStatus === 0) {
-        this.post.likes.counter += 1
-        if (this.post.likes[status]) this.post.likes[status] += 1
-        else this.post.likes[status] = 1
+        this.totalLikes.counter += 1
+        if (this.totalLikes[status]) this.totalLikes[status] += 1
+        else this.totalLikes[status] = 1
         //TOTO socket
         this.socketLikePost()
       }
@@ -453,17 +473,19 @@ export default {
     ...mapGetters('user', ['currentUser']),
     reactionName() {
       return this.reactionNames[this.likeStatus.status] || this.$t('Like')
+    },
+    totalLikes() {
+      let likes = { counter: 0 }
+      if (this.post.like_group.length) {
+        this.post.like_group.forEach(group => {
+          likes.counter += group.counter
+          likes[group.status] = group.counter
+        })
+      }
+      return likes
     }
   },
   mounted() {
-    let likes = { counter: 0 }
-    if (this.post.like_group.length) {
-      this.post.like_group.forEach(group => {
-        likes.counter += group.counter
-        likes[group.status] = group.counter
-      })
-    }
-    this.post.likes = likes
     if (this.show) this.getComment(this.post.uid, 0)
   }
 }

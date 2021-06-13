@@ -121,10 +121,11 @@
           </div>
           <perfect-scrollbar
             ref="messages-card-scrollbar"
+            id="messages-card-scrollbar"
             @ps-y-reach-start="onScrollTop"
           >
             <slide-y-down-transition>
-              <div class="message-card-loading-container" v-show="loading">
+              <div class="message-card-loading-container" v-if="loading">
                 <loading-chasing :loading="true"></loading-chasing>
               </div>
             </slide-y-down-transition>
@@ -180,6 +181,9 @@
               </div>
               <slide-y-up-transition>
                 <div class="messages-card-img__absolute" v-show="message.file">
+                  <span>
+                    {{ message.fileName }}
+                  </span>
                   <img ref="message-preview-img" src="" />
                   <base-button
                     size="sm"
@@ -241,7 +245,8 @@ export default {
         content: '',
         file: null,
         fileName: null
-      }
+      },
+      fetching: false
     }
   },
   computed: {
@@ -274,7 +279,6 @@ export default {
         })
         this.messages.push(response.data)
         this.offset += 1
-        this.scrollToBottomElement(this.$refs['messages-card-scrollbar'])
         this.sendMessageSocket(response.data)
       } catch (err) {
         this.toastError(err.toString())
@@ -284,6 +288,7 @@ export default {
       this.loading = false
     },
     onFileChange(e) {
+      this.$refs['message-preview-img'].src = ''
       var files = e.target.files || e.dataTransfer.files
       if (!files.length) return
       this.message.file = files[0]
@@ -344,6 +349,11 @@ export default {
     },
     async getMessage(roomId = null, offset = 0, limit = 5, isIntersec = false) {
       this.loading = true
+      const messageEl = this.$refs['messages-card-scrollbar']
+      let scrollHeight = 0
+      if (messageEl) {
+        scrollHeight = messageEl.$el.scrollHeight
+      }
       try {
         const { data } = await this.$axios.$get(
           `/v1/user/message/room/${roomId}?offset=${offset}&limit=${limit}`
@@ -351,8 +361,11 @@ export default {
         if (data.length) {
           this.messages = [...data.reverse(), ...this.messages]
           this.offset += limit
-          if (!isIntersec)
-            this.scrollToBottomElement(this.$refs['messages-card-scrollbar'])
+          if (messageEl && scrollHeight)
+            this.$nextTick(() => {
+              messageEl.$el.scrollTop =
+                messageEl.$el.scrollHeight - scrollHeight
+            })
         }
       } catch (err) {
         this.toastError(err.toString())
@@ -372,9 +385,21 @@ export default {
       this.loadingNew = false
     },
     onScrollTop: debounce(function() {
-      if (this.loading) return
+      if (this.loading || this.fetching) return
+      console.log('reach top')
       this.getMessage(this.room.id, this.offset, 5, true)
-    }, 250)
+    }, 450),
+    async firstTime(value) {
+      this.fetching = true
+      await this.getMessage(value.id, 0, 5, false)
+      await new Promise(resolve => setTimeout(resolve, 500))
+      this.$nextTick(() => {
+        this.$refs['messages-card-scrollbar'].$el.scrollTop = this.$refs[
+          'messages-card-scrollbar'
+        ].$el.scrollHeight
+      })
+      this.fetching = false
+    }
   },
   mounted() {
     if (typeof window.socket !== 'undefined' && window.socket.connected) {
@@ -390,7 +415,7 @@ export default {
       if (!value) return
       this.messages = []
       this.offset = 0
-      this.getMessage(value.id, 0, 5, false)
+      this.firstTime(value)
     }
   }
 }
@@ -490,8 +515,14 @@ export default {
           position: absolute;
           max-width: 200px;
           word-wrap: break-word;
-          bottom: 0;
+          top: -10px;
+          transform: translateY(-100%);
           right: 0;
+          background: white;
+          border-radius: 3px;
+          border: solid 1px rgba(1, 1, 1, 0.08);
+          text-align: center;
+          padding: 3px;
           img {
             width: 200px;
             border: solid 1px rgba(0, 0, 0, 0.08);

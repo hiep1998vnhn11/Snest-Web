@@ -84,8 +84,10 @@ export default {
   width: 100%;
   height: 100%;
   word-wrap: break-word;
+  text-align: left;
   &.is-current {
     flex-direction: row-reverse;
+    text-align: right;
   }
 
   .message-row-content-cover {
@@ -104,7 +106,6 @@ export default {
         word-wrap: break-word;
         max-width: 100%;
         position: relative;
-
         .message-row-content__pre-line {
           white-space: pre-line;
         }
