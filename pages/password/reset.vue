@@ -1,25 +1,56 @@
 <template>
-  <div class="container mt-3">
-    <div class="col-lg-4 col-md-6 ml-auto mr-auto">
-      <form ref="reset_password_form" @submit.prevent="handleSubmit()">
+  <div>
+    <div class="container">
+      <form @submit.prevent="handleSubmit()">
         <card class="card-login card-white">
           <template slot="header">
-            <img src="/img/card-primary.png" alt="" />
-            <h1 class="card-title">Reset Password</h1>
+            <img src="@/assets/img/login-panel.jpeg" alt="login-panel" />
+            <h1 class="card-title">
+              {{ $t('PasswordReset') }}
+            </h1>
           </template>
-
-          <base-input
-            v-model="form.data.attributes.email"
-            type="email"
-            placeholder="Email"
-            addon-left-icon="tim-icons icon-email-85"
-          />
-          <validation-error :errors="apiValidationErrors.email" />
-
-          <div class="text-center">
-            <base-button type="primary" native-type="submit" class="my-4"
-              >Send Password Reset Link</base-button
+          <div>
+            <base-input
+              required
+              :label="$t('YourEmail')"
+              v-model="user.email"
+              type="email"
+              :placeholder="$t('common.EmailOrUsername')"
+              addon-left-icon="tim-icons icon-email-85"
             >
+            </base-input>
+            <validation-error :errors="null" />
+          </div>
+          <div slot="footer">
+            <base-button
+              native-type="submit"
+              type="primary"
+              class="mb-3"
+              size="lg"
+              block
+            >
+              {{ $t('SendMeAnEmail') }}
+            </base-button>
+            <div class="pull-left">
+              <h6>
+                <nuxt-link
+                  class="link footer-link"
+                  :to="localePath({ name: 'login' })"
+                >
+                  {{ $t('common.Login') }}
+                </nuxt-link>
+              </h6>
+            </div>
+            <div class="pull-right">
+              <h6>
+                <nuxt-link
+                  :to="localePath({ name: 'register' })"
+                  class="link footer-link"
+                >
+                  {{ $t('common.register') }}
+                </nuxt-link>
+              </h6>
+            </div>
           </div>
         </card>
       </form>
@@ -27,47 +58,65 @@
   </div>
 </template>
 <script>
-import formMixin from '@/mixins/form-mixin'
+import { mapActions } from 'vuex'
 export default {
   layout: 'guest',
-  mixins: [formMixin],
   data() {
     return {
-      form: {
-        data: {
-          type: 'password-forgot',
-          attributes: {
-            email: '',
-            redirect_url: process.env.VUE_APP_BASE_URL + '/password/email'
-          }
-        }
-      }
+      user: {
+        email: '',
+        password: ''
+      },
+      email: 'admin@jsonapi.com',
+      password: 'secret',
+      subscribe: true
     }
   },
   methods: {
+    ...mapActions('user', ['login']),
     async handleSubmit() {
-      if (this.$isDemo) {
-        await this.$notify({
-          type: 'danger',
-          message: 'Password reset is disabled in the demo.'
-        })
-        return
-      }
+      this.$nuxt.$loading.start()
       try {
-        await this.$store.dispatch('reset/forgotPassword', this.form.data)
+        await this.login(this.user)
+        this.$router.push(this.localePath({ name: 'index' }))
+      } catch (e) {
         await this.$notify({
-          type: 'success',
-          message: 'An email with reset password link was sent.'
+          message: 'Invalid credentials!',
+          icon: 'tim-icons icon-bell-55',
+          type: 'danger'
         })
-        this.$refs['reset_password_form'].reset()
-      } catch (error) {
-        await this.$notify({
-          type: 'danger',
-          message: "We can't find a user with that e-mail address."
-        })
-        this.setApiValidation(error.response.data.errors)
       }
+      this.$nuxt.$loading.finish()
     }
+  },
+  mounted() {
+    if (window.localStorage.getItem('email'))
+      this.user.email = window.localStorage.getItem('email')
+    if (window.localStorage.getItem('password'))
+      this.user.password = window.localStorage.getItem('password')
   }
 }
 </script>
+<style lang="scss" scoped>
+.navbar-nav .nav-item p {
+  line-height: inherit;
+  margin-left: 5px;
+}
+.card-login {
+  width: 100%;
+  padding-top: 230px;
+  position: relative;
+  img {
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 230px;
+    position: absolute;
+  }
+  .card-title {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+}
+</style>

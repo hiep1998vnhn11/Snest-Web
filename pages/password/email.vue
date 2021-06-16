@@ -1,90 +1,122 @@
 <template>
-  <div class="container mt-3">
-    <div class="col-lg-4 col-md-6 ml-auto mr-auto">
+  <div>
+    <div class="container">
       <form @submit.prevent="handleSubmit()">
         <card class="card-login card-white">
           <template slot="header">
-            <img src="@/assets/img/card-primary.png" alt="" />
-            <h1 class="card-title">Reset Password</h1>
+            <img src="@/assets/img/login-panel.jpeg" alt="login-panel" />
+            <h1 class="card-title">
+              {{ $t('PasswordReset') }}
+            </h1>
           </template>
-
-          <base-input
-            required
-            v-model="form.data.attributes.password"
-            placeholder="Password"
-            addon-left-icon="tim-icons icon-lock-circle"
-            type="password"
-          >
-          </base-input>
-          <validation-error :errors="apiValidationErrors.password" />
-
-          <base-input
-            required
-            placeholder="Confirm Password"
-            type="password"
-            name="Password confirmation"
-            v-model="form.data.attributes.password_confirmation"
-            addon-left-icon="tim-icons icon-lock-circle"
-          >
-          </base-input>
-          <validation-error
-            :errors="apiValidationErrors.password_confirmation"
-          />
-
-          <base-button
-            native-type="submit"
-            slot="footer"
-            type="primary"
-            round
-            block
-            size="lg"
-          >
-            Reset Password
-          </base-button>
+          <div>
+            <base-input
+              required
+              :label="$t('YourEmail')"
+              v-model="user.email"
+              type="email"
+              :placeholder="$t('common.EmailOrUsername')"
+              addon-left-icon="tim-icons icon-email-85"
+            >
+            </base-input>
+            <validation-error :errors="null" />
+          </div>
+          <div slot="footer">
+            <base-button
+              native-type="submit"
+              type="primary"
+              class="mb-3"
+              size="lg"
+              block
+            >
+              {{ $t('SendMeAnEmail') }}
+            </base-button>
+            <div class="pull-left">
+              <h6>
+                <nuxt-link
+                  class="link footer-link"
+                  :to="localePath({ name: 'login' })"
+                >
+                  {{ $t('common.Login') }}
+                </nuxt-link>
+              </h6>
+            </div>
+            <div class="pull-right">
+              <h6>
+                <nuxt-link
+                  :to="localePath({ name: 'register' })"
+                  class="link footer-link"
+                >
+                  {{ $t('common.register') }}
+                </nuxt-link>
+              </h6>
+            </div>
+          </div>
         </card>
       </form>
     </div>
   </div>
 </template>
 <script>
-import formMixin from '@/mixins/form-mixin'
+import { mapActions } from 'vuex'
 export default {
   layout: 'guest',
-  mixins: [formMixin],
   data() {
     return {
-      form: {
-        data: {
-          type: 'password-reset',
-          attributes: {
-            password: '',
-            password_confirmation: '',
-            token: '',
-            email: ''
-          }
-        }
+      user: {
+        email: '',
+        password: ''
+      },
+      email: 'admin@jsonapi.com',
+      password: 'secret',
+      subscribe: true
+    }
+  },
+  methods: {
+    ...mapActions('user', ['login']),
+    async handleSubmit() {
+      this.$nuxt.$loading.start()
+      try {
+        await this.login(this.user)
+        this.$router.push(this.localePath({ name: 'index' }))
+      } catch (e) {
+        await this.$notify({
+          message: 'Invalid credentials!',
+          icon: 'tim-icons icon-bell-55',
+          type: 'danger'
+        })
       }
+      this.$nuxt.$loading.finish()
     }
   },
   mounted() {
-    this.form.data.attributes.email = this.$route.query.email
-    this.form.data.attributes.token = this.$route.query.token
-  },
-  beforeDestroy() {
-    this.$router.replace({ query: null })
-  },
-  methods: {
-    async handleSubmit() {
-      try {
-        await this.$store.dispatch('reset/createNewPassword', this.form.data)
-      } catch (error) {
-        await this.$notify({
-          type: 'danger',
-          message: 'The given data was invalid.'
-        })
-        this.setApiValidation(error.response.data.errors)
-      }
-    }
+    if (window.localStorage.getItem('email'))
+      this.user.email = window.localStorage.getItem('email')
+    if (window.localStorage.getItem('password'))
+      this.user.password = window.localStorage.getItem('password')
   }
 }
 </script>
+<style lang="scss" scoped>
+.navbar-nav .nav-item p {
+  line-height: inherit;
+  margin-left: 5px;
+}
+.card-login {
+  width: 100%;
+  padding-top: 230px;
+  position: relative;
+  img {
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 230px;
+    position: absolute;
+  }
+  .card-title {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+}
+</style>

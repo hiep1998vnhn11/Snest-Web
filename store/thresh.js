@@ -9,14 +9,17 @@ const state = () => ({
   page: 1,
   room: null,
   participant: null,
-  offset: 0
+  offset: 0,
+  messages: [],
+  messageOffset: 0
 })
 
 const getters = {
   threshes: state => state.threshes,
   room: state => state.room,
   rooms: state => state.rooms,
-  participant: state => state.participant
+  participant: state => state.participant,
+  messages: state => state.messages
 }
 
 const actions = {
@@ -53,6 +56,40 @@ const actions = {
       )
       commit('SET_ROOM_BY_URL', data)
     }
+  },
+
+  async getMessages({ commit, state }) {
+    if (!state.room.id) return
+    const { data } = await this.$axios.$get(
+      `/v1/user/message/room/${state.room.id}?offset=${state.messageOffset}&limit=5}`
+    )
+    if (!data.length) return
+    commit('SET_MESSAGES', data)
+  },
+
+  async sendMessage({ commit, state }, { file, content }) {
+    if (!file && !content) return
+    const formData = new FormData()
+    if (file) formData.append('file', file)
+    if (content) formData.append('content', content)
+    const url =
+      state.room.type === 1
+        ? `/v1/user/message/private-chat`
+        : `/v1/user/message/chat/${state.room.id}`
+    const response = await this.$axios.$post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    if (response.data) commit('SEND_MESSAGE', response.data)
+    return response.data
+  },
+
+  async removeMessage({ commit }, messageId) {
+    commit('REMOVE_MESSAGE', messageId)
+    // await this.$axios.$post(`/v1/user/message/${messageId}`, {
+    //   _method: 'delete'
+    // })
   }
 }
 
@@ -64,6 +101,8 @@ const mutations = {
   SET_ROOM: function(state, data) {
     state.room = data.room
     state.participant = data.participant
+    state.messages = []
+    state.messageOffset = 0
   },
   SET_THRESH_PAGE: function(state) {
     state.page = 1
@@ -76,18 +115,16 @@ const mutations = {
     const messageObject = Object.assign(payload.message, {
       user: { id: payload.message.user_id, name: payload.userName }
     })
-    state.threshes.forEach(thresh => {
-      if (thresh.id === Number(payload.message.thresh_id)) {
-        thresh.last_message = messageObject
-      }
-    })
+    state.messages.push(messageObject)
+    state.offset = state.offset + 1
   },
   SEND_MESSAGE: function(state, message) {
-    state.threshes.forEach(thresh => {
-      if (thresh.id === Number(message.thresh_id)) {
-        thresh.last_message = message
-      }
-    })
+    state.messages.push(message)
+    state.offset = state.offset + 1
+  },
+  SET_MESSAGES: function(state, messages) {
+    messages.forEach(message => state.messages.unshift(message))
+    state.messageOffset = state.messageOffset + messages.length
   },
   SET_ROOM_BY_URL: function(state, data) {
     state.room = data.room
@@ -96,6 +133,11 @@ const mutations = {
   REMOVE_ROOM: function(state) {
     state.room = null
     state.participant = null
+    state.messages = []
+    state.messageOffset = 0
+  },
+  REMOVE_MESSAGE: function(state, messageId) {
+    state.messages = state.messages.filter(message => message.id !== messageId)
   },
   RESET: function(state) {
     const s = initialState()

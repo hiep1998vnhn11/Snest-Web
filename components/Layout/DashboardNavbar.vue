@@ -63,89 +63,93 @@
           </div>
           <perfect-scrollbar>
             <loading-chasing :loading="notification.loading"></loading-chasing>
-            <li
-              class="nav-link"
-              v-for="notification in notification.list"
-              :key="`notification-${notification.id}`"
-            >
-              <router-link
-                v-if="
-                  notification.data.type === 'post' &&
-                    notification.type == 'App\\Notifications\\LikeNotification'
-                "
-                :to="
-                  localePath({
-                    name: 'index-post-post_id',
-                    params: { post_id: notification.data.id }
-                  })
-                "
-                class="nav-item dropdown-item"
+            <transition-group name="list-left" tag="li">
+              <li
+                class="nav-link list-item"
+                v-for="notification in notification.list"
+                :key="`notification-${notification.id}`"
               >
-                <strong>
-                  {{ notification.data.username }}
-                </strong>
-                <span v-show="notification.data.likes_count > 1">
-                  {{ $t('And') }} {{ notification.data.likes_count - 1 }}
-                  {{ $t('Peoples') }}
-                </span>
-                {{ $t('LikeYourPost') }}
-              </router-link>
-              <router-link
-                v-else-if="
-                  notification.data.type === 'post' &&
+                <router-link
+                  v-if="
+                    notification.data.type === 'post' &&
+                      notification.type ==
+                        'App\\Notifications\\LikeNotification'
+                  "
+                  :to="
+                    localePath({
+                      name: 'index-post-post_id',
+                      params: { post_id: notification.data.id }
+                    })
+                  "
+                  class="nav-item dropdown-item"
+                >
+                  <strong>
+                    {{ notification.data.username }}
+                  </strong>
+                  <span v-show="notification.data.likes_count > 1">
+                    {{ $t('And') }} {{ notification.data.likes_count - 1 }}
+                    {{ $t('Peoples') }}
+                  </span>
+                  {{ $t('LikeYourPost') }}
+                </router-link>
+                <router-link
+                  v-else-if="
+                    notification.data.type === 'post' &&
+                      notification.type ==
+                        'App\\Notifications\\CommentNotification'
+                  "
+                  :to="
+                    localePath({
+                      name: 'index-post-post_id',
+                      params: { post_id: notification.data.id }
+                    })
+                  "
+                  class="nav-item dropdown-item"
+                >
+                  <strong>
+                    {{ notification.data.username }}
+                  </strong>
+                  {{ $t('CommentInYourPost') }}
+                </router-link>
+                <router-link
+                  v-else-if="
                     notification.type ==
-                      'App\\Notifications\\CommentNotification'
-                "
-                :to="
-                  localePath({
-                    name: 'index-post-post_id',
-                    params: { post_id: notification.data.id }
-                  })
-                "
-                class="nav-item dropdown-item"
-              >
-                <strong>
-                  {{ notification.data.username }}
-                </strong>
-                {{ $t('CommentInYourPost') }}
-              </router-link>
-              <router-link
-                v-else-if="
-                  notification.type ==
-                    'App\\Notifications\\FriendNotification' &&
-                    notification.data.type == 'requesting'
-                "
-                :to="
-                  localePath({
-                    name: 'index-user-url',
-                    params: { url: notification.data.user_url }
-                  })
-                "
-                class="nav-item dropdown-item"
-              >
-                <strong>
-                  {{ notification.data.username }}
-                </strong>
-                {{ $t('SentYouFriendRequest') }}
-              </router-link>
-              <router-link
-                v-else-if="
-                  notification.type == 'App\\Notifications\\FriendNotification'
-                "
-                :to="
-                  localePath({
-                    name: 'index-user-url',
-                    params: { url: notification.data.user_url }
-                  })
-                "
-                class="nav-item dropdown-item"
-              >
-                <strong>
-                  {{ notification.data.username }}
-                </strong>
-                {{ $t('AcceptYourFriendRequest') }}
-              </router-link>
-            </li>
+                      'App\\Notifications\\FriendNotification' &&
+                      notification.data.type == 'requesting'
+                  "
+                  :to="
+                    localePath({
+                      name: 'index-user-url',
+                      params: { url: notification.data.user_url }
+                    })
+                  "
+                  class="nav-item dropdown-item"
+                >
+                  <strong>
+                    {{ notification.data.username }}
+                  </strong>
+                  {{ $t('SentYouFriendRequest') }}
+                </router-link>
+                <router-link
+                  v-else-if="
+                    notification.type ==
+                      'App\\Notifications\\FriendNotification'
+                  "
+                  :to="
+                    localePath({
+                      name: 'index-user-url',
+                      params: { url: notification.data.user_url }
+                    })
+                  "
+                  class="nav-item dropdown-item"
+                >
+                  <strong>
+                    {{ notification.data.username }}
+                  </strong>
+                  {{ $t('AcceptYourFriendRequest') }}
+                </router-link>
+              </li>
+            </transition-group>
           </perfect-scrollbar>
         </div>
       </base-dropdown>
@@ -175,24 +179,26 @@
             </nuxt-link>
           </div>
           <perfect-scrollbar>
-            <li
-              class="nav-link"
-              v-for="room in rooms"
-              :key="`message-room-index-${room.id}`"
-            >
-              <a
-                href="javascript:void(0);"
-                class="nav-item dropdown-item message-nav-item"
-                @click="onOpenMessage(room.url)"
+            <transition-group name="list-left" tag="li">
+              <li
+                class="nav-link list-item"
+                v-for="room in rooms"
+                :key="`message-room-index-${room.id}`"
               >
-                <base-avatar
-                  :size="30"
-                  outlined
-                  :src="room.photo"
-                ></base-avatar>
-                <strong>{{ room.full_name }}</strong>
-              </a>
-            </li>
+                <a
+                  href="javascript:void(0);"
+                  class="nav-item dropdown-item message-nav-item"
+                  @click="onOpenMessage(room.url)"
+                >
+                  <base-avatar
+                    :size="30"
+                    outlined
+                    :src="room.photo"
+                  ></base-avatar>
+                  <strong>{{ room.full_name }}</strong>
+                </a>
+              </li>
+            </transition-group>
           </perfect-scrollbar>
         </div>
       </base-dropdown>

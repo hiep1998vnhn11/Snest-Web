@@ -52,7 +52,7 @@
         v-for="tab in tabs"
         :key="`user-tab-${tab.name}`"
       >
-        <base-button>
+        <base-button v-if="!tab.require">
           {{ tab.label }}
         </base-button>
       </router-link>

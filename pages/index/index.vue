@@ -8,13 +8,16 @@
           <h3>
             {{ $t('YouAreFollowing') }}
           </h3>
-          <user-button
-            :profile_photo_path="user.profile_photo_path"
-            :user_name="user.full_name"
-            :user_url="user.url"
-            v-for="user in follow.users"
-            :key="`follow-user-${user.url}`"
-          ></user-button>
+          <transition-group name="list-left" tag="p">
+            <user-button
+              :profile_photo_path="user.profile_photo_path"
+              :user_name="user.full_name"
+              :user_url="user.url"
+              v-for="user in follow.users"
+              :key="`follow-user-${user.url}`"
+              class="list-item"
+            ></user-button>
+          </transition-group>
         </perfect-scrollbar>
       </div>
       <div class="home-sidebar-left-bottom">
@@ -23,14 +26,17 @@
           <h3>
             {{ $t('SuggestUser') }}
           </h3>
-          <user-button
-            :profile_photo_path="user.profile_photo_path"
-            :user_name="user.full_name"
-            :user_url="user.url"
-            :onlineStatus="user.onlineStatus"
-            v-for="user in suggest.users"
-            :key="`suggest-user-${user.url}`"
-          ></user-button>
+          <transition-group name="list-right" tag="p">
+            <user-button
+              :profile_photo_path="user.profile_photo_path"
+              :user_name="user.full_name"
+              :user_url="user.url"
+              :onlineStatus="user.onlineStatus"
+              v-for="user in suggest.users"
+              :key="`suggest-user-${user.url}`"
+              class="list-item"
+            ></user-button>
+          </transition-group>
         </perfect-scrollbar>
       </div>
     </side-bar>
@@ -50,14 +56,16 @@
 
         <slide-y-down-transition>
           <div class="mt-3" v-if="posts.length">
-            <post
-              class="mt-3"
-              v-for="(post, index) in posts"
-              :key="`post-component-feed-${index}`"
-              :post="post"
-              :index="index"
-              :like_status="post.like_status"
-            ></post>
+            <transition-group name="list-complete" tag="p">
+              <post
+                class="mt-3 list-complete-item"
+                v-for="(post, index) in posts"
+                :key="`post-component-feed-${index}`"
+                :post="post"
+                :index="index"
+                :like_status="post.like_status"
+              ></post>
+            </transition-group>
             <observer @intersect="intersected"></observer>
           </div>
         </slide-y-down-transition>

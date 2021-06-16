@@ -153,9 +153,15 @@
               {{ $t('ShowMoreComments') }}
             </span>
           </div>
-          <div v-for="comment in comments" :key="`comment-${comment.id}`">
-            <post-comment :comment="comment"></post-comment>
-          </div>
+          <transition-group name="list-left">
+            <div
+              v-for="comment in comments"
+              :key="`comment-${comment.id}`"
+              class="list-item"
+            >
+              <post-comment :comment="comment"></post-comment>
+            </div>
+          </transition-group>
         </div>
       </slide-y-down-transition>
 
@@ -239,7 +245,7 @@
                 <user-button
                   :user_name="like.user_name"
                   :user_url="like.user_url"
-                  :profile_photo_path="like.user_phofile_photo_path"
+                  :profile_photo_path="like.user_profile_photo_path"
                 >
                 </user-button>
               </div>

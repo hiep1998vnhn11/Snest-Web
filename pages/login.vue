@@ -3,6 +3,11 @@
     <div class="container">
       <form @submit.prevent="handleSubmit()">
         <card class="card-login card-white">
+          <slide-y-up-transition>
+            <div v-show="loading">
+              <loading-chasing :loading="true"></loading-chasing>
+            </div>
+          </slide-y-up-transition>
           <template slot="header">
             <img src="@/assets/img/login-panel.jpeg" alt="login-panel" />
             <h1 class="card-title">
@@ -10,6 +15,14 @@
             </h1>
           </template>
           <div>
+            <a @click="onLoginFacebook" class="btn btn-block btn-success">
+              <span v-if="!facebook.loggingIn">
+                <i class="fa fa-facebook"></i>
+                Đăng nhập bằng Facebook
+              </span>
+              <div v-else data-loader="circle-side"></div>
+            </a>
+            <validation-error :errors="errors" />
             <base-input
               required
               :label="$t('EmailOrUsername')"
@@ -19,7 +32,6 @@
               addon-left-icon="tim-icons icon-email-85"
             >
             </base-input>
-            <validation-error :errors="123" />
             <base-input
               required
               :label="$t('Password')"
@@ -29,7 +41,6 @@
               type="password"
             >
             </base-input>
-            <validation-error :errors="123" />
           </div>
           <div slot="footer">
             <base-button
@@ -79,24 +90,106 @@ export default {
       },
       email: 'admin@jsonapi.com',
       password: 'secret',
-      subscribe: true
+      subscribe: true,
+      loading: false,
+      errors: [],
+      facebook: {
+        loggingIn: false,
+        loading: false,
+        user: false,
+        accessToken: null,
+        picture: null
+      }
     }
   },
   methods: {
     ...mapActions('user', ['login']),
     async handleSubmit() {
-      this.$nuxt.$loading.start()
+      this.loading = true
+      this.errors = []
       try {
         await this.login(this.user)
         this.$router.push(this.localePath({ name: 'index' }))
       } catch (e) {
-        await this.$notify({
-          message: 'Invalid credentials!',
+        this.$notify({
+          message: this.$t('Invalid credentials!'),
           icon: 'tim-icons icon-bell-55',
           type: 'danger'
         })
+        this.errors = [e.response.data.message]
+      }
+      this.loading = false
+    },
+    async onLoginFacebook() {
+      this.facebook.loggingIn = true
+      this.loading = true
+
+      const _this = this
+      FB.getLoginStatus(async function(response) {
+        if (response.status === 'connected') {
+          FB.api('/me', { fields: 'picture,name' }, function(response) {
+            _this.facebook.user = response.name
+            _this.facebook.picture = response.picture.data.url
+          })
+          _this.facebook.accessToken = response.authResponse.accessToken
+        } else {
+          FB.login(
+            async function(response) {
+              if (response.authResponse) {
+                FB.api('/me', { fields: 'picture,name' }, function(response) {
+                  _this.facebook.user = response.name
+                  _this.facebook.picture = response.picture.data.url
+                  _this.onContinueFacebook()
+                })
+                _this.facebook.accessToken = response.authResponse.accessToken
+              }
+            },
+            {
+              scope:
+                'public_profile,email,user_gender,user_link,user_location,user_birthday',
+              return_scopes: true
+            }
+          )
+        }
+      })
+      this.facebook.loggingIn = false
+      this.loading = false
+    },
+    async onContinueFacebook() {
+      if (!this.facebook.accessToken) return
+      this.$nuxt.$loading.start()
+      try {
+        await this.$store.dispatch(
+          'user/loginFacebook',
+          this.facebook.accessToken
+        )
+        this.$router.push({ name: 'index' })
+      } catch (err) {
+        this.$nuxt.error(err)
       }
       this.$nuxt.$loading.finish()
+    },
+    statusChangeCallback(response) {
+      // Called with the results from FB.getLoginStatus().
+      // The current login status of the person.
+      if (response.status === 'connected') {
+        // Logged into your webpage and Facebook.
+        console.log(response)
+      } else {
+        // Not logged into your webpage or we are unable to tell.
+        console.log(response)
+        console.log('failed!')
+      }
+    },
+    startFacebookInit() {
+      if (typeof FB != 'undefined' && FB != null) {
+        FB.init({
+          appId: process.env.NUXT_ENV_FACEBOOK_APP_ID,
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: process.env.NUXT_ENV_FACEBOOK_APP_VERSION
+        })
+      }
     }
   },
   mounted() {
@@ -104,6 +197,7 @@ export default {
       this.user.email = window.localStorage.getItem('email')
     if (window.localStorage.getItem('password'))
       this.user.password = window.localStorage.getItem('password')
+    this.startFacebookInit()
   }
 }
 </script>

@@ -48,3 +48,39 @@
   color: #000;
   font-weight: bold;
 }
+
+//transition group
+
+.list-complete-item {
+  transition: all 1s;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
+}
+
+.list-item {
+  transition: all 1s;
+}
+
+.list-left-enter,
+.list-left-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
+.list-left-leave-active {
+  position: absolute;
+}
+
+.list-right-enter,
+.list-right-leave-to {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+.list-right-leave-active {
+  position: absolute;
+}

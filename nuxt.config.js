@@ -26,12 +26,12 @@ export default {
         async: true,
         defer: true,
         crossorigin: 'anonymous',
-        src: 'https://connect.facebook.net/en_US/sdk.js'
+        src: '/sdk/facebook-sdk.js'
       },
       {
         async: true,
         defer: true,
-        src: 'https://apis.google.com/js/client:platform.js?onload=start'
+        src: '/sdk/google-sdk.js?onload=start'
       }
     ],
     bodyAttrs: {

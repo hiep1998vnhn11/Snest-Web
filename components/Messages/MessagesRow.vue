@@ -17,7 +17,7 @@
               v-lazy="message.media"
               :class="{ 'is-card': isCard }"
             />
-            <a :href="message.media" target="_blank" v-else>
+            <a :href="message.media" target="_blank" v-else class="link-file">
               {{ message.media_name }}
             </a>
           </div>
@@ -27,12 +27,17 @@
               'is-current': isCurrent
             }"
           >
-            <base-button icon round type="success" size="sm">
+            <base-button
+              icon
+              round
+              type="success"
+              size="sm"
+              @click="$emit('selectMessage', message)"
+            >
               <i class="tim-icons icon-sound-wave"></i>
             </base-button>
           </div>
         </div>
-
         <div class="spacer"></div>
       </div>
       <div class="message-row-content-time">
@@ -42,6 +47,7 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: {
     message: {
@@ -72,7 +78,9 @@ export default {
       }
     }
   },
-  methods: {},
+  methods: {
+    ...mapActions('thresh', ['removeMessage'])
+  },
   created() {},
   computed: {},
   mounted() {}
@@ -125,6 +133,12 @@ export default {
           background: #2a8fff !important;
           color: #d4eaff !important;
           text-align: right;
+        }
+
+        .link-file {
+          color: greenyellow;
+          text-decoration: underline;
+          font-weight: bold;
         }
         .message-row-content-button {
           position: absolute;

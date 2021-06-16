@@ -1,7 +1,5 @@
 <template>
   <div>
-    {{ totalLikes }}
-    {{ likeStatus }}
     <div class="post-comment">
       <div class="mr-2">
         <base-avatar
@@ -109,11 +107,14 @@
         </slide-y-down-transition>
         <slide-y-down-transition>
           <div v-if="show && subComments.length">
-            <post-sub-comment
-              v-for="subComment in subComments"
-              :subComment="subComment"
-              :key="`sub-comment-${subComment.id}`"
-            ></post-sub-comment>
+            <transition-group name="list-left">
+              <post-sub-comment
+                v-for="subComment in subComments"
+                :subComment="subComment"
+                :key="`sub-comment-${subComment.id}`"
+                class="list-item"
+              ></post-sub-comment>
+            </transition-group>
           </div>
         </slide-y-down-transition>
 
@@ -169,6 +170,7 @@ export default {
     }
   },
   data() {
+    const vm = this
     return {
       loading: false,
       show: false,

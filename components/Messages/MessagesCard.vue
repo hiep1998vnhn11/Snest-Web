@@ -133,16 +133,20 @@
             <slide-y-down-transition>
               <div class="messages-card-content" v-if="messages.length">
                 <!-- <observer @intersect="intersected"></observer> -->
-                <div
-                  v-for="message in messages"
-                  :key="`message-row-card-${message.id}`"
-                >
-                  <messages-row
-                    :message="message"
-                    :isCurrent="message.user_id === currentUser.id"
-                    :isCard="true"
-                  ></messages-row>
-                </div>
+                <transition-group name="list-complete" tag="p">
+                  <div
+                    v-for="message in messages"
+                    :key="`message-row-card-${message.id}`"
+                    class="list-complete-item"
+                  >
+                    <messages-row
+                      :message="message"
+                      :isCurrent="message.user_id === currentUser.id"
+                      :isCard="true"
+                      @selectMessage="onSelectMessage"
+                    ></messages-row>
+                  </div>
+                </transition-group>
               </div>
               <div v-else>
                 Not have
@@ -210,6 +214,29 @@
               </base-button>
             </slide-y-down-transition>
           </div>
+          <slide-y-down-transition>
+            <div class="message--dialog" v-if="selectedMessage">
+              <button
+                class="btn btn-neutral btn-round btn-icon"
+                v-if="deleting"
+                @click="onRemoveMessage"
+              >
+                <i class="tim-icons icon-check-2"></i>
+              </button>
+              <button
+                class="btn btn-danger btn-round btn-icon"
+                @click="deleting = !deleting"
+              >
+                <i
+                  class="tim-icons"
+                  :class="{
+                    'icon-trash-simple': !deleting,
+                    'icon-simple-remove': deleting
+                  }"
+                ></i>
+              </button>
+            </div>
+          </slide-y-down-transition>
         </div>
       </zoom-center-transition>
     </div>
@@ -238,7 +265,6 @@ export default {
       list: [],
       search: '',
       suggested: [],
-      messages: [],
       loading: false,
       offset: 0,
       message: {
@@ -246,15 +272,22 @@ export default {
         file: null,
         fileName: null
       },
-      fetching: false
+      fetching: false,
+      selectedMessage: null,
+      deleting: false
     }
   },
   computed: {
-    ...mapGetters('thresh', ['room', 'participant']),
+    ...mapGetters('thresh', ['room', 'participant', 'messages']),
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
-    ...mapActions('thresh', ['getRoomByUrl']),
+    ...mapActions('thresh', [
+      'getRoomByUrl',
+      'getMessages',
+      'sendMessage',
+      'removeMessage'
+    ]),
     scrollToBottomElement(element) {
       this.$nextTick(() => {
         element.$el.scrollTop = element.$el.scrollHeight
@@ -264,28 +297,20 @@ export default {
       if (!this.message.content && !this.message.file) return
       this.loading = true
       try {
-        var formData = new FormData()
-        if (this.message.file) formData.append('file', this.message.file)
-        if (this.message.content)
-          formData.append('content', this.message.content)
-        const url =
-          this.room.type == 1
-            ? `/v1/user/message/private-chat`
-            : `/v1/user/message/chat/${this.room.id}`
-        const response = await this.$axios.$post(url, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        this.messages.push(response.data)
-        this.offset += 1
-        this.sendMessageSocket(response.data)
+        const message = await this.sendMessage(this.message)
+        this.sendMessageSocket(message)
       } catch (err) {
         this.toastError(err.toString())
       }
       this.message.content = ''
       this.onRemoveFile()
       this.loading = false
+    },
+    onRemoveMessage() {
+      if (this.selectedMessage.user_id !== this.currentUser.id) return
+      this.removeMessage(this.selectedMessage.id)
+      this.selectedMessage = null
+      this.deleting = false
     },
     onFileChange(e) {
       this.$refs['message-preview-img'].src = ''
@@ -331,8 +356,6 @@ export default {
     },
     onCloseMessage() {
       this.$store.commit('thresh/REMOVE_ROOM')
-      this.messages = []
-      this.offset = 0
     },
     sendMessageSocket(message) {
       if (
@@ -347,7 +370,7 @@ export default {
         message: message
       })
     },
-    async getMessage(roomId = null, offset = 0, limit = 5, isIntersec = false) {
+    async getMessage() {
       this.loading = true
       const messageEl = this.$refs['messages-card-scrollbar']
       let scrollHeight = 0
@@ -355,18 +378,11 @@ export default {
         scrollHeight = messageEl.$el.scrollHeight
       }
       try {
-        const { data } = await this.$axios.$get(
-          `/v1/user/message/room/${roomId}?offset=${offset}&limit=${limit}`
-        )
-        if (data.length) {
-          this.messages = [...data.reverse(), ...this.messages]
-          this.offset += limit
-          if (messageEl && scrollHeight)
-            this.$nextTick(() => {
-              messageEl.$el.scrollTop =
-                messageEl.$el.scrollHeight - scrollHeight
-            })
-        }
+        await this.getMessages()
+        if (messageEl && scrollHeight)
+          this.$nextTick(() => {
+            messageEl.$el.scrollTop = messageEl.$el.scrollHeight - scrollHeight
+          })
       } catch (err) {
         this.toastError(err.toString())
       }
@@ -389,9 +405,9 @@ export default {
       console.log('reach top')
       this.getMessage(this.room.id, this.offset, 5, true)
     }, 450),
-    async firstTime(value) {
+    async firstTime() {
       this.fetching = true
-      await this.getMessage(value.id, 0, 5, false)
+      await this.getMessage()
       await new Promise(resolve => setTimeout(resolve, 500))
       this.$nextTick(() => {
         this.$refs['messages-card-scrollbar'].$el.scrollTop = this.$refs[
@@ -399,6 +415,10 @@ export default {
         ].$el.scrollHeight
       })
       this.fetching = false
+    },
+    onSelectMessage(messageId) {
+      if (this.selectedMessage === messageId) this.selectedMessage = null
+      else this.selectedMessage = messageId
     }
   },
   mounted() {
@@ -413,8 +433,6 @@ export default {
     }, 500),
     room(value) {
       if (!value) return
-      this.messages = []
-      this.offset = 0
       this.firstTime(value)
     }
   }
@@ -455,6 +473,18 @@ export default {
     &:hover {
       transition: 0.5s ease-in-out;
       transform: translateY(-10px);
+    }
+
+    .message--dialog {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      padding-left: 20px;
+      padding-right: 20px;
+      transform: translateX(-50%);
+      border: solid 1px rgba(0, 0, 0, 0.1);
+      background: whitesmoke;
+      border-radius: 10px;
     }
 
     .messages-card-title {

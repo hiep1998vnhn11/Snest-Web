@@ -583,5 +583,10 @@ export default {
     tableList: 'Table List',
     typography: 'Typography',
     rtlSupport: 'RTL Support'
-  }
+  },
+  Register: 'Register',
+  'Confirm Password': 'Confirm password',
+  LastName: 'Last name',
+  FirstName: 'First name',
+  ViewPost: 'View post'
 }

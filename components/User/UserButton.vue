@@ -30,7 +30,7 @@ export default {
     },
     profile_photo_path: {
       type: String,
-      default: 'http://localhost:8000/storage/user/default-user-avatar.jpeg'
+      default: '/img/default-avatar.png'
     },
     onlineStatus: {
       type: Object

@@ -18,7 +18,7 @@
       </nuxt-link>
       <div class="user-name-popover-container">
         <loading-chasing :loading="loading"></loading-chasing>
-        <slide-y-down-transition>
+        <slide-y-up-transition>
           <div class="user-name-popover" v-if="info.url">
             <div class="row">
               <div class="col-4">
@@ -86,7 +86,7 @@
               </base-dropdown>
             </div>
           </div>
-        </slide-y-down-transition>
+        </slide-y-up-transition>
       </div>
     </el-popover>
   </div>
