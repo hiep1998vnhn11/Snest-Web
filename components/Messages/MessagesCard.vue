@@ -441,6 +441,7 @@ export default {
     }, 500),
     room(value) {
       if (!value) return
+      this.$store.commit('thresh/ON_CHANGE_ROOM')
       this.firstTime(value)
     },
     scrollEvent: 'scrollToBottom'

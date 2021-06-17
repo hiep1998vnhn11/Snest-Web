@@ -130,6 +130,11 @@ export default {
       this.loading = false
     }
   },
-  computed: mapGetters('user', ['currentUser'])
+  computed: mapGetters('user', ['currentUser']),
+  watch: {
+    hover(value) {
+      if (!value) this.info = {}
+    }
+  }
 }
 </script>

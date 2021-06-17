@@ -413,6 +413,16 @@ export default {
         post: this.post
       })
     },
+    socketCommentPost(comment) {
+      if (this.post.user_id === this.currentUser.id) return
+      if (typeof window.socket === 'undefined' || window.socket.disconnected)
+        return
+      window.socket.emit('commentPost', {
+        user: this.currentUser,
+        post: this.post,
+        comment
+      })
+    },
     onChangeFile(e) {
       var files = e.target.files || e.dataTransfer.files
       if (!files.length) return
@@ -468,6 +478,7 @@ export default {
         )
         //TOTO socket
         const comment = { ...response.data, user: this.currentUser }
+        this.socketCommentPost(comment)
         this.comments.push(comment)
         this.offset = this.offset + 1
         this.$emit('increateCommentCount')

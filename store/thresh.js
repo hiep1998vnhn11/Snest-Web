@@ -140,6 +140,10 @@ const mutations = {
   REMOVE_MESSAGE: function(state, messageId) {
     state.messages = state.messages.filter(message => message.id !== messageId)
   },
+  ON_CHANGE_ROOM: function(state) {
+    state.messages = []
+    state.messageOffset = 0
+  },
   RESET: function(state) {
     const s = initialState()
     Object.keys(s).forEach(key => {
