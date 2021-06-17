@@ -12,11 +12,12 @@
             class="message-row-content__pre-line"
           ></div>
           <div v-if="message.media">
-            <img
+            <div
+              @click="$emit('previewImage', message.media)"
               v-if="types[message.media_type]"
-              v-lazy="message.media"
-              :class="{ 'is-card': isCard }"
-            />
+            >
+              <img v-lazy="message.media" :class="{ 'is-card': isCard }" />
+            </div>
             <a :href="message.media" target="_blank" v-else class="link-file">
               {{ message.media_name }}
             </a>
@@ -47,7 +48,6 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
 export default {
   props: {
     message: {
@@ -77,16 +77,10 @@ export default {
         svg: 1
       }
     }
-  },
-  methods: {
-    ...mapActions('thresh', ['removeMessage'])
-  },
-  created() {},
-  computed: {},
-  mounted() {}
+  }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .message-row {
   display: flex;
   width: 100%;

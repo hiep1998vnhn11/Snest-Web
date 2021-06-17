@@ -87,6 +87,7 @@ export default {
   middleware: 'auth',
   computed: {
     ...mapGetters('user', ['currentUser', 'friends', 'isLoggedIn']),
+    ...mapGetters(['image']),
     sortedTrending() {
       return this.trending
         ? Object.entries(this.trending).sort(([, a], [, b]) => b - a)

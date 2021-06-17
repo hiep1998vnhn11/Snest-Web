@@ -1,9 +1,11 @@
 const state = () => ({
-  unread: 0
+  unread: 0,
+  image: null
 })
 
 const getters = {
-  unread: state => state.unread
+  unread: state => state.unread,
+  image: state => state.image
 }
 const actions = {
   clearAllState({ commit }) {
@@ -17,6 +19,9 @@ const actions = {
 const mutations = {
   SET_UNREAD: function(state, value) {
     state.unread = value
+  },
+  SET_IMAGE: function(state, image) {
+    state.image = image
   }
 }
 

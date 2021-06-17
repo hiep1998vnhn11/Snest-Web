@@ -51,11 +51,19 @@
           <div v-html="post.content"></div>
           <div class="row">
             <div
-              class="col"
-              v-for="image in post.images"
+              class="my-2"
+              :class="{
+                'col-12':
+                  post.image_count % 2 == 1 && index == post.image_count - 1,
+                'col-6': post.image_count % 2 == 0 || index < post.image_count
+              }"
+              v-for="(image, index) in post.images"
               :key="`post-image-${image.id}`"
+              @click="onClickPreviewImage(image)"
             >
-              <img :src="image.path" />
+              <div class="post-image-container">
+                <img :src="image.path" />
+              </div>
             </div>
           </div>
         </div>
@@ -471,6 +479,9 @@ export default {
       this.file.name = null
       this.text = ''
       this.loading = false
+    },
+    onClickPreviewImage(image) {
+      this.$store.commit('SET_IMAGE', image.path)
     }
   },
   created() {},
@@ -586,6 +597,19 @@ export default {
         resize: none;
       }
     }
+  }
+}
+
+.post-image-container {
+  width: 100%;
+  padding: 3px;
+  border: solid 1px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  img {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
   }
 }
 </style>

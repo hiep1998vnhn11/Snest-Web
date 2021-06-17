@@ -93,7 +93,7 @@ export default {
       post: {
         content: '',
         images: [],
-        privacy: 'public'
+        privacy: 1
       },
       imageSrc: [],
       inputImage: [],
@@ -137,6 +137,7 @@ export default {
       try {
         var formData = new FormData()
         if (this.post.images.length) {
+          formData.append('image_count', this.post.images.length)
           this.post.images.forEach(function(image) {
             formData.append('files[]', image)
           })
@@ -156,6 +157,7 @@ export default {
       } catch (err) {
         this.toastError(err.toString())
       }
+      window.scrollTo(0, 0)
       this.visible = 'public'
       this.post.content = ''
       this.post.images = []

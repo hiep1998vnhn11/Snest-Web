@@ -144,6 +144,7 @@
                       :isCurrent="message.user_id === currentUser.id"
                       :isCard="true"
                       @selectMessage="onSelectMessage"
+                      @previewImage="onClickPreviewImage"
                     ></messages-row>
                   </div>
                 </transition-group>
@@ -278,7 +279,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('thresh', ['room', 'participant', 'messages']),
+    ...mapGetters('thresh', ['room', 'participant', 'messages', 'scrollEvent']),
     ...mapGetters('user', ['currentUser'])
   },
   methods: {
@@ -299,6 +300,10 @@ export default {
       try {
         const message = await this.sendMessage(this.message)
         this.sendMessageSocket(message)
+        const messageEl = this.$refs['messages-card-scrollbar']
+        this.$nextTick(() => {
+          messageEl.$el.scrollTop = messageEl.$el.scrollHeight
+        })
       } catch (err) {
         this.toastError(err.toString())
       }
@@ -378,8 +383,8 @@ export default {
         scrollHeight = messageEl.$el.scrollHeight
       }
       try {
-        await this.getMessages()
-        if (messageEl && scrollHeight)
+        const messageCount = await this.getMessages()
+        if (messageEl && scrollHeight && messageCount)
           this.$nextTick(() => {
             messageEl.$el.scrollTop = messageEl.$el.scrollHeight - scrollHeight
           })
@@ -402,7 +407,6 @@ export default {
     },
     onScrollTop: debounce(function() {
       if (this.loading || this.fetching) return
-      console.log('reach top')
       this.getMessage(this.room.id, this.offset, 5, true)
     }, 450),
     async firstTime() {
@@ -419,14 +423,18 @@ export default {
     onSelectMessage(messageId) {
       if (this.selectedMessage === messageId) this.selectedMessage = null
       else this.selectedMessage = messageId
+    },
+    scrollToBottom() {
+      this.$nextTick(() => {
+        this.$refs['messages-card-scrollbar'].$el.scrollTop = this.$refs[
+          'messages-card-scrollbar'
+        ].$el.scrollHeight
+      })
+    },
+    onClickPreviewImage(image) {
+      this.$store.commit('SET_IMAGE', image)
     }
   },
-  mounted() {
-    if (typeof window.socket !== 'undefined' && window.socket.connected) {
-      window.socket.on('receivedMessage', context => console.log(context))
-    }
-  },
-
   watch: {
     search: debounce(function(value) {
       this.searchList(value)
@@ -434,7 +442,8 @@ export default {
     room(value) {
       if (!value) return
       this.firstTime(value)
-    }
+    },
+    scrollEvent: 'scrollToBottom'
   }
 }
 </script>

@@ -11,7 +11,8 @@ const state = () => ({
   participant: null,
   offset: 0,
   messages: [],
-  messageOffset: 0
+  messageOffset: 0,
+  scrollEvent: false
 })
 
 const getters = {
@@ -19,7 +20,8 @@ const getters = {
   room: state => state.room,
   rooms: state => state.rooms,
   participant: state => state.participant,
-  messages: state => state.messages
+  messages: state => state.messages,
+  scrollEvent: state => state.scrollEvent
 }
 
 const actions = {
@@ -59,12 +61,13 @@ const actions = {
   },
 
   async getMessages({ commit, state }) {
-    if (!state.room.id) return
+    if (!state.room.id) return 0
     const { data } = await this.$axios.$get(
-      `/v1/user/message/room/${state.room.id}?offset=${state.messageOffset}&limit=5}`
+      `/v1/user/message/room/${state.room.id}?offset=${state.messageOffset}&limit=12}`
     )
-    if (!data.length) return
+    if (!data.length) return 0
     commit('SET_MESSAGES', data)
+    return data.length
   },
 
   async sendMessage({ commit, state }, { file, content }) {
@@ -111,12 +114,10 @@ const mutations = {
   SET_PARTICIPANT: function(state, participant) {
     state.participant = participant
   },
-  RECEIVED_MESSAGE: function(state, payload) {
-    const messageObject = Object.assign(payload.message, {
-      user: { id: payload.message.user_id, name: payload.userName }
-    })
-    state.messages.push(messageObject)
+  RECEIVED_MESSAGE: function(state, message) {
+    state.messages.push(message)
     state.offset = state.offset + 1
+    state.scrollEvent = !state.scrollEvent
   },
   SEND_MESSAGE: function(state, message) {
     state.messages.push(message)

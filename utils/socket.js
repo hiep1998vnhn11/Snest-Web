@@ -22,10 +22,10 @@ export function connectSocket({ $store, $notify }) {
     if (
       !$store.getters['thresh/room'] ||
       $store.getters['thresh/room'].id !== message.thresh_id
-    )
+    ) {
       $store.dispatch('thresh/getRoomByUrl', url)
-    else {
-      console.log(message)
+    } else {
+      $store.commit('thresh/RECEIVED_MESSAGE', message)
     }
     $notify({
       message: 'Có tin nhắn mới',
