@@ -2,14 +2,16 @@ const initialState = () => ({
   currentUser: null,
   token: null,
   socket: null,
-  friends: []
+  friends: [],
+  isAdmin: false
 })
 const state = () => ({
   currentUser: null,
   token: null,
   socket: null,
   friends: [],
-  user: {}
+  user: {},
+  isAdmin: false
 })
 
 const getters = {
@@ -17,7 +19,8 @@ const getters = {
   socket: state => state.socket,
   friends: state => state.friends,
   isLoggedIn: state => !!state.token,
-  user: state => state.user
+  user: state => state.user,
+  isAdmin: state => state.isAdmin
 }
 
 const actions = {
@@ -130,6 +133,9 @@ const mutations = {
   },
   SET_PARAM_USER: function(state, user) {
     state.user = user
+  },
+  SET_ADMIN: function(state, isAdmin) {
+    state.isAdmin = isAdmin
   },
   RESET: function(state) {
     const s = initialState()

@@ -1,127 +1,112 @@
 <template>
-  <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
-    <notifications></notifications>
-    <side-bar
-      :background-color="sidebarBackground"
-      :short-title="$t('sidebar.shortTitle')"
-      :title="$t('sidebar.title')"
+  <slide-y-down-transition>
+    <div
+      class="wrapper"
+      :class="{ 'nav-open': $sidebar.showSidebar }"
+      v-if="isAdmin"
     >
-      <template slot="links">
-        <sidebar-item
-          :link="{
-            name: $t('Dashboard'),
-            icon: 'tim-icons icon-chart-pie-36',
-            path: localePath({ name: 'admin' })
-          }"
-        >
-        </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.icons'),
-            icon: 'tim-icons icon-atom',
-            path: localePath({ name: 'admin-icon' })
-          }"
-        >
-        </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.maps'),
-            icon: 'tim-icons icon-pin',
-            path: localePath({ name: 'admin-goole' })
-          }"
-        >
-        </sidebar-item>
+      <notifications></notifications>
+      <side-bar
+        :background-color="sidebarBackground"
+        :short-title="$t('sidebar.shortTitle')"
+        :title="$t('sidebar.title')"
+      >
+        <template slot="links">
+          <sidebar-item
+            :link="{
+              name: $t('Dashboard'),
+              icon: 'tim-icons icon-chart-pie-36',
+              path: localePath({ name: 'admin' })
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            :link="{
+              name: $t('sidebar.icons'),
+              icon: 'tim-icons icon-atom',
+              path: localePath({ name: 'admin-icons' })
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            :link="{
+              name: $t('sidebar.maps'),
+              icon: 'tim-icons icon-pin',
+              path: localePath({ name: 'admin-google' })
+            }"
+          >
+          </sidebar-item>
 
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.notifications'),
-            icon: 'tim-icons icon-bell-55',
-            path: localePath({ name: 'admin-notifications' })
-          }"
-        >
-        </sidebar-item>
+          <sidebar-item
+            :link="{
+              name: $t('sidebar.notifications'),
+              icon: 'tim-icons icon-bell-55',
+              path: localePath({ name: 'admin-notifications' })
+            }"
+          >
+          </sidebar-item>
 
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.userProfile'),
-            icon: 'tim-icons icon-single-02',
-            path: localePath({ name: 'admin-user' })
-          }"
-        >
-        </sidebar-item>
+          <sidebar-item
+            :link="{
+              name: $t('sidebar.userProfile'),
+              icon: 'tim-icons icon-single-02',
+              path: localePath({ name: 'admin-user' })
+            }"
+          >
+          </sidebar-item>
 
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.regularTables'),
-            icon: 'tim-icons icon-puzzle-10',
-            path: localePath({ name: 'admin-regular' })
-          }"
-        ></sidebar-item>
+          <sidebar-item
+            :link="{
+              name: $t('sidebar.regularTables'),
+              icon: 'tim-icons icon-puzzle-10',
+              path: localePath({ name: 'admin-regular' })
+            }"
+          ></sidebar-item>
 
-        <sidebar-item
-          :link="{
-            name: $t('sidebar.typography'),
-            icon: 'tim-icons icon-align-center',
-            path: localePath({ name: 'admin-typography' })
-          }"
-        ></sidebar-item>
-      </template>
-    </side-bar>
-    <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
-    <layout-sidebar-share :background-color.sync="sidebarBackground">
-    </layout-sidebar-share>
-    <div class="main-panel" :data="sidebarBackground">
-      <dashboard-navbar></dashboard-navbar>
-      <div :class="{ content: !isFullScreenRoute }" @click="toggleSidebar">
-        <zoom-center-transition :duration="200" mode="out-in">
-          <!-- your content here -->
-          <Nuxt></Nuxt>
-        </zoom-center-transition>
+          <sidebar-item
+            :link="{
+              name: $t('sidebar.typography'),
+              icon: 'tim-icons icon-align-center',
+              path: localePath({ name: 'admin-typography' })
+            }"
+          ></sidebar-item>
+        </template>
+      </side-bar>
+      <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
+      <layout-sidebar-share :background-color.sync="sidebarBackground">
+      </layout-sidebar-share>
+      <div class="main-panel" :data="sidebarBackground">
+        <dashboard-navbar></dashboard-navbar>
+        <div :class="{ content: !isFullScreenRoute }" @click="toggleSidebar">
+          <zoom-center-transition :duration="200" mode="out-in">
+            <!-- your content here -->
+            <Nuxt></Nuxt>
+          </zoom-center-transition>
+        </div>
+        <layout-footer v-if="!isFullScreenRoute"></layout-footer>
       </div>
-      <layout-footer v-if="!isFullScreenRoute"></layout-footer>
     </div>
-  </div>
+    <div v-else>
+      <loading-chasing :loading="true"></loading-chasing>
+    </div>
+  </slide-y-down-transition>
 </template>
 <script>
-/* eslint-disable no-new */
-import PerfectScrollbar from 'perfect-scrollbar'
-import 'perfect-scrollbar/css/perfect-scrollbar.css'
-function hasElement(className) {
-  return document.getElementsByClassName(className).length > 0
-}
-
-function initScrollbar(className) {
-  if (hasElement(className)) {
-    new PerfectScrollbar(`.${className}`)
-  } else {
-    // try to init it later in case this component is loaded async
-    setTimeout(() => {
-      initScrollbar(className)
-    }, 300)
-  }
-}
-
 import DashboardNavbar from '@/components/Layout/DashboardNavbar.vue'
 import DashboardContent from '@/components/Layout/Content.vue'
-import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions'
-
+import { mapGetters } from 'vuex'
 export default {
   components: {
     DashboardNavbar,
-    DashboardContent,
-    SlideYDownTransition,
-    ZoomCenterTransition
+    DashboardContent
   },
-  middleware: 'auth',
   data() {
     return {
-      sidebarBackground: 'vue' //vue|blue|orange|green|red|primary
+      sidebarBackground: 'vue'
     }
   },
   computed: {
-    isFullScreenRoute() {
-      return this.$route.path === '/maps/full-screen'
-    }
+    ...mapGetters('user', ['currentUser', 'isAdmin'])
   },
   methods: {
     toggleSidebar() {
@@ -142,9 +127,18 @@ export default {
       } else {
         docClasses.add('perfect-scrollbar-off')
       }
+    },
+    async checkRole() {
+      try {
+        await this.$axios.$post('/v1/admin/user/getRole')
+        this.$store.commit('user/SET_ADMIN', true)
+      } catch (err) {
+        this.$nuxt.error(err)
+      }
     }
   },
   mounted() {
+    this.checkRole()
     this.initScrollbar()
   }
 }

@@ -1,19 +1,25 @@
 <template>
-  <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
-    <notifications></notifications>
-    <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
-    <layout-sidebar-share :background-color.sync="sidebarBackground">
-    </layout-sidebar-share>
-    <div class="main-panel" :data="sidebarBackground">
-      <dashboard-navbar></dashboard-navbar>
-      <div class="content-home" @click="toggleSidebar">
-        <zoom-center-transition :duration="200" mode="out-in">
-          <!-- your content here -->
-          <Nuxt></Nuxt>
-        </zoom-center-transition>
+  <div v-if="currentUser">
+    <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
+      <notifications></notifications>
+      <!--Share plugin (for demo purposes). You can remove it if don't plan on using it-->
+      <layout-sidebar-share :background-color.sync="sidebarBackground">
+      </layout-sidebar-share>
+      <div class="main-panel" :data="sidebarBackground">
+        <dashboard-navbar></dashboard-navbar>
+        <div class="content-home" @click="toggleSidebar">
+          <zoom-center-transition :duration="200" mode="out-in">
+            <!-- your content here -->
+            <Nuxt></Nuxt>
+          </zoom-center-transition>
+        </div>
+        <layout-footer></layout-footer>
       </div>
-      <layout-footer></layout-footer>
     </div>
+  </div>
+
+  <div v-else>
+    <loading-chasing :loading="true"></loading-chasing>
   </div>
 </template>
 <script>
@@ -37,14 +43,12 @@ function initScrollbar(className) {
 
 import DashboardNavbar from '@/components/Layout/DashboardNavbar.vue'
 import DashboardContent from '@/components/Layout/Content.vue'
-import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions'
 import { connectSocket, loginSocket } from '@/utils/socket'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     DashboardNavbar,
-    DashboardContent,
-    SlideYDownTransition,
-    ZoomCenterTransition
+    DashboardContent
   },
   middleware: 'auth',
   data() {
@@ -56,7 +60,8 @@ export default {
   computed: {
     isFullScreenRoute() {
       return this.$route.path === '/maps/full-screen'
-    }
+    },
+    ...mapGetters('user', ['currentUser'])
   },
   methods: {
     toggleSidebar() {
