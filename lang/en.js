@@ -588,5 +588,13 @@ export default {
   'Confirm Password': 'Confirm password',
   LastName: 'Last name',
   FirstName: 'First name',
-  ViewPost: 'View post'
+  ViewPost: 'View post',
+  SureToDeletePost: 'Are you sure to delete this post?',
+  ChangePrivacy: 'Change privacy of this post',
+  Delete: 'Delete',
+  Show: 'Show',
+  friend: 'Only your friend can see this post',
+  private: 'Only you can see this post',
+  public: 'Everybody can see your post',
+  TitlePrivacyPost: 'Select your post privacy:'
 }

@@ -10,6 +10,7 @@
         :post="post"
         v-for="post in posts"
         :key="`user-param-post-${post.id}`"
+        @deletePost="onDeletePost"
       ></post>
       <slide-y-down-transition>
         <observer v-if="!lastPost" @intersect="intersected"></observer>
@@ -167,6 +168,9 @@ export default {
     },
     onComment(index, post) {
       this.$store.commit('post/COMMENTED_USER_POST', index)
+    },
+    onDeletePost(postId) {
+      this.posts = this.posts.filter(post => post.id !== postId)
     }
   },
   created() {

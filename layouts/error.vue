@@ -24,7 +24,7 @@
       </div>
       <h1 v-else-if="error.statusCode === 404">
         Page not found
-        <NuxtLink to="/">Home page</NuxtLink>
+        <nuxt-link :to="localePath({ name: 'index' })">Home page</nuxt-link>
       </h1>
       <div v-else>
         <div class="text-center">

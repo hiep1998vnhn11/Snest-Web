@@ -64,6 +64,7 @@
                 :post="post"
                 :index="index"
                 :like_status="post.like_status"
+                @deletePost="onDeletePost"
               ></post>
             </transition-group>
             <observer @intersect="intersected"></observer>
@@ -227,6 +228,9 @@ export default {
         this.toastError(err.toString())
       }
       this.follow.loading = false
+    },
+    onDeletePost(postId) {
+      this.posts = this.post.filter(post => post.id !== postId)
     }
   }
 }

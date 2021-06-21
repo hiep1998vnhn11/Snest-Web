@@ -17,7 +17,7 @@
       </slide-y-down-transition>
       <slide-y-down-transition>
         <div v-if="currentUser.id === user.id">
-          <a href="javascript:void(0)" @click="onSelectStory" v-if="!editStory">
+          <a @click="onSelectStory" v-if="!editStory" class="text-success">
             {{ user.story ? $t('EditStory') : $t('AddStory') }}
           </a>
           <div v-if="editStory">
@@ -51,10 +51,19 @@
         :to="localePath({ name: tab.name, params: { url: $route.params.url } })"
         v-for="tab in tabs"
         :key="`user-tab-${tab.name}`"
+        v-slot="{ isActive, href, navigate }"
       >
-        <base-button v-if="!tab.require">
+        <a
+          v-if="!tab.require"
+          :href="href"
+          @click="navigate"
+          :class="{
+            'text-success': isActive
+          }"
+          class="mx-3"
+        >
           {{ tab.label }}
-        </base-button>
+        </a>
       </router-link>
     </div>
   </card>

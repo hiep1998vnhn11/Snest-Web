@@ -6,6 +6,7 @@
       class="mt-1"
       @likePost="onLikePost"
       :key="`post-page-${post.id}`"
+      @deletePost="onDeletePost"
     ></post>
   </div>
 </template>
@@ -44,6 +45,13 @@ export default {
       this.post = post
       let url = `/v1/user/post/${post.id}/handle_like`
       await this.$axios.$post(url, { status })
+    },
+    onDeletePost(postId) {
+      this.$router.push(
+        this.localePath({
+          name: 'index'
+        })
+      )
     }
   }
 }

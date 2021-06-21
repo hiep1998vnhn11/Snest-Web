@@ -69,13 +69,55 @@
           </base-button>
         </div>
         <div class="col-6">
-          <base-button type="warning" block @click="onPost" :disabled="loading">
+          <base-button
+            type="warning"
+            block
+            @click="onClickButtonCreate"
+            :disabled="loading"
+          >
             <i class="fas fa-mail-bulk"></i>
             {{ $t('Post.Create') }}
           </base-button>
         </div>
       </div>
     </card>
+
+    <el-dialog
+      :title="$t('TitlePrivacyPost')"
+      :visible.sync="dialog"
+      width="500px"
+      center
+    >
+      <slide-y-down-transition>
+        <div class="post-likes-dialog-content">
+          <a
+            class="btn btn-block"
+            v-for="(value, key) in privacys"
+            :key="key"
+            :class="{
+              'btn-success': value === post.privacy,
+              'btn-neutral': value !== post.privacy
+            }"
+            @click="post.privacy = value"
+          >
+            {{ $t(key) }}
+          </a>
+        </div>
+      </slide-y-down-transition>
+      <div class="row">
+        <div class="col">
+          <a class="btn btn-info btn-block text-success" @click="onPost">
+            {{ $t('Post.Create') }}
+          </a>
+        </div>
+        <div class="col">
+          <a class="btn btn-info btn-neutral btn-block" @click="dialog = false">
+            {{ $t('Cancel') }}
+          </a>
+        </div>
+      </div>
+      <loading-chasing :loading="loading"></loading-chasing>
+    </el-dialog>
   </div>
 </template>
 
@@ -97,7 +139,13 @@ export default {
       },
       imageSrc: [],
       inputImage: [],
-      loading: false
+      loading: false,
+      privacys: {
+        public: 1,
+        private: 2,
+        friend: 3
+      },
+      loadingLike: false
     }
   },
   computed: {
@@ -106,6 +154,9 @@ export default {
   methods: {
     onClickAddImage() {
       this.$refs['create-post-input-image'].click()
+    },
+    onCloseDialog() {
+      this.dialog = !this.dialog
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files
@@ -129,6 +180,11 @@ export default {
         this.post.images.splice(index, 1)
         this.imageSrc.splice(index, 1)
       }
+    },
+
+    onClickButtonCreate() {
+      if (!this.post.content && !this.post.images.length) return
+      this.dialog = true
     },
 
     async onPost() {
@@ -163,6 +219,7 @@ export default {
       this.post.images = []
       this.imageSrc = []
       this.loading = false
+      this.dialog = false
     }
   }
 }

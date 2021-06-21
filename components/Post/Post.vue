@@ -22,28 +22,55 @@
               {{ post.created_at | relativeTime }}
             </p>
           </div>
-          <base-dropdown tag="li" title-tag="a">
-            <template slot="title">
-              <!-- <base-button type="neutral" size="sm" icon round>
-                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-              </base-button> -->
-            </template>
-            <li class="px-1">
-              <router-link
-                :to="
-                  localePath({
-                    name: 'index-post-post_id',
-                    params: {
-                      post_id: post.uid
-                    }
-                  })
-                "
-                class="btn btn-block btn-neutral"
-              >
-                {{ $t('ViewPost') }}
-              </router-link>
-            </li>
-          </base-dropdown>
+          <div>
+            <a
+              class="btn btn-round btn-icon btn-success text-white"
+              @click="dropdown = !dropdown"
+            >
+              <i class="tim-icons icon-settings-gear-63"></i>
+            </a>
+            <slide-y-down-transition>
+              <div class="post-header--dropdown" v-show="dropdown">
+                <nuxt-link
+                  :to="
+                    localePath({
+                      name: 'index-post-post_id',
+                      params: {
+                        post_id: post.uid
+                      }
+                    })
+                  "
+                  class="btn btn-block btn-neutral text-success"
+                >
+                  <i class="tim-icons icon-tv-2"></i>
+                  {{ $t('Show') }}
+                </nuxt-link>
+                <a
+                  class="btn btn-block btn-neutral text-success"
+                  v-if="currentUser.url !== post.user_url"
+                >
+                  <i class="tim-icons icon-time-alarm"></i>
+                  {{ $t('ReceiptNotification') }}
+                </a>
+                <a
+                  class="btn btn-block btn-neutral text-danger"
+                  v-if="currentUser.url === post.user_url"
+                  @click="onClickDeletePost"
+                >
+                  <i class="tim-icons icon-trash-simple"></i>
+                  {{ $t('Delete') }}
+                </a>
+                <a
+                  class="btn btn-block btn-neutral text-info"
+                  v-if="currentUser.url === post.user_url"
+                  @click="onClickChangePrivacy"
+                >
+                  <i class="tim-icons icon-key-25"></i>
+                  {{ $t('ChangePrivacy') }}
+                </a>
+              </div>
+            </slide-y-down-transition>
+          </div>
         </div>
       </div>
       <div class="post-card-content">
@@ -141,9 +168,12 @@
             </base-button>
           </div>
           <div class="col-6">
-            <base-button block type="neutral" @click="onClickShowComment">
-              Comment
-            </base-button>
+            <a
+              class="btn btn-block btn-neutral text-success"
+              @click="onClickShowComment"
+            >
+              {{ $t('Comment') }}
+            </a>
           </div>
         </div>
       </div>
@@ -235,14 +265,23 @@
     </card>
 
     <el-dialog
-      :title="`${likes_count} ${$t('PeopleWhoLikePostOf')} ${post.user_name}`"
+      :title="
+        dialogType == 'like'
+          ? `${likes_count} ${$t('PeopleWhoLikePostOf')} ${post.user_name}`
+          : dialogType == 'privacy'
+          ? $t('ChangePrivacy')
+          : $t('SureToDeletePost')
+      "
       :visible.sync="likeDialog"
       width="500px"
       center
       @closed="onCloseLikeDialog"
     >
       <slide-y-down-transition>
-        <div class="post-likes-dialog-content" v-if="likes_count">
+        <div
+          class="post-likes-dialog-content"
+          v-if="likes_count && dialogType == 'like'"
+        >
           <perfect-scrollbar>
             <div
               class="row mx-0"
@@ -264,8 +303,49 @@
             </div>
           </perfect-scrollbar>
         </div>
-        <div v-else-if="!loadingLike">
+        <div
+          v-else-if="!loadingLike && dialogType == 'like'"
+          class="post-likes-dialog-content"
+        >
           {{ $t('ThisPostNotHaveAnyLike') }}
+        </div>
+        <div
+          class="post-likes-dialog-content"
+          v-else-if="dialogType == 'privacy'"
+        >
+          <a
+            class="btn btn-block"
+            v-for="(value, key) in privacys"
+            :key="key"
+            @click="privacy = value"
+            :class="{
+              'btn-success': privacy === value,
+              'btn-neutral': privacy !== value
+            }"
+          >
+            {{ $t(key) }}
+          </a>
+        </div>
+        <div v-else class="post-likes-dialog-content">
+          Delete This post?
+          <div class="row">
+            <div class="col">
+              <a
+                class="btn btn-block btn-neutral text-danger"
+                @click="onDeletePost"
+              >
+                {{ $t('Delete') }}
+              </a>
+            </div>
+            <div class="col">
+              <a
+                class="btn btn-block btn-neutral text-success btn-outline-danger"
+                @click="likeDialog = false"
+              >
+                {{ $t('Cancel') }}
+              </a>
+            </div>
+          </div>
         </div>
       </slide-y-down-transition>
 
@@ -339,7 +419,15 @@ export default {
         7: '/img/icons/reaction/angry.svg'
       },
       offset: 0,
-      likeStatus: this.post.like_status || { status: 0 }
+      likeStatus: this.post.like_status || { status: 0 },
+      dropdown: false,
+      dialogType: null,
+      privacys: {
+        public: 1,
+        private: 2,
+        friend: 3
+      },
+      privacy: null
     }
   },
   methods: {
@@ -348,6 +436,7 @@ export default {
     },
     async onClickShowLike() {
       this.likeDialog = true
+      this.dialogType = 'like'
       this.loadingLike = true
       try {
         const { data } = await this.$axios.$get(
@@ -365,6 +454,7 @@ export default {
       this.likes = []
       this.likes_count = 0
       this.likeOffset = 0
+      this.dialogType = null
     },
     async getComment(postId = null, offset = 0) {
       if (!postId || this.lastComment) return
@@ -493,6 +583,27 @@ export default {
     },
     onClickPreviewImage(image) {
       this.$store.commit('SET_IMAGE', image.path)
+    },
+    onClickChangePrivacy() {
+      this.dialogType = 'privacy'
+      this.likeDialog = true
+      this.privacy = this.post.privacy
+    },
+    onClickDeletePost() {
+      this.dialogType = 'delete'
+      this.likeDialog = true
+    },
+    async onDeletePost() {
+      this.loadingLike = true
+      try {
+        await this.$axios.$post(`/v1/user/post/${this.post.id}`, {
+          _method: 'delete'
+        })
+        this.$emit('deletePost', this.post.id)
+      } catch (err) {
+        this.toastError(err.toString())
+      }
+      this.loadingLike = false
     }
   },
   created() {},
@@ -528,6 +639,17 @@ export default {
       justify-content: space-between;
       .post-card-header-name {
         font-weight: bold;
+      }
+
+      .post-header--dropdown {
+        position: absolute;
+        top: 60px;
+        right: 5px;
+        border: solid 1px rgba(0, 0, 0, 0.05);
+        border-radius: 5px;
+        z-index: 100;
+        padding: 7px;
+        background: whitesmoke;
       }
     }
   }

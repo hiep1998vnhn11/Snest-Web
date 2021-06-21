@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Admin-Snest',
+    title: 'Snest',
     htmlAttrs: {
       lang: 'en'
     },
@@ -81,7 +81,7 @@ export default {
     ],
     lazy: true,
     langDir: 'lang/',
-    defaultLocale: 'en'
+    defaultLocale: 'vi'
   },
   axios: {
     baseURL: process.env.NUXT_ENV_API_URL // Used as fallback if no runtime config is provided
