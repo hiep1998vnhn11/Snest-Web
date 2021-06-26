@@ -5,7 +5,7 @@
     </h5>
     <form @submit.prevent="updateProfile">
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-12 col-md-8">
           <base-input
             type="text"
             :label="$t('UrlToYourProfile')"
@@ -14,15 +14,15 @@
           >
           </base-input>
         </div>
-        <div class="col-md-2 change-url-button-container">
-          <base-button
+        <div class="col-12 col-md-4">
+          <btn
             type="success"
             block
-            class="change-url-button"
+            class="btn-success btn-block btn mt-4"
             @click="onClickChangeUrl"
           >
             {{ $t('Change') }}
-          </base-button>
+          </btn>
         </div>
         <div class="col-md-4">
           <base-input
@@ -165,11 +165,10 @@
     >
       <loading-chasing :loading="url.loading"></loading-chasing>
       <span>
-        It should be noted that the content will not be aligned in center by
-        default
+        {{ $t('ReqestingChangeUrlDescription') }}
       </span>
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-10">
           <base-input
             placeholder="Url"
             v-model="url.text"
@@ -180,19 +179,23 @@
           >
           </base-input>
         </div>
-        <div class="col-md-4">
-          <button type="success" class="btn-success btn" @click="checkUrl">
-            {{ $t('Check') }}
+        <div class="col-md-2">
+          <button class="btn-success btn btn-round btn-icon" @click="checkUrl">
+            <i class="tim-icons icon-zoom-split"></i>
           </button>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <base-button @click="url.dialog = false">
+        <button class="btn btn-neutral" @click="url.dialog = false">
           {{ $t('Cancel') }}
-        </base-button>
-        <base-button type="primary" @click="url.dialog = false">
+        </button>
+        <button
+          class="btn btn-primary"
+          @click="changeUrl"
+          :disabled="!url.isChecked"
+        >
           {{ $t('Confirm') }}
-        </base-button>
+        </button>
       </span>
     </el-dialog>
   </card>
@@ -240,6 +243,7 @@ export default {
       },
       url: {
         text: '',
+        isChecked: false,
         dialog: false,
         loading: false,
         error: ''
@@ -259,6 +263,7 @@ export default {
           url: this.url.text
         })
         this.url.error = ''
+        this.url.isChecked = true
         this.toastSuccess(this.$t('ThisUrlCanBeUsed'))
       } catch (err) {
         this.url.error = this.$t('ValidUrl')
@@ -268,6 +273,22 @@ export default {
     onClickChangeUrl() {
       this.url.dialog = true
       this.url.text = this.currentUser.url
+    },
+    async changeUrl() {
+      if (!this.url.text) return
+      this.url.loading = true
+      try {
+        await this.$axios.$post(`/v1/user/change-url`, {
+          url: this.url.text,
+          _method: 'put'
+        })
+        this.toastSuccess(this.$t('ChangeUrlSuccess'))
+        this.$router.go(this.localePath({ name: 'index' }))
+      } catch (err) {
+        this.toastError(err.toSring())
+      }
+      this.url.dialog = false
+      this.url.loading = false
     }
   },
   computed: {

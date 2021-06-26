@@ -29,7 +29,7 @@
           </div>
         </div>
         <div v-else>
-          Not have
+          {{ $t('NotHaveFriend') }}
         </div>
       </slide-y-down-transition>
       <slide-y-down-transition>

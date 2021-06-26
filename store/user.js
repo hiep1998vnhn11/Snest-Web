@@ -137,6 +137,12 @@ const mutations = {
   SET_ADMIN: function(state, isAdmin) {
     state.isAdmin = isAdmin
   },
+  CHANGE_BACKGROUND: function(state, url) {
+    state.user.info.profile_background_path = url
+  },
+  CHANGE_AVATAR: function(state, url) {
+    state.user.profile_photo_path = url
+  },
   RESET: function(state) {
     const s = initialState()
     Object.keys(s).forEach(key => {

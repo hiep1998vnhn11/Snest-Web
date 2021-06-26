@@ -1,6 +1,7 @@
 <template>
   <div>
     <user-image />
+    <user-background-edit></user-background-edit>
     <user-edit> </user-edit>
   </div>
 </template>

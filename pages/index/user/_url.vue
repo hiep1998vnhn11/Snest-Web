@@ -29,7 +29,6 @@ export default {
     const url = params.url
     try {
       const response = await $axios.$get(`/v1/guest/user/${url}`)
-      console.log(response.data.friend_request)
       return {
         user: response.data.user,
         friends: response.data.friends,

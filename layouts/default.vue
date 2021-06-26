@@ -14,7 +14,6 @@
               <!-- your content here -->
             </zoom-center-transition>
           </div>
-          <layout-footer></layout-footer>
         </div>
       </div>
     </div>

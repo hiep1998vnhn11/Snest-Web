@@ -67,7 +67,9 @@
         </base-input>
         <validation-error :errors="apiErrors.password_confirmation" />
         <base-checkbox v-model="user.term" class="text-left">
-          I agree to the <a href="#something">terms and conditions</a>.
+          {{ $t('I agree to the') }}
+          <a href="#">{{ $t('terms and conditions') }}</a
+          >.
         </base-checkbox>
 
         <div slot="footer">

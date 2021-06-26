@@ -230,7 +230,7 @@ export default {
       this.follow.loading = false
     },
     onDeletePost(postId) {
-      this.posts = this.post.filter(post => post.id !== postId)
+      this.posts = this.posts.filter(post => post.id !== postId)
     }
   }
 }

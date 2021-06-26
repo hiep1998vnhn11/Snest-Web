@@ -7,30 +7,28 @@
         </div>
       </slide-y-up-transition>
       <h5 slot="header" class="title">
-        {{ $t('EditUserAvatar') }}
+        {{ $t('EditUserCoverPhoto') }}
       </h5>
       <div>
-        {{ $t('SelectImageToChangeYourAvatar') }}
-        <div class="photo-container">
-          <input
-            type="file"
-            accept="image/*"
-            ref="image-upload-input"
-            hidden
-            @change="onFileChange"
-          />
-          <div class="photo-cover" @click="onClickUploadCover">
+        {{ $t('ClickToSelectImageToChangeYourCoverImage') }}
+        <div class="row text-center">
+          <div class="image-container" @click="onClickUploadCover">
+            <input
+              type="file"
+              accept="image/*"
+              ref="image-upload-input"
+              hidden
+              @change="onFileChange"
+            />
             <img
               ref="image"
               class="profile-photo"
-              v-lazy="currentUser.profile_photo_path"
+              v-lazy="currentUser.info.profile_background_path"
             />
           </div>
-        </div>
-        <div class="row">
           <div class="col-12">
             <div class="row">
-              <div class="col-6">
+              <div class="col col-6">
                 <slide-y-down-transition>
                   <button
                     class="btn btn-neutral btn-block"
@@ -41,7 +39,7 @@
                   </button>
                 </slide-y-down-transition>
               </div>
-              <div class="col-6">
+              <div class="col col-6">
                 <button
                   class="btn btn-success btn-block"
                   v-on:click="changeAvatar"
@@ -54,6 +52,11 @@
           </div>
         </div>
       </div>
+    </card>
+    <card>
+      <h5 slot="header" class="title">
+        {{ $t('EditUserCoverPhoto') }}
+      </h5>
     </card>
   </div>
 </template>
@@ -86,16 +89,15 @@ export default {
     },
     onRemoveImage() {
       this.img = null
-      this.$refs['image'].src = this.currentUser.profile_photo_path
+      this.$refs['image'].src = this.currentUser.info.profile_background_path
     },
     async changeAvatar() {
-      if (!this.img) return
       this.loadingAvatar = true
       try {
         var formData = new FormData()
         formData.append('image', this.img)
         const { data } = await this.$axios.$post(
-          '/v1/user/upload_avatar',
+          '/v1/user/upload_background',
           formData,
           {
             headers: {
@@ -125,25 +127,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.photo-container {
+.image-container {
+  padding: 5px;
+  border: solid 1px rgba(1, 1, 1, 0.08);
   position: relative;
-  padding: 10px;
-  .photo-cover {
-    padding: 5px;
-    border-radius: 50%;
-    border: solid 1px rgba(1, 1, 1, 0.08);
-    cursor: pointer;
-    width: 200px;
-    height: 200px;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    .profile-photo {
-      border-radius: 50%;
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
+  height: 250px;
+  border-radius: 5px;
+  cursor: pointer;
+  .profile-photo {
+    border: none;
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
   }
 }
 </style>
