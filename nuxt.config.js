@@ -21,17 +21,6 @@ export default {
         rel: 'stylesheet',
         href:
           'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css'
-      },
-      {
-        async: true,
-        defer: true,
-        crossorigin: 'anonymous',
-        src: '/sdk/facebook-sdk.js'
-      },
-      {
-        async: true,
-        defer: true,
-        src: '/sdk/google-sdk.js?onload=start'
       }
     ],
     bodyAttrs: {
@@ -53,7 +42,18 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/dashboard-plugin', '~/plugins/axios'],
+  plugins: [
+    '~/plugins/dashboard-plugin',
+    '~/plugins/axios',
+    {
+      src: '~/plugins/facebook',
+      ssr: false
+    },
+    {
+      src: '~/plugins/google',
+      ssr: false
+    }
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

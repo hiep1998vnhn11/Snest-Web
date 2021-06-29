@@ -96,7 +96,7 @@
           <div class="pull-right">
             <h6>
               <nuxt-link
-                :to="localePath({ name: 'password-reset' })"
+                :to="localePath({ name: 'forgot-password' })"
                 class="link footer-link"
               >
                 {{ $t('common.ForgotPassword') }} ?
@@ -143,6 +143,7 @@ export default {
       this.loading = true
       try {
         await this.$axios.$post('/auth/register', this.user)
+        window.localStorage.setItem('email', this.user.email)
         this.$notify({
           type: 'success',
           message: this.$t('Successfully registered!'),
@@ -150,7 +151,7 @@ export default {
         })
         this.$router.push(
           this.localePath({
-            name: 'login'
+            name: 'confirm-register'
           })
         )
       } catch (error) {

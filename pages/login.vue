@@ -14,14 +14,18 @@
               {{ $t('common.Login') }}
             </h1>
           </template>
-          <div>
-            <a @click="onLoginFacebook" class="btn btn-block btn-success">
-              <span v-if="!facebook.loggingIn">
-                <i class="fa fa-facebook"></i>
-                Đăng nhập bằng Facebook
-              </span>
-              <div v-else data-loader="circle-side"></div>
-            </a>
+          <div class="">
+            <div class="text-center">
+              <a
+                @click="onLoginFacebook"
+                class="btn btn-round btn-icon btn-success text-white"
+              >
+                <span v-if="!facebook.loggingIn" class="mt-1">
+                  <i class="fab fa-facebook-square fa-2x"></i>
+                </span>
+                <div v-else data-loader="circle-side"></div>
+              </a>
+            </div>
             <validation-error :errors="errors" />
             <base-input
               required
@@ -123,7 +127,6 @@ export default {
     async onLoginFacebook() {
       this.facebook.loggingIn = true
       this.loading = true
-
       const _this = this
       FB.getLoginStatus(async function(response) {
         if (response.status === 'connected') {
@@ -163,9 +166,9 @@ export default {
           'user/loginFacebook',
           this.facebook.accessToken
         )
-        this.$router.push({ name: 'index' })
+        this.$router.push(this.localePath({ name: 'index' }))
       } catch (err) {
-        this.$nuxt.error(err)
+        this.toaseError(err)
       }
       this.$nuxt.$loading.finish()
     },
