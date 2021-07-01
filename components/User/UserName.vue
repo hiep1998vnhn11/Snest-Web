@@ -45,7 +45,10 @@
               </div>
             </div>
 
-            <div class="user-name-popover-actions">
+            <div
+              class="user-name-popover-actions"
+              v-if="user_url != currentUser.url"
+            >
               <base-button
                 size="sm"
                 type="neutral"

@@ -1,6 +1,6 @@
 <template>
   <span v-if="errors && errors.length">
-    <small class="error" v-text="errors[0]" />
+    <small class="error" v-text="$t(errors[0])" />
   </span>
 </template>
 

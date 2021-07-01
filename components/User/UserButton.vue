@@ -5,8 +5,8 @@
   >
     <base-avatar
       :src="profile_photo_path"
-      online
       status
+      :online="onlineStatus.status"
       outlined
       :size="35"
     ></base-avatar>
@@ -33,7 +33,10 @@ export default {
       default: '/img/default-avatar.png'
     },
     onlineStatus: {
-      type: Object
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {

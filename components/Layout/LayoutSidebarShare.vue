@@ -5,7 +5,7 @@
         <i class="fa fa-cog fa-2x" @click="toggleDropDown"> </i>
       </a>
       <ul class="dropdown-menu" :class="{ show: isOpen }">
-        <li class="header-title">Sidebar Background</li>
+        <!-- <li class="header-title">Sidebar Background</li>
         <li class="adjustments-line">
           <a class="switch-trigger background-color">
             <div class="badge-colors text-center">
@@ -20,14 +20,16 @@
             </div>
             <div class="clearfix"></div>
           </a>
-        </li>
+        </li> -->
 
-        <li class="header-title">Sidebar Mini</li>
+        <li class="header-title">
+          {{ $t('MODE') }}
+        </li>
         <li class="adjustments-line">
           <div class="togglebutton switch-change-color mt-3">
-            <span class="label-switch">LIGHT MODE</span>
+            <span class="label-switch">{{ $t('LIGHT MODE') }}</span>
             <base-switch v-model="darkMode" @input="toggleMode"></base-switch>
-            <span class="label-switch label-right">DARK MODE</span>
+            <span class="label-switch label-right">{{ $t('DARK MODE') }}</span>
           </div>
         </li>
 

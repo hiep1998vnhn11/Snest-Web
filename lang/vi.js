@@ -35,7 +35,7 @@ export default {
   YouBlockedThisUser: 'Bạn đã chặn người này',
   Notifications: 'Thông báo',
   'TypeSomething...': 'Hãy viết gì đó...',
-  Actived: 'Đang hoạt động',
+  Actived: 'Đã hoạt động',
   SearchMessage: 'Tìm kiếm trong tin nhắn',
   Chats: 'Nhắn tin',
   Unfriend: 'Huỷ kết bạn',
@@ -182,7 +182,7 @@ export default {
   Description: 'Đoạn miêu tả',
   Address: 'Địa chỉ',
   'create a new pub': 'Create a new pub',
-  About: 'Về chúng tôi',
+  About: 'Giới thiệu',
   'Main email': 'Email chính',
   Write: 'Viết',
   Upload: 'Tải lên',
@@ -535,5 +535,13 @@ export default {
   'terms and conditions': 'Điều khoản và điều kiện',
   'You need to agree with our terms and conditions.':
     'Bạn cần phải đồng ý điều khoản và điều kiện của chúng tôi!',
-  'Oops, something went wrong!': 'Oops, có điều gì đó không ổn!'
+  'Oops, something went wrong!': 'Oops, có điều gì đó không ổn!',
+  Unconfirmable: 'Tài khoản chưa được xác nhận!',
+  Unauthorized: 'Tài khoản hoặc mật khẩu không đúng!',
+  'Invalid credentials!': 'Đăng nhập thấp bại',
+  Settings: 'Cài đặt',
+  MODE: 'Chế độ hiển thị',
+  'DARK MODE': 'Chế độ tối',
+  'LIGHT MODE': 'Chế độ sáng',
+  NotFoundAnyPeople: 'Không tìm thấy ai phù hợp với từ khoá này!'
 }

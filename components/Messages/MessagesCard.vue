@@ -150,7 +150,16 @@
                 </transition-group>
               </div>
               <div v-else>
-                Not have
+                <div class="text-center">
+                  <div class="image-flex">
+                    <div class="image-container">
+                      <img v-lazy="participant.profile_photo_path" />
+                    </div>
+                  </div>
+                  <div class="">
+                    {{ participant.full_name }}
+                  </div>
+                </div>
               </div>
             </slide-y-down-transition>
           </perfect-scrollbar>
@@ -608,5 +617,24 @@ export default {
   top: 10px;
   left: 50%;
   transform: translate(-50%);
+}
+.image-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+.image-container {
+  width: 150px;
+  height: 150px;
+  padding: 2px;
+  border-radius: 50%;
+  border: solid 1px rgba(0, 0, 0, 0.1);
+  img {
+    border: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
 }
 </style>

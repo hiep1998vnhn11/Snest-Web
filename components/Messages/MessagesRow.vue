@@ -1,7 +1,13 @@
 <template>
   <div class="message-row" :class="{ 'is-current': isCurrent }">
     <div>
-      <base-avatar outlined :size="25" alt="avt" v-if="!isCurrent">
+      <base-avatar
+        outlined
+        :size="25"
+        alt="avt"
+        v-if="!isCurrent"
+        :src="participant.profile_photo_path"
+      >
       </base-avatar>
     </div>
     <div class="message-row-content-cover">
@@ -48,6 +54,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
     message: {
@@ -66,6 +73,9 @@ export default {
       type: Boolean,
       default: false
     }
+  },
+  computed: {
+    ...mapGetters('thresh', ['participant'])
   },
   data() {
     return {

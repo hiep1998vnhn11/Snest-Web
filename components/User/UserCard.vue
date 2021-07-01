@@ -62,7 +62,18 @@
           }"
           class="mx-3"
         >
-          {{ tab.label }}
+          {{ $t(tab.label) }}
+        </a>
+        <a
+          v-else-if="user.url === currentUser.url"
+          :href="href"
+          @click="navigate"
+          :class="{
+            'text-success': isActive
+          }"
+          class="mx-3"
+        >
+          {{ $t(tab.label) }}
         </a>
       </router-link>
     </div>
