@@ -32,6 +32,11 @@
               </div>
               <loading-chasing :loading="loading"></loading-chasing>
               {{ comment.content }}
+              <img
+                v-if="comment.image_path"
+                :src="comment.image_path"
+                class="comment__image"
+              />
             </div>
           </div>
           <div class="flex-1"></div>
@@ -322,6 +327,11 @@ export default {
   display: flex;
   width: 100%;
   margin-top: 5px;
+
+  .comment__image {
+    max-width: 100%;
+    min-width: 50%;
+  }
   .post-comment-container {
     flex: 1;
     .post-comment-right {

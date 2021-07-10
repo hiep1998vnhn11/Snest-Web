@@ -553,7 +553,7 @@ export default {
       try {
         var formData = new FormData()
         if (this.file.img) {
-          formData.append('file', this.img)
+          formData.append('image', this.file.img)
         }
         if (this.text) formData.append('content', this.text)
         if (!this.showComment) this.showComment = true
